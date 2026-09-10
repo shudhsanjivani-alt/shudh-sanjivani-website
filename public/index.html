@@ -1245,7 +1245,6 @@ document.querySelectorAll('.payment-option').forEach(label=>{
     input.dispatchEvent(new Event('change',{bubbles:true}));
   });
 });
-
 updatePaymentUI();
   upiPayButton.addEventListener('click',()=>{if(!cart.length)return;const amount=grandTotal();if(!amount)return;const orderId=getPendingOrderId();const url='upi://pay?pa='+encodeURIComponent('9877864764@ybl')+'&pn='+encodeURIComponent('Shudh%20Sanjivani')+'&am='+encodeURIComponent(amount.toFixed(2))+'&cu=INR&tn='+encodeURIComponent('Order '+orderId);paymentStatus.textContent='UPI payment window खोलने की कोशिश की जा रही है…';paymentStatus.classList.add('show');window.location.href=url;});
   async function startRazorpayPayment(){
@@ -1799,76 +1798,5 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
 })();
 </script>
 <script>
-/* Stage 113: clean payment selector — mobile + desktop */
-document.addEventListener('DOMContentLoaded', function () {
-  const options = Array.from(document.querySelectorAll('.payment-option'));
-  const radios = Array.from(document.querySelectorAll('input[name="paymentMethod"]'));
-  const upiNote = document.getElementById('upiNote');
-  const upiBtn = document.getElementById('upiPayButton');
-  const razorBtn = document.getElementById('razorpayPayButton');
 
-  if (!options.length || !radios.length) return;
-
-  function selectPayment(value) {
-    const radio = radios.find(r => r.value === value);
-    if (!radio) return;
-
-    radios.forEach(r => {
-      r.checked = (r === radio);
-    });
-
-    options.forEach(option => {
-      const r = option.querySelector('input[name="paymentMethod"]');
-      option.classList.toggle('payment-selected', !!r && r.value === value);
-    });
-
-    const isUpi = value === 'upi';
-    const isRazorpay = value === 'razorpay';
-
-    if (upiNote) {
-      upiNote.style.display = isUpi ? 'block' : 'none';
-      upiNote.classList.toggle('show', isUpi);
-    }
-
-    if (upiBtn) {
-      upiBtn.style.display = isUpi ? 'flex' : 'none';
-      upiBtn.classList.toggle('show', isUpi);
-    }
-
-    if (razorBtn) {
-      razorBtn.style.display = isRazorpay ? 'flex' : 'none';
-      razorBtn.classList.toggle('show', isRazorpay);
-    }
-
-    try {
-      localStorage.setItem('shudhSelectedPaymentMethod', value);
-    } catch (e) {}
-  }
-
-  options.forEach(option => {
-    option.addEventListener('click', function () {
-      const radio = option.querySelector('input[name="paymentMethod"]');
-      if (radio) selectPayment(radio.value);
-    });
-  });
-
-  radios.forEach(radio => {
-    radio.addEventListener('change', function () {
-      selectPayment(radio.value);
-    });
-  });
-
-  let saved = null;
-  try {
-    saved = localStorage.getItem('shudhSelectedPaymentMethod');
-  } catch (e) {}
-
-  const initial =
-    radios.some(r => r.value === saved)
-      ? saved
-      : (radios.find(r => r.checked)?.value || 'upi');
-
-  selectPayment(initial);
-});
-</script>
 </body></html>
