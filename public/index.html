@@ -1228,23 +1228,25 @@ document.addEventListener('DOMContentLoaded', function () {
   function closeOrderHistory(){orderHistory.classList.remove('open');document.body.style.overflow='';}
   function selectedPayment(){const r=paymentRadios.find(x=>x.checked);return r?r.value:'upi';}
   function updatePaymentUI(){const method=selectedPayment();const upi=method==='upi';const rz=method==='razorpay';upiNote.classList.toggle('show',upi);upiPayButton.classList.toggle('show',upi);razorpayPayButton.classList.toggle('show',rz);if(method!=='razorpay'){razorpayPaymentVerified=false;razorpayPaymentId='';razorpayOrderId='';}paymentStatus.classList.remove('show');paymentStatus.classList.remove('payment-success');paymentStatus.textContent='';}
-  // Stage 109: make all payment options explicitly selectable on touch and desktop.
-  paymentRadiosInit.forEach(r=>{
-    r.addEventListener('change',()=>{updatePaymentUI();renderCart();});
-    r.addEventListener('click',()=>{ if(!r.checked){r.checked=true;} updatePaymentUI(); renderCart(); });
+  // Stage 113: clean payment selector
+paymentRadiosInit.forEach(r=>{
+  r.addEventListener('change',()=>{
+    updatePaymentUI();
+    renderCart();
   });
-  document.querySelectorAll('.payment-option').forEach(label=>{
-    label.addEventListener('click',function(e){
-      const input=this.querySelector('input[name=paymentMethod]');
-      if(!input)return;
-      if(e.target!==input){
-        e.preventDefault();
-        input.checked=true;
-        input.dispatchEvent(new Event('change',{bubbles:true}));
-      }
-    });
+});
+
+document.querySelectorAll('.payment-option').forEach(label=>{
+  label.addEventListener('click',function(e){
+    const input=this.querySelector('input[name="paymentMethod"]');
+    if(!input)return;
+
+    input.checked=true;
+    input.dispatchEvent(new Event('change',{bubbles:true}));
   });
-  updatePaymentUI();
+});
+
+updatePaymentUI();
   upiPayButton.addEventListener('click',()=>{if(!cart.length)return;const amount=grandTotal();if(!amount)return;const orderId=getPendingOrderId();const url='upi://pay?pa='+encodeURIComponent('9877864764@ybl')+'&pn='+encodeURIComponent('Shudh%20Sanjivani')+'&am='+encodeURIComponent(amount.toFixed(2))+'&cu=INR&tn='+encodeURIComponent('Order '+orderId);paymentStatus.textContent='UPI payment window खोलने की कोशिश की जा रही है…';paymentStatus.classList.add('show');window.location.href=url;});
   async function startRazorpayPayment(){
     if(!cart.length)return;
