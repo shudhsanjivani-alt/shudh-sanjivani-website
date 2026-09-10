@@ -1797,34 +1797,76 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
 })();
 </script>
 <script>
-// Stage 110: payment selector hardening — use pointer/touch delegation so all three choices are selectable.
-document.addEventListener('DOMContentLoaded', function(){
+/* Stage 113: clean payment selector — mobile + desktop */
+document.addEventListener('DOMContentLoaded', function () {
   const options = Array.from(document.querySelectorAll('.payment-option'));
   const radios = Array.from(document.querySelectorAll('input[name="paymentMethod"]'));
-  if(!options.length || !radios.length) return;
-  function choose(input){
-    if(!input) return;
-    radios.forEach(r=>{r.checked = (r===input); r.removeAttribute('aria-checked');});
-    input.setAttribute('aria-checked','true');
-    options.forEach(label=>label.classList.toggle('payment-selected', label.querySelector('input')===input));
-    input.dispatchEvent(new Event('change',{bubbles:true}));
+  const upiNote = document.getElementById('upiNote');
+  const upiBtn = document.getElementById('upiPayButton');
+  const razorBtn = document.getElementById('razorpayPayButton');
+
+  if (!options.length || !radios.length) return;
+
+  function selectPayment(value) {
+    const radio = radios.find(r => r.value === value);
+    if (!radio) return;
+
+    radios.forEach(r => {
+      r.checked = (r === radio);
+    });
+
+    options.forEach(option => {
+      const r = option.querySelector('input[name="paymentMethod"]');
+      option.classList.toggle('payment-selected', !!r && r.value === value);
+    });
+
+    const isUpi = value === 'upi';
+    const isRazorpay = value === 'razorpay';
+
+    if (upiNote) {
+      upiNote.style.display = isUpi ? 'block' : 'none';
+      upiNote.classList.toggle('show', isUpi);
+    }
+
+    if (upiBtn) {
+      upiBtn.style.display = isUpi ? 'flex' : 'none';
+      upiBtn.classList.toggle('show', isUpi);
+    }
+
+    if (razorBtn) {
+      razorBtn.style.display = isRazorpay ? 'flex' : 'none';
+      razorBtn.classList.toggle('show', isRazorpay);
+    }
+
+    try {
+      localStorage.setItem('shudhSelectedPaymentMethod', value);
+    } catch (e) {}
   }
-  options.forEach(label=>{
-    label.style.touchAction='manipulation';
-    label.addEventListener('pointerdown', function(e){
-      const input=label.querySelector('input[name="paymentMethod"]');
-      if(input){ choose(input); }
-    }, {passive:true});
-    label.addEventListener('click', function(e){
-      const input=label.querySelector('input[name="paymentMethod"]');
-      if(input && e.target !== input){ choose(input); }
+
+  options.forEach(option => {
+    option.addEventListener('click', function () {
+      const radio = option.querySelector('input[name="paymentMethod"]');
+      if (radio) selectPayment(radio.value);
     });
   });
-  radios.forEach(input=>input.addEventListener('change',()=>{
-    options.forEach(label=>label.classList.toggle('payment-selected', label.querySelector('input')===input && input.checked));
-  }));
-  const current=radios.find(r=>r.checked)||radios[0];
-  choose(current);
+
+  radios.forEach(radio => {
+    radio.addEventListener('change', function () {
+      selectPayment(radio.value);
+    });
+  });
+
+  let saved = null;
+  try {
+    saved = localStorage.getItem('shudhSelectedPaymentMethod');
+  } catch (e) {}
+
+  const initial =
+    radios.some(r => r.value === saved)
+      ? saved
+      : (radios.find(r => r.checked)?.value || 'upi');
+
+  selectPayment(initial);
 });
 </script>
 </body></html>
