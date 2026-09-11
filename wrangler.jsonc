@@ -1,22 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "shudh-razorpay-api-rice-6600",
+  "name": "sandeep",
   "main": "./worker.js",
-  "compatibility_date": "2026-09-08",
-  "preview_urls": false,
-  "vars": {
-    "ORDER_EMAIL_FROM": "Shudh Sanjivani <orders@shudhsanjivani.in>",
-    "ORDER_EMAIL_TO": "shudhsanjivani@gmail.com",
-    "SHIPROCKET_EMAIL": "skgargvodafone4511@gmail.com"
-  },
-  "kv_namespaces": [
-    {
-      "binding": "ORDERS_KV",
-      "id": "d2927ef47ab84532ae4e3d46ceaa4cd0"
-    }
-  ],
+  "compatibility_date": "2026-09-11",
   "assets": {
     "directory": "./public",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
   }
 }
