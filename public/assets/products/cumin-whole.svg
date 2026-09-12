@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="520" viewBox="0 0 700 520">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f0e3"/><stop offset="1" stop-color="#e8ddcb"/></linearGradient><linearGradient id="pouch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#eee2cd"/></linearGradient><linearGradient id="bowl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b5a34"/><stop offset="1" stop-color="#4e2f1e"/></linearGradient></defs>
+<rect width="700" height="520" rx="26" fill="url(#bg)"/>
+<ellipse cx="350" cy="455" rx="260" ry="28" fill="#b9a88f" opacity=".35"/>
+<path d="M210 48 Q350 28 490 48 L470 350 Q350 390 230 350Z" fill="url(#pouch)" stroke="#6d8b57" stroke-width="5"/>
+<path d="M210 48 Q350 28 490 48 L486 115 Q350 132 214 115Z" fill="#6e4829"/>
+<text x="350" y="79" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="27" fill="#fff">SHUDH SANJIVANI</text>
+<text x="350" y="104" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#f8f2e6">Natural Products</text>
+<circle cx="450" cy="150" r="18" fill="#6f9b58"/><circle cx="450" cy="150" r="9" fill="#fff"/>
+<text x="350" y="170" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="29" fill="#4b463e">WHOLE CUMIN</text>
+<text x="350" y="199" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="18" fill="#6e4829">साबुत जीरा</text>
+<path d="M265 230 Q350 190 435 230 L420 315 Q350 345 280 315Z" fill="#6e4829" opacity=".12"/>
+<ellipse cx="350" cy="305" rx="78" ry="28" fill="url(#bowl)"/>
+<path d="M272 300 Q350 345 428 300 L415 345 Q350 382 285 345Z" fill="url(#bowl)"/>
+<ellipse cx="350" cy="300" rx="68" ry="21" fill="#8b5a32"/>
+<ellipse cx="350" cy="293" rx="48" ry="14" fill="#8b5a32" opacity=".9"/>
+<g fill="#7b4b2a"><ellipse cx="455" cy="225" rx="7" ry="22" transform="rotate(35 455 225)"/><ellipse cx="480" cy="245" rx="7" ry="22" transform="rotate(50 480 245)"/><ellipse cx="510" cy="225" rx="7" ry="22" transform="rotate(25 510 225)"/><ellipse cx="470" cy="280" rx="7" ry="22" transform="rotate(65 470 280)"/></g>
+<rect x="248" y="365" width="204" height="34" rx="17" fill="#6f8d58"/><text x="350" y="388" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700" fill="#fff">PURE • SIMPLE • EVERYDAY</text>
+<text x="350" y="425" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#5c554c">Shudh Sanjivani • Shudh Masale Di Hatti</text>
+</svg>
