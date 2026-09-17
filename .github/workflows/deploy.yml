@@ -18,18 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Install Dependencies
-        run: |
-          if [ -f package.json ]; then
-            npm install
-          fi
-
       - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v2
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
