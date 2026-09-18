@@ -296,6 +296,7 @@ function applySeo(response) {
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
         end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
+        end.before('<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Shudh Sanjivani","url":"https://shudhsanjivani.in/","description":"Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए शुद्धता, स्वाद और भरोसा।","potentialAction":{"@type":"SearchAction","target":"https://shudhsanjivani.in/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>', {html:true});
       });
     }})
     .transform(response);
