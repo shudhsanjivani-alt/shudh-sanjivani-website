@@ -1123,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const orderHistory=document.getElementById('orderHistory'), orderHistoryOpen=document.getElementById('orderHistoryOpen'), orderHistoryClose=document.getElementById('orderHistoryClose'), historyList=document.getElementById('historyList'), historyClear=document.getElementById('historyClear');
   const orderTrack=document.getElementById('orderTrack'), trackOrderId=document.getElementById('trackOrderId'), trackVertical=document.getElementById('trackVertical'), trackClose=document.getElementById('trackClose'), trackCloseX=document.getElementById('trackCloseX');
   // Stage 135: bind the cart opener early so later optional UI code cannot block it.
-  const openCartUI=()=>{if(typeof renderCart==='function')renderCart();overlay.classList.add('open');document.body.style.overflow='hidden';};
+  const openCartUI=()=>{if(typeof renderCart==='function')renderCart();overlay.classList.add('open');document.body.style.overflow='hidden';}; const closeCartUI=()=>{overlay.classList.remove('open');document.body.style.overflow='';};
   const cartOpenButton=document.getElementById('cartOpen'); if(cartOpenButton)cartOpenButton.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openCartUI();},true);
   const trackOrderOpen=document.getElementById('trackOrderOpen'), trackInputOrderId=document.getElementById('trackInputOrderId'), trackInputPhone=document.getElementById('trackInputPhone'), trackLookupButton=document.getElementById('trackLookupButton'), trackNote=document.getElementById('trackNote');
   const REVIEW_KEY='shudhSanjivaniProductReviews', reviewClientKey='shudhSanjivaniReviewClientId', reviewOverlay=document.getElementById('reviewOverlay'), reviewClose=document.getElementById('reviewClose'), reviewProductName=document.getElementById('reviewProductName'), reviewName=document.getElementById('reviewName'), reviewText=document.getElementById('reviewText'), reviewSave=document.getElementById('reviewSave'), starChoices=Array.from(document.querySelectorAll('.star-choice')); let activeReviewProduct='', activeReviewRating=0;
@@ -1337,10 +1337,10 @@ document.addEventListener('DOMContentLoaded', function () {
   function openCartWhatsApp(){if(!cart.length)return;const lines=cart.map(x=>`• ${x.name} — ${x.size} × ${x.qty} = ₹${Number(x.price*x.qty).toLocaleString('en-IN')}`).join('\n');const customer=`नाम: ${(customerName.value||'').trim()||'नहीं दिया गया'}\nमोबाइल: ${(customerPhone.value||'').trim()||'नहीं दिया गया'}\nपता: ${[(customerAddress.value||'').trim(),(customerCity.value||'').trim(),(customerPincode.value||'').trim()].filter(Boolean).join(', ')||'नहीं दिया गया'}`;const msg=`नमस्कार Shudh Sanjivani, मुझे WhatsApp पर यह ऑर्डर करना है।\n\n${lines}\n\nकुल सामान: ₹${total().toLocaleString('en-IN')}\nडिलीवरी: ${deliveryCharge()===0?'फ्री':'₹'+deliveryCharge()}\nकुल: ₹${grandTotal().toLocaleString('en-IN')}\n\n${customer}\n\nFresh grinding: ${freshOrderChoice.checked?'हाँ':'नहीं'}\nकृपया ऑर्डर की पुष्टि करें।`;window.open('https://wa.me/919877864764?text='+encodeURIComponent(msg),'_blank','noopener');}
   cartWhatsapp.addEventListener('click',openCartWhatsApp);
   // Stage 135: early cart opener above is the authoritative handler.
-  document.getElementById('cartClose').onclick=()=>overlay.classList.remove('open');
-  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('open');});
+  document.getElementById('cartClose').onclick=closeCartUI;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeCartUI();});
   document.getElementById('clearCart').onclick=()=>{if(!cart.length)return;if(confirm('क्या आप कार्ट के सभी सामान हटाना चाहते हैं?')){cart=[];clearPendingOrderId();save();}};
-  document.getElementById('continueShop').onclick=()=>overlay.classList.remove('open');
+  document.getElementById('continueShop').onclick=closeCartUI;
   [customerName,customerPhone,customerAddress,customerCity,customerPincode,customerNote].forEach(el=>el.addEventListener('input',()=>{clearCustomerValidation(el);saveCustomer();renderCart();}));
 freshOrderChoice.addEventListener('change',()=>{renderCart();});
   customerClear.addEventListener('click',clearCustomerInfo);
@@ -1357,7 +1357,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   });
   customerPhone.addEventListener('input',()=>{customerPhone.value=customerPhone.value.replace(/\D/g,'').slice(0,10);customerPhone.setCustomValidity('');});
   customerPincode.addEventListener('input',()=>{customerPincode.value=customerPincode.value.replace(/\D/g,'').slice(0,6);});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){overlay.classList.remove('open');closeQuickView();}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCartUI();closeQuickView();}});
 
   let serverReviews={};
   function getReviews(){return serverReviews||{}}
@@ -1764,7 +1764,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
     }catch(e){}
   }
   open.addEventListener('click',function(){
-    const btn=document.getElementById('cartBtn');
+    const btn=document.getElementById('cartOpen');
     if(btn)btn.click(); else window.location.hash='#products';
   });
   sync(); setInterval(sync,800);
@@ -2022,5 +2022,5 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <!-- Stage 129: 13 user-supplied direct ImgBB image URLs applied with local fallbacks. Live deployment not performed. -->
 
-<script>/* Stage 149 — product Add to Cart fix */(function(){function wire(){document.querySelectorAll('#products .actions a.wa').forEach(function(btn){if(btn.dataset.cartWired==='1'||!/Add to Cart/i.test(btn.textContent||''))return;btn.dataset.cartWired='1';btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const card=btn.closest('.card');if(!card)return;const name=(card.querySelector('h3')?.textContent||'Product').trim();const label=(btn.textContent||'').split('·').slice(1).join('·').trim();const rows=Array.from(card.querySelectorAll('.prices .price-row'));const row=(label&&rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label))||rows[0];const size=(row?.querySelector('span')?.textContent||label||'Pack').trim();const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;const img=card.querySelector('.product-visual img');let cart=[];try{cart=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]')}catch(_){cart=[]}const found=cart.find(x=>x.name===name&&x.size===size);if(found)found.qty=(Number(found.qty)||1)+1;else cart.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});localStorage.setItem('shudhSanjivaniCart',JSON.stringify(cart));const count=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);const ce=document.getElementById('cartCount'),mc=document.getElementById('mobileCartCount');if(ce)ce.textContent=count;if(mc)mc.textContent=count+' आइटम';const toast=document.getElementById('cartToast');if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}const open=document.getElementById('cartOpen');if(open)setTimeout(()=>open.click(),80)})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();</script>
+<script>/* Stage 149 — product Add to Cart fix */(function(){function wire(){document.querySelectorAll('#products .actions a.wa').forEach(function(btn){if(btn.dataset.cartWired==='1'||!/Add to Cart/i.test(btn.textContent||''))return;btn.dataset.cartWired='1';btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const card=btn.closest('.card');if(!card)return;const name=(card.querySelector('h3')?.textContent||'Product').trim();const label=(btn.textContent||'').split('·').slice(1).join('·').trim();const rows=Array.from(card.querySelectorAll('.prices .price-row'));const row=(label&&rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label))||rows[0];const size=(row?.querySelector('span')?.textContent||label||'Pack').trim();const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;const img=card.querySelector('.product-visual img');let cart=[];try{cart=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]')}catch(_){cart=[]}const found=cart.find(x=>x.name===name&&x.size===size);if(found)found.qty=(Number(found.qty)||1)+1;else cart.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});localStorage.setItem('shudhSanjivaniCart',JSON.stringify(cart));const count=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);const ce=document.getElementById('cartCount'),mc=document.getElementById('mobileCartCount');if(ce)ce.textContent=count;if(mc)mc.textContent=count+' आइटम';const toast=document.getElementById('cartToast');if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();</script>
 </body></html>
