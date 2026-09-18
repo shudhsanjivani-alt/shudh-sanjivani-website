@@ -296,6 +296,25 @@ function applySeo(response) {
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
         end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
+        const structuredData = {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://shudhsanjivani.in/#organization",
+              "name": "Shudh Sanjivani",
+              "url": "https://shudhsanjivani.in/"
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://shudhsanjivani.in/#website",
+              "name": "Shudh Sanjivani | Pure Spices & Natural Products",
+              "url": "https://shudhsanjivani.in/",
+              "publisher": { "@id": "https://shudhsanjivani.in/#organization" }
+            }
+          ]
+        };
+        end.before('<script type="application/ld+json">' + JSON.stringify(structuredData) + '</script>', {html:true});
       });
     }})
     .transform(response);
