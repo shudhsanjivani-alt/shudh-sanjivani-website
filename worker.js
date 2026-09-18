@@ -263,6 +263,44 @@ async function saveReview(request, env) {
   } catch (e) { return json({ saved: false, error: 'समीक्षा server पर सेव नहीं हो सकी।' }, 400, origin); }
 }
 
+function applySeo(response) {
+  const contentType = response.headers.get('Content-Type') || '';
+  if (!contentType.toLowerCase().includes('text/html')) return response;
+  let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
+  const seo = {
+    title: 'Shudh Sanjivani | Pure Spices & Natural Products',
+    description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए शुद्धता, स्वाद और भरोसा।'
+  };
+  return new HTMLRewriter()
+    .on('title', { element(el) { el.setInnerContent(seo.title); } })
+    .on('meta', { element(el) {
+      const name=String(el.getAttribute('name')||'').toLowerCase();
+      const property=String(el.getAttribute('property')||'').toLowerCase();
+      if(name==='description'){hasDescription=true;el.setAttribute('content',seo.description);}
+      if(name==='robots'){hasRobots=true;el.setAttribute('content','index, follow');}
+      if(property==='og:title'){hasOgTitle=true;el.setAttribute('content',seo.title);}
+      if(property==='og:description'){hasOgDescription=true;el.setAttribute('content',seo.description);}
+      if(property==='og:url'){hasOgUrl=true;el.setAttribute('content','https://shudhsanjivani.in/');}
+    }})
+    .on('link', { element(el) {
+      const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
+      if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
+    }})
+    .on('head', { element(el) {
+      el.onEndTag(end => {
+        if(!hasDescription) end.before(`<meta name="description" content="${seo.description}">`, {html:true});
+        if(!hasRobots) end.before('<meta name="robots" content="index, follow">', {html:true});
+        if(!hasCanonical) end.before('<link rel="canonical" href="https://shudhsanjivani.in/">', {html:true});
+        if(!hasOgTitle) end.before(`<meta property="og:title" content="${seo.title}">`, {html:true});
+        if(!hasOgDescription) end.before(`<meta property="og:description" content="${seo.description}">`, {html:true});
+        if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
+        end.before('<meta property="og:type" content="website">', {html:true});
+        end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
+      });
+    }})
+    .transform(response);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -283,6 +321,7 @@ export default {
       headers.set('Pragma', 'no-cache');
       headers.set('Expires', '0');
     }
-    return new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
+    const response = new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
+    return applySeo(response);
   }
 };
