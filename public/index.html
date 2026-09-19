@@ -1351,6 +1351,8 @@ document.addEventListener('DOMContentLoaded', function () {
     cartToast.classList.add('show');
     clearTimeout(toastTimer); toastTimer=setTimeout(()=>cartToast.classList.remove('show'),1800);
   }
+  // Stage 160-C: expose the authoritative core cart add function to the new-product bridge.
+  window.__shudhAddToCart=add;
   function openCartWhatsApp(){if(!cart.length)return;const lines=cart.map(x=>`• ${x.name} — ${x.size} × ${x.qty} = ₹${Number(x.price*x.qty).toLocaleString('en-IN')}`).join('\n');const customer=`नाम: ${(customerName.value||'').trim()||'नहीं दिया गया'}\nमोबाइल: ${(customerPhone.value||'').trim()||'नहीं दिया गया'}\nपता: ${[(customerAddress.value||'').trim(),(customerCity.value||'').trim(),(customerPincode.value||'').trim()].filter(Boolean).join(', ')||'नहीं दिया गया'}`;const msg=`नमस्कार Shudh Sanjivani, मुझे WhatsApp पर यह ऑर्डर करना है।\n\n${lines}\n\nकुल सामान: ₹${total().toLocaleString('en-IN')}\nडिलीवरी: ${deliveryCharge()===0?'फ्री':'₹'+deliveryCharge()}\nकुल: ₹${grandTotal().toLocaleString('en-IN')}\n\n${customer}\n\nFresh grinding: ${freshOrderChoice.checked?'हाँ':'नहीं'}\nकृपया ऑर्डर की पुष्टि करें।`;window.open('https://wa.me/919877864764?text='+encodeURIComponent(msg),'_blank','noopener');}
   cartWhatsapp.addEventListener('click',openCartWhatsApp);
   // Stage 135: early cart opener above is the authoritative handler.
@@ -2062,20 +2064,8 @@ document.addEventListener('DOMContentLoaded',function(){
         const price=Number((row.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
         const name=(card.querySelector('h3')?.textContent||'Product').trim();
         const img=card.querySelector('.product-visual img')?.getAttribute('src')||'';
-        if(typeof window.add==='function'){
-          window.add(name,size,price,img);
-        }else{
-          const KEY='shudhSanjivaniCart';
-          let cart=[];
-          try{cart=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(cart))cart=[];}catch(_){cart=[];}
-          const found=cart.find(function(x){return x.name===name&&x.size===size;});
-          if(found) found.qty=(Number(found.qty)||1)+1;
-          else cart.push({name:name,size:size,price:price,qty:1,image:img});
-          localStorage.setItem(KEY,JSON.stringify(cart));
-          const count=cart.reduce(function(sum,x){return sum+(Number(x.qty)||1);},0);
-          const ce=document.getElementById('cartCount'),mc=document.getElementById('mobileCartCount');
-          if(ce)ce.textContent=String(count);
-          if(mc)mc.textContent=count+' आइटम';
+        if(typeof window.__shudhAddToCart==='function'){
+          window.__shudhAddToCart(name,size,price,img);
         }
       });
       link.replaceWith(btn);
