@@ -83,10 +83,7 @@ async function sendOwnerSms(order, env){
   if(data?.type==='error') throw new Error(data.message||'SMS provider error');
   return {status:'sent'};
 }
-async function notifyNewOrder(order, env){
-  const [email,sms]=await Promise.allSettled([sendOrderEmail(order,env),sendOwnerSms(order,env)]);
-  return {email:email.status==='fulfilled'?email.value.status:'failed',sms:sms.status==='fulfilled'?sms.value.status:'failed'};
-}
+async function notifyNewOrder(order, env){const [email,sms]=await Promise.allSettled([sendOrderEmail(order,env),sendOwnerSms(order,env)]);return {email:email.status==='fulfilled'?email.value.status:'failed',sms:sms.status==='fulfilled'?sms.value.status:'failed'};}
 
 
 async function shiprocketToken(env) {
@@ -163,9 +160,7 @@ async function createShiprocketOrder(order, env) {
     body:JSON.stringify(payload)
   });
   const data = await resp.json().catch(()=>({}));
-  if (!resp.ok || data?.status_code === 400 || data?.status === 0) {
-    throw new Error(data?.message || 'Shiprocket order creation failed');
-  }
+  if (!resp.ok || data?.status_code === 400 || data?.status === 0) throw new Error(data?.message || 'Shiprocket order creation failed');
   return {status:'created', shiprocketOrderId:data?.order_id || null, shipmentId:data?.shipment_id || null};
 }
 
@@ -177,27 +172,12 @@ async function saveOrder(request, env) {
     const order = body?.order;
     if (!order || !cleanString(order.id, 60)) return json({ saved: false, error: 'Invalid order data.' }, 400, origin);
     const normalized = {
-      id: cleanString(order.id, 60),
-      createdAt: cleanString(order.createdAt, 60) || new Date().toISOString(),
-      paymentMethod: cleanString(order.paymentMethod, 30),
-      paymentStatus: cleanString(order.paymentStatus, 120),
-      razorpayPaymentId: cleanString(order.razorpayPaymentId, 80),
-      razorpayOrderId: cleanString(order.razorpayOrderId, 80),
-      subtotal: Number(order.subtotal) || 0,
-      delivery: Number(order.delivery) || 0,
-      total: Number(order.total) || 0,
-      freshGrinding: !!order.freshGrinding,
-      customer: {
-        name: cleanString(order.customer?.name, 120),
-        phone: cleanDigits(order.customer?.phone, 15),
-        address: cleanString(order.customer?.address, 500),
-        city: cleanString(order.customer?.city, 120),
-        pincode: cleanDigits(order.customer?.pincode, 6),
-        note: cleanString(order.customer?.note, 500)
-      },
-      items: Array.isArray(order.items) ? order.items.slice(0, 50).map(x => ({
-        name: cleanString(x?.name, 160), size: cleanString(x?.size, 50), qty: Math.max(1, Number(x?.qty) || 1), price: Number(x?.price) || 0, total: Number(x?.total) || 0
-      })) : []
+      id: cleanString(order.id, 60), createdAt: cleanString(order.createdAt, 60) || new Date().toISOString(),
+      paymentMethod: cleanString(order.paymentMethod, 30), paymentStatus: cleanString(order.paymentStatus, 120),
+      razorpayPaymentId: cleanString(order.razorpayPaymentId, 80), razorpayOrderId: cleanString(order.razorpayOrderId, 80),
+      subtotal: Number(order.subtotal) || 0, delivery: Number(order.delivery) || 0, total: Number(order.total) || 0, freshGrinding: !!order.freshGrinding,
+      customer: {name: cleanString(order.customer?.name, 120),phone: cleanDigits(order.customer?.phone, 15),address: cleanString(order.customer?.address, 500),city: cleanString(order.customer?.city, 120),pincode: cleanDigits(order.customer?.pincode, 6),note: cleanString(order.customer?.note, 500)},
+      items: Array.isArray(order.items) ? order.items.slice(0, 50).map(x => ({name: cleanString(x?.name, 160),size: cleanString(x?.size, 50),qty: Math.max(1, Number(x?.qty) || 1),price: Number(x?.price) || 0,total: Number(x?.total) || 0})) : []
     };
     await env.ORDERS_KV.put(`order:${normalized.id}`, JSON.stringify(normalized));
     const notifications=await notifyNewOrder(normalized,env);
@@ -214,15 +194,11 @@ async function listOrders(request, env) {
   try {
     const listed = await env.ORDERS_KV.list({ prefix: 'order:', limit: 1000 });
     const orders = [];
-    for (const key of listed.keys) {
-      const raw = await env.ORDERS_KV.get(key.name);
-      if (raw) { try { orders.push(JSON.parse(raw)); } catch (e) {} }
-    }
+    for (const key of listed.keys) { const raw = await env.ORDERS_KV.get(key.name); if (raw) { try { orders.push(JSON.parse(raw)); } catch (e) {} } }
     orders.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
     return json({ orders }, 200, origin);
   } catch (e) { return json({ error: 'Orders could not be loaded.' }, 500, origin); }
 }
-
 
 async function listReviews(request, env) {
   const origin = request.headers.get('Origin') || '';
@@ -230,10 +206,7 @@ async function listReviews(request, env) {
   try {
     const listed = await env.ORDERS_KV.list({ prefix: 'review:', limit: 1000 });
     const reviews = [];
-    for (const key of listed.keys) {
-      const raw = await env.ORDERS_KV.get(key.name);
-      if (raw) { try { const r = JSON.parse(raw); if (r && r.product && Number(r.rating) >= 1) reviews.push(r); } catch (e) {} }
-    }
+    for (const key of listed.keys) { const raw = await env.ORDERS_KV.get(key.name); if (raw) { try { const r = JSON.parse(raw); if (r && r.product && Number(r.rating) >= 1) reviews.push(r); } catch (e) {} } }
     reviews.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
     return json({ reviews: reviews.slice(0, 300) }, 200, origin);
   } catch (e) { return json({ error: 'Reviews could not be loaded.' }, 500, origin); }
@@ -244,9 +217,7 @@ async function saveReview(request, env) {
   if (!env.ORDERS_KV) return json({ saved: false, error: 'Review storage is not configured yet.' }, 503, origin);
   try {
     const body = await request.json();
-    const product = cleanString(body?.product, 160);
-    const name = cleanString(body?.name, 80) || 'ग्राहक';
-    const text = cleanString(body?.text, 500);
+    const product = cleanString(body?.product, 160), name = cleanString(body?.name, 80) || 'ग्राहक', text = cleanString(body?.text, 500);
     const rating = Math.max(1, Math.min(5, Math.round(Number(body?.rating) || 0)));
     const clientId = cleanString(body?.clientId, 100).replace(/[^a-zA-Z0-9_-]/g,'');
     if (!product || !rating || !clientId) return json({ saved: false, error: 'समीक्षा की जानकारी पूरी नहीं है।' }, 400, origin);
@@ -254,10 +225,7 @@ async function saveReview(request, env) {
     await env.ORDERS_KV.put(`review:${product}:${clientId}`, JSON.stringify(review));
     const listed = await env.ORDERS_KV.list({ prefix: 'review:', limit: 1000 });
     const reviews = [];
-    for (const key of listed.keys) {
-      const raw = await env.ORDERS_KV.get(key.name);
-      if (raw) { try { const r=JSON.parse(raw); if (r && r.product===product && Number(r.rating)>=1) reviews.push(r); } catch(e){} }
-    }
+    for (const key of listed.keys) { const raw = await env.ORDERS_KV.get(key.name); if (raw) { try { const r=JSON.parse(raw); if (r && r.product===product && Number(r.rating)>=1) reviews.push(r); } catch(e){} } }
     reviews.sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
     return json({ saved: true, review, reviews: reviews.slice(0, 50) }, 200, origin);
   } catch (e) { return json({ saved: false, error: 'समीक्षा server पर सेव नहीं हो सकी।' }, 400, origin); }
@@ -269,13 +237,12 @@ function applySeo(response) {
   let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
   const seo = {
     title: 'Shudh Sanjivani | Pure Spices & Natural Products',
-    description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए शुद्धता, स्वाद और भरोसा।'
+    description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए खालिस मसाले, पारंपरिक स्वाद और भरोसा।'
   };
   return new HTMLRewriter()
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
     .on('meta', { element(el) {
-      const name=String(el.getAttribute('name')||'').toLowerCase();
-      const property=String(el.getAttribute('property')||'').toLowerCase();
+      const name=String(el.getAttribute('name')||'').toLowerCase(), property=String(el.getAttribute('property')||'').toLowerCase();
       if(name==='description'){hasDescription=true;el.setAttribute('content',seo.description);}
       if(name==='robots'){hasRobots=true;el.setAttribute('content','index, follow');}
       if(property==='og:title'){hasOgTitle=true;el.setAttribute('content',seo.title);}
@@ -296,52 +263,14 @@ function applySeo(response) {
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
         end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
-        const productNames = [
-          "Amba Turmeric","Besan","Amla Powder","Whole Coriander Seeds","Whole Black Pepper","Multigrain Flour",
-          "Salem Fali Turmeric Powder","Red Chilli Powder","Coriander Powder","Cumin Powder","Cardamom Powder",
-          "Black Pepper Powder","White Pepper Powder","Dry Ginger Powder","Cinnamon Powder","Amchur Powder",
-          "Cumin","Green Cardamom","Fennel Seeds","Carom Seeds","Cloves","Whole Spices","Garam Masala Powder",
-          "Tea Masala"
-        ];
-        const structuredData = {
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "Organization",
-              "@id": "https://shudhsanjivani.in/#organization",
-              "name": "Shudh Sanjivani",
-              "url": "https://shudhsanjivani.in/"
-            },
-            {
-              "@type": "WebSite",
-              "@id": "https://shudhsanjivani.in/#website",
-              "name": "Shudh Sanjivani | Pure Spices & Natural Products",
-              "url": "https://shudhsanjivani.in/",
-              "publisher": { "@id": "https://shudhsanjivani.in/#organization" }
-            },
-            {
-              "@type": "ItemList",
-              "@id": "https://shudhsanjivani.in/#product-list",
-              "name": "Shudh Sanjivani Product Catalogue",
-              "itemListElement": productNames.map((name, index) => ({
-                "@type": "ListItem",
-                "position": index + 1,
-                "name": name
-              }))
-            },
-            {
-              "@type": "WebPage",
-              "@id": "https://shudhsanjivani.in/#webpage",
-              "url": "https://shudhsanjivani.in/",
-              "name": "Shudh Sanjivani | Pure Spices for Everyday Cooking",
-              "description": seo.description,
-              "inLanguage": "hi-IN",
-              "isPartOf": { "@id": "https://shudhsanjivani.in/#website" },
-              "about": { "@id": "https://shudhsanjivani.in/#organization" }
-            }
-          ]
-        };
-        end.before('<script type="application/ld+json">' + JSON.stringify(structuredData) + '</script>', {html:true});
+        const productNames = ["Amba Turmeric","Besan","Amla Powder","Whole Coriander Seeds","Whole Black Pepper","Multigrain Flour","Salem Fali Turmeric Powder","Red Chilli Powder","Coriander Powder","Cumin Powder","Cardamom Powder","Black Pepper Powder","White Pepper Powder","Dry Ginger Powder","Cinnamon Powder","Amchur Powder","Cumin","Green Cardamom","Fennel Seeds","Carom Seeds","Cloves","Whole Spices","Garam Masala Powder","Tea Masala"];
+        const structuredData = {"@context":"https://schema.org","@graph":[
+          {"@type":"Organization","@id":"https://shudhsanjivani.in/#organization","name":"Shudh Sanjivani","url":"https://shudhsanjivani.in/"},
+          {"@type":"WebSite","@id":"https://shudhsanjivani.in/#website","name":"Shudh Sanjivani | Pure Spices & Natural Products","url":"https://shudhsanjivani.in/","publisher":{"@id":"https://shudhsanjivani.in/#organization"}},
+          {"@type":"ItemList","@id":"https://shudhsanjivani.in/#product-list","name":"Shudh Sanjivani Product Catalogue","itemListElement":productNames.map((name,index)=>({"@type":"ListItem","position":index+1,"name":name}))},
+          {"@type":"WebPage","@id":"https://shudhsanjivani.in/#webpage","url":"https://shudhsanjivani.in/","name":"Shudh Sanjivani | Pure Spices for Everyday Cooking","description":seo.description,"inLanguage":"hi-IN","isPartOf":{"@id":"https://shudhsanjivani.in/#website"},"about":{"@id":"https://shudhsanjivani.in/#organization"}}
+        ]};
+        end.before('<script type="application/ld+json">'+JSON.stringify(structuredData)+'</script>', {html:true});
       });
     }})
     .transform(response);
@@ -359,8 +288,6 @@ export default {
     if (url.pathname === '/api/reviews' && request.method === 'POST') return saveReview(request, env);
     if (url.pathname === '/api/admin/orders' && request.method === 'GET') return listOrders(request, env);
     const assetResponse = await env.ASSETS.fetch(request);
-    // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
-    // This is important while deploying the checkout/order-flow fix.
     const headers = new Headers(assetResponse.headers);
     if (url.pathname === '/' || url.pathname === '/index.html') {
       headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
