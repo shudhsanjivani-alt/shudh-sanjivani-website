@@ -2040,13 +2040,17 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <!-- Stage 129: 13 user-supplied direct ImgBB image URLs applied with local fallbacks. Live deployment not performed. -->
-<!-- Stage 161-A: one capture-level handler for new-product Add to Cart; uses the existing core cart function and never opens the cart. -->
+<!-- Stage 162-A: single click capture for new-product Add to Cart. Prevent duplicate touch/pointer events. -->
 <script>
 (function(){
+  let lastHandled=0;
   function handle(e){
     const el=e.target?.closest?.('#new-products .card .actions a.wa, #new-products .card .actions button.wa, #new-products .card .actions .add-cart');
     if(!el || !/Add to Cart/i.test(el.textContent||'')) return;
     if(typeof window.__shudhAddToCart!=='function') return;
+    const now=Date.now();
+    if(now-lastHandled<700) return;
+    lastHandled=now;
     const card=el.closest('#new-products .card'); if(!card) return;
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -2062,8 +2066,6 @@ document.addEventListener('DOMContentLoaded',function(){
     window.__shudhAddToCart(name,size,price,img);
   }
   document.addEventListener('click',handle,true);
-  document.addEventListener('pointerup',handle,true);
-  document.addEventListener('touchend',handle,{capture:true,passive:false});
 })();
 </script>
 </body></html>
