@@ -1213,7 +1213,25 @@ document.addEventListener('DOMContentLoaded', function () {
   function makeOrderId(){const now=new Date(),dd=String(now.getDate()).padStart(2,'0'),mm=String(now.getMonth()+1).padStart(2,'0'),yy=String(now.getFullYear()).slice(-2),key=yy+mm+dd;let d={date:key,seq:0};try{d=JSON.parse(localStorage.getItem(ORDER_SEQ_KEY)||'null')||d}catch(e){}if(d.date!==key)d={date:key,seq:0};d.seq=Number(d.seq||0)+1;localStorage.setItem(ORDER_SEQ_KEY,JSON.stringify(d));return 'SS-'+dd+mm+yy+'-'+String(d.seq).padStart(3,'0');}
   function getPendingOrderId(){let id=localStorage.getItem(PENDING_ORDER_KEY);if(!id){id=makeOrderId();localStorage.setItem(PENDING_ORDER_KEY,id);}return id;}
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
-  function save(){localStorage.setItem(CART_KEY,JSON.stringify(cart)); renderCart();}
+  function save(){
+    localStorage.setItem(CART_KEY,JSON.stringify(cart));
+    renderCart();
+    window.dispatchEvent(new CustomEvent('shudh-cart-updated'));
+    try{
+      const n=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);
+      const totalNow=cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
+      const mc=document.getElementById('mobileCartCount');
+      if(mc) mc.textContent=n+' आइटम';
+      const title=document.getElementById('mobileCartTitle');
+      const sub=document.getElementById('mobileCartSub');
+      const open=document.getElementById('mobileCartBarOpen');
+      if(title&&sub&&open){
+        title.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
+        sub.textContent=n?'कुल ₹'+totalNow.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
+        open.textContent=n?'कार्ट खोलें':'उत्पाद देखें';
+      }
+    }catch(e){}
+  }
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
   function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
@@ -2066,6 +2084,54 @@ document.addEventListener('DOMContentLoaded',function(){
     window.__shudhAddToCart(name,size,price,img);
   }
   document.addEventListener('click',handle,true);
+})();
+</script>
+<!-- Stage 160: all products use the same pack-wise Add to Cart buttons. -->
+<script>
+(function(){
+  function normalizeProducts(){
+    document.querySelectorAll('#products .card').forEach(function(card){
+      const rows=Array.from(card.querySelectorAll('.prices .price-row'));
+      const actions=card.querySelector('.actions');
+      if(!rows.length||!actions)return;
+      if(!actions.querySelector('.wa,.new-add-cart'))return;
+      actions.innerHTML='';
+      rows.forEach(function(row){
+        const size=(row.querySelector('span')?.textContent||'').trim();
+        const price=Number((row.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
+        if(!size||!price)return;
+        const btn=document.createElement('button');
+        btn.type='button';
+        btn.className='add-cart unified-pack-cart';
+        btn.dataset.size=size;
+        btn.dataset.price=String(price);
+        btn.textContent='पैक चुनें / Add to Cart · '+size;
+        actions.appendChild(btn);
+      });
+    });
+  }
+  function init(){
+    normalizeProducts();
+    document.addEventListener('click',function(e){
+      const btn=e.target?.closest?.('#products .card .unified-pack-cart');
+      if(!btn||typeof window.__shudhAddToCart!=='function')return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const card=btn.closest('.card');
+      const size=(btn.dataset.size||'').trim();
+      const price=Number(btn.dataset.price||0);
+      if(!card||!size||!price)return;
+      const name=(card.querySelector('h3')?.textContent||'Product').trim();
+      const image=card.querySelector('.product-visual img')?.getAttribute('src')||'';
+      window.__shudhAddToCart(name,size,price,image);
+      const original=btn.textContent;
+      btn.textContent='✓ कार्ट में जोड़ दिया · '+size;
+      clearTimeout(btn.__ssTimer);
+      btn.__ssTimer=setTimeout(function(){btn.textContent=original;},900);
+    },true);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
 })();
 </script>
 </body></html>
