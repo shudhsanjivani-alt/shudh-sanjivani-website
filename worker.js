@@ -296,6 +296,13 @@ function applySeo(response) {
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
         end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
+        const productNames = [
+          "Amba Turmeric","Besan","Amla Powder","Whole Coriander Seeds","Whole Black Pepper","Multigrain Flour",
+          "Salem Fali Turmeric Powder","Red Chilli Powder","Coriander Powder","Cumin Powder","Cardamom Powder",
+          "Black Pepper Powder","White Pepper Powder","Dry Ginger Powder","Cinnamon Powder","Amchur Powder",
+          "Cumin","Green Cardamom","Fennel Seeds","Carom Seeds","Cloves","Whole Spices","Garam Masala Powder",
+          "Tea Masala"
+        ];
         const structuredData = {
           "@context": "https://schema.org",
           "@graph": [
@@ -311,6 +318,16 @@ function applySeo(response) {
               "name": "Shudh Sanjivani | Pure Spices & Natural Products",
               "url": "https://shudhsanjivani.in/",
               "publisher": { "@id": "https://shudhsanjivani.in/#organization" }
+            },
+            {
+              "@type": "ItemList",
+              "@id": "https://shudhsanjivani.in/#product-list",
+              "name": "Shudh Sanjivani Product Catalogue",
+              "itemListElement": productNames.map((name, index) => ({
+                "@type": "ListItem",
+                "position": index + 1,
+                "name": name
+              }))
             },
             {
               "@type": "WebPage",
