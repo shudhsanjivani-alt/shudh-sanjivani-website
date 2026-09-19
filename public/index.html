@@ -1818,7 +1818,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   document.getElementById("mobileCartOpen")?.addEventListener("click",()=>cartBtn?.click());
   document.getElementById("mobileFavoritesOpen")?.addEventListener("click",()=>favBtn?.click());
   document.getElementById("mobileSearchFocus")?.addEventListener("click",()=>{search?.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>search?.focus(),350);});
-  window.addEventListener('shudh-cart-updated',syncMobile); syncMobile(); setInterval(syncMobile,800);
+  window.addEventListener('shudh-cart-updated',syncMobile); syncMobile();
 })();
 </script>
 <div aria-live="polite" class="mobile-cart-bar" id="mobileCartBar"><div class="mobile-cart-info"><strong id="mobileCartTitle">कार्ट खाली है</strong><small id="mobileCartSub">अपने पसंदीदा मसाले कार्ट में जोड़ें</small></div><button class="mobile-cart-open" id="mobileCartBarOpen" type="button">कार्ट देखें</button></div>
@@ -1838,7 +1838,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
     const btn=document.getElementById('cartOpen');
     if(btn)btn.click(); else window.location.hash='#products';
   });
-  window.addEventListener('shudh-cart-updated',sync); sync(); setInterval(sync,800);
+  window.addEventListener('shudh-cart-updated',sync); sync();
 })();
 </script>
 <script id="stage55-delivery-progress-js">
