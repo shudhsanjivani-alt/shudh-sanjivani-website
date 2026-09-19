@@ -2166,4 +2166,40 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('click',handle,true);
 })();
 </script>
+
+<!-- Stage 161: authoritative mobile cart count sync. -->
+<script>
+(function(){
+  function readCart(){
+    try{
+      if(typeof window.__shudhCartSnapshot==='function'){
+        const c=window.__shudhCartSnapshot();
+        if(Array.isArray(c)) return c;
+      }
+    }catch(e){}
+    try{
+      const c=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]');
+      return Array.isArray(c)?c:[];
+    }catch(e){return [];}
+  }
+  function sync(){
+    const c=readCart();
+    const n=c.reduce((s,x)=>s+(Number(x.qty)||1),0);
+    const total=c.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
+    const count=document.getElementById('mobileCartCount');
+    const title=document.getElementById('mobileCartTitle');
+    const sub=document.getElementById('mobileCartSub');
+    const open=document.getElementById('mobileCartBarOpen');
+    if(count){const v=n+' आइटम';if(count.textContent!==v)count.textContent=v;}
+    if(title){const v=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';if(title.textContent!==v)title.textContent=v;}
+    if(sub){const v=n?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';if(sub.textContent!==v)sub.textContent=v;}
+    if(open){const v=n?'कार्ट खोलें':'उत्पाद देखें';if(open.textContent!==v)open.textContent=v;}
+  }
+  window.addEventListener('shudh-cart-updated',sync);
+  document.addEventListener('DOMContentLoaded',sync);
+  sync();
+  const count=document.getElementById('mobileCartCount');
+  if(count)new MutationObserver(sync).observe(count,{childList:true,characterData:true,subtree:true});
+})();
+</script>
 </body></html>
