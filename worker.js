@@ -311,6 +311,16 @@ function applySeo(response) {
               "name": "Shudh Sanjivani | Pure Spices & Natural Products",
               "url": "https://shudhsanjivani.in/",
               "publisher": { "@id": "https://shudhsanjivani.in/#organization" }
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://shudhsanjivani.in/#webpage",
+              "url": "https://shudhsanjivani.in/",
+              "name": "Shudh Sanjivani | Pure Spices for Everyday Cooking",
+              "description": seo.description,
+              "inLanguage": "hi-IN",
+              "isPartOf": { "@id": "https://shudhsanjivani.in/#website" },
+              "about": { "@id": "https://shudhsanjivani.in/#organization" }
             }
           ]
         };
