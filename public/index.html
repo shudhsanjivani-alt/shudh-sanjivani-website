@@ -2074,5 +2074,56 @@ document.addEventListener('DOMContentLoaded',function(){
 })();
 </script>
 
+<!-- Stage 160-E: all products use the same pack-wise Add to Cart buttons. -->
+<script>
+(function(){
+  function normalizeProducts(){
+    document.querySelectorAll('#products .card').forEach(function(card){
+      const rows=Array.from(card.querySelectorAll('.prices .price-row'));
+      const actions=card.querySelector('.actions');
+      if(!rows.length||!actions)return;
+      if(!actions.querySelector('.wa,.new-add-cart'))return;
+
+      actions.innerHTML='';
+      rows.forEach(function(row){
+        const size=(row.querySelector('span')?.textContent||'').trim();
+        const price=Number((row.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
+        if(!size||!price)return;
+        const btn=document.createElement('button');
+        btn.type='button';
+        btn.className='add-cart unified-pack-cart';
+        btn.dataset.size=size;
+        btn.dataset.price=String(price);
+        btn.textContent='पैक चुनें / Add to Cart · '+size;
+        actions.appendChild(btn);
+      });
+    });
+  }
+
+  function init(){
+    normalizeProducts();
+    document.addEventListener('click',function(e){
+      const btn=e.target?.closest?.('#products .card .unified-pack-cart');
+      if(!btn||typeof window.__shudhAddToCart!=='function')return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const card=btn.closest('.card');
+      const size=(btn.dataset.size||'').trim();
+      const price=Number(btn.dataset.price||0);
+      if(!card||!size||!price)return;
+      const name=(card.querySelector('h3')?.textContent||'Product').trim();
+      const image=card.querySelector('.product-visual img')?.getAttribute('src')||'';
+      window.__shudhAddToCart(name,size,price,image);
+      const original=btn.textContent;
+      btn.textContent='✓ कार्ट में जोड़ दिया · '+size;
+      clearTimeout(btn.__ssTimer);
+      btn.__ssTimer=setTimeout(function(){btn.textContent=original;},900);
+    },true);
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
 <!-- Stage 129: 13 user-supplied direct ImgBB image URLs applied with local fallbacks. Live deployment not performed. -->
 </body></html>
