@@ -2038,117 +2038,48 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <!-- Stage 129: 13 user-supplied direct ImgBB image URLs applied with local fallbacks. Live deployment not performed. -->
-
-<script>/* Stage 149 — product Add to Cart fix */(function(){function wire(){document.querySelectorAll('#products .actions a.wa').forEach(function(btn){if(btn.dataset.cartWired==='1'||!/Add to Cart/i.test(btn.textContent||''))return;btn.dataset.cartWired='1';btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const card=btn.closest('.card');if(!card)return;const name=(card.querySelector('h3')?.textContent||'Product').trim();const label=(btn.textContent||'').split('·').slice(1).join('·').trim();const rows=Array.from(card.querySelectorAll('.prices .price-row'));const row=(label&&rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label))||rows[0];const size=(row?.querySelector('span')?.textContent||label||'Pack').trim();const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;const img=card.querySelector('.product-visual img');let cart=[];try{cart=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]')}catch(_){cart=[]}const found=cart.find(x=>x.name===name&&x.size===size);if(found)found.qty=(Number(found.qty)||1)+1;else cart.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});localStorage.setItem('shudhSanjivaniCart',JSON.stringify(cart));const count=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);const ce=document.getElementById('cartCount'),mc=document.getElementById('mobileCartCount');if(ce)ce.textContent=count;if(mc)mc.textContent=count+' आइटम';const toast=document.getElementById('cartToast');if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();</script>
-
-
-<!-- Stage 159-F: new-product cart bridge + visible mobile cart-count sync. -->
+<!-- Stage 160-A: use the existing product Add to Cart UI for new products and sync the mobile cart indicator. -->
 <script>
 (function(){
   const KEY='shudhSanjivaniCart';
-
-  function readCart(){
-    try{
-      const v=JSON.parse(localStorage.getItem(KEY)||'[]');
-      return Array.isArray(v)?v:[];
-    }catch(e){return [];}
+  function read(){try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return [];}}
+  function sync(){
+    const c=read(), n=c.reduce((s,x)=>s+(Number(x.qty)||1),0), total=c.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
+    const top=document.getElementById('cartCount'); if(top) top.textContent=String(n);
+    const mobile=document.getElementById('mobileCartCount'); if(mobile) mobile.textContent=n+' आइटम';
+    const title=document.getElementById('mobileCartTitle'), sub=document.getElementById('mobileCartSub'), open=document.getElementById('mobileCartBarOpen');
+    if(title) title.textContent=n>0?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
+    if(sub) sub.textContent=n>0?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
+    if(open) open.textContent=n>0?'कार्ट खोलें':'उत्पाद देखें';
   }
-
-  function syncVisibleCart(){
-    const items=readCart();
-    const n=items.reduce(function(sum,x){return sum+(Number(x.qty)||1);},0);
-    const total=items.reduce(function(sum,x){return sum+(Number(x.price)||0)*(Number(x.qty)||1);},0);
-
-    const top=document.getElementById('cartCount');
-    if(top) top.textContent=String(n);
-
-    const mobile=document.getElementById('mobileCartCount');
-    if(mobile) mobile.textContent=n+' आइटम';
-
-    const mobileTitle=document.getElementById('mobileCartTitle');
-    const mobileSub=document.getElementById('mobileCartSub');
-    const mobileBar=document.getElementById('mobileCartBar');
-    const mobileOpen=document.getElementById('mobileCartBarOpen');
-    if(mobileTitle){
-      mobileTitle.textContent=n>0?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
-    }
-    if(mobileSub){
-      mobileSub.textContent=n>0?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
-    }
-    if(mobileOpen) mobileOpen.textContent=n>0?'कार्ट खोलें':'उत्पाद देखें';
-    if(mobileBar) mobileBar.setAttribute('aria-label',n>0?'कार्ट में '+n+' आइटम':'कार्ट खाली है');
-
-    document.querySelectorAll('.cart-btn span,[data-cart-count]').forEach(function(el){
-      if(el.id!=='mobileCartCount') el.textContent=String(n);
-    });
+  function addNewProduct(btn){
+    const card=btn.closest('#new-products .card'); if(!card)return false;
+    const sizes=[...card.querySelectorAll('.size-buttons .size-choice')];
+    const selected=sizes.findIndex(b=>b.classList.contains('selected'));
+    const rows=[...card.querySelectorAll('.prices .price-row')];
+    const i=selected>=0?selected:0, row=rows[i]; if(!row)return false;
+    const size=(row.querySelector('span')?.textContent||'Pack').trim();
+    const price=Number((row.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
+    const name=(card.querySelector('h3')?.textContent||'Product').trim();
+    const img=card.querySelector('.product-visual img');
+    const c=read(), found=c.find(x=>x.name===name&&x.size===size);
+    if(found) found.qty=(Number(found.qty)||1)+1;
+    else c.push({name,size,price,qty:1,image:img?.getAttribute('src')||''});
+    localStorage.setItem(KEY,JSON.stringify(c)); sync();
+    const toast=document.getElementById('cartToast');
+    if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');clearTimeout(window.__stage160Toast);window.__stage160Toast=setTimeout(()=>toast.classList.remove('show'),1800);}
+    return true;
   }
-
-  function wireNewProducts(){
-    document.querySelectorAll('#new-products .card .actions a.wa').forEach(function(btn){
-      if(btn.dataset.stage159fWired==='1') return;
-      btn.dataset.stage159fWired='1';
-
-      btn.addEventListener('click',function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        e.stopPropagation();
-
-        const card=btn.closest('#new-products .card');
-        if(!card) return;
-
-        const name=(card.querySelector('h3')?.textContent||'Product').trim();
-        const label=(btn.textContent||'').split('·').slice(1).join('·').trim();
-        const rows=Array.from(card.querySelectorAll('.prices .price-row'));
-        const row=(label && rows.find(function(r){
-          return (r.querySelector('span')?.textContent||'').trim()===label;
-        })) || rows[0];
-
-        const size=(row?.querySelector('span')?.textContent||label||'Pack').trim();
-        const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
-        const img=card.querySelector('.product-visual img');
-
-        const cart=readCart();
-        const found=cart.find(function(x){return x.name===name && x.size===size;});
-        if(found) found.qty=(Number(found.qty)||1)+1;
-        else cart.push({
-          name:name,
-          size:size,
-          price:price,
-          qty:1,
-          image:img?.currentSrc||img?.src||''
-        });
-
-        localStorage.setItem(KEY,JSON.stringify(cart));
-        syncVisibleCart();
-        window.dispatchEvent(new Event('shudh-cart-updated'));
-
-        const toast=document.getElementById('cartToast');
-        if(toast){
-          toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';
-          toast.classList.add('show');
-          clearTimeout(window.__stage159fToast);
-          window.__stage159fToast=setTimeout(function(){
-            toast.classList.remove('show');
-          },1800);
-        }
-      },true);
-    });
-  }
-
-  function syncAll(){
-    wireNewProducts();
-    syncVisibleCart();
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',syncAll);
-  }else{
-    syncAll();
-  }
-
-  window.addEventListener('storage',syncVisibleCart);
-  window.addEventListener('shudh-cart-updated',syncVisibleCart);
-  setInterval(syncAll,800);
+  document.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('#new-products .card .add-cart'); if(!btn)return;
+    e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation(); addNewProduct(btn);
+  },true);
+  sync(); setInterval(sync,500);
 })();
 </script>
+
+
+
+
+
 \n</body></html>
