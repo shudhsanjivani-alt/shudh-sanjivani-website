@@ -269,7 +269,7 @@ function applySeo(response) {
   let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
   const seo = {
     title: 'Shudh Sanjivani | Pure Spices & Natural Products',
-    description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए शुद्धता, स्वाद और भरोसा।'
+    description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए खालिस मसाले, पारंपरिक स्वाद और भरोसा।'
   };
   return new HTMLRewriter()
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
