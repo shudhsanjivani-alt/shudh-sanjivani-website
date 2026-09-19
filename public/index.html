@@ -2041,15 +2041,17 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <script>/* Stage 149 — product Add to Cart fix */(function(){function wire(){document.querySelectorAll('#products .actions a.wa').forEach(function(btn){if(btn.dataset.cartWired==='1'||!/Add to Cart/i.test(btn.textContent||''))return;btn.dataset.cartWired='1';btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const card=btn.closest('.card');if(!card)return;const name=(card.querySelector('h3')?.textContent||'Product').trim();const label=(btn.textContent||'').split('·').slice(1).join('·').trim();const rows=Array.from(card.querySelectorAll('.prices .price-row'));const row=(label&&rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label))||rows[0];const size=(row?.querySelector('span')?.textContent||label||'Pack').trim();const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;const img=card.querySelector('.product-visual img');let cart=[];try{cart=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]')}catch(_){cart=[]}const found=cart.find(x=>x.name===name&&x.size===size);if(found)found.qty=(Number(found.qty)||1)+1;else cart.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});localStorage.setItem('shudhSanjivaniCart',JSON.stringify(cart));const count=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);const ce=document.getElementById('cartCount'),mc=document.getElementById('mobileCartCount');if(ce)ce.textContent=count;if(mc)mc.textContent=count+' आइटम';const toast=document.getElementById('cartToast');if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();</script>
 
-<!-- Stage 159-D: Amba Turmeric uses real buttons; direct cart write + indicator sync. -->
+<!-- Stage 159-E: robust Amba Turmeric Add to Cart + cart indicator sync. -->
 <script>
 (function(){
   const KEY='shudhSanjivaniCart';
-  function cart(){
-    try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return [];}
+  const PRICE={ '50g':45, '100g':75, '200g':140, '500g':330 };
+  function read(){
+    try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[];}
+    catch(e){return [];}
   }
   function sync(){
-    const c=cart();
+    const c=read();
     const n=c.reduce((s,x)=>s+(Number(x.qty)||1),0);
     const total=c.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
     const a=document.getElementById('cartCount'), b=document.getElementById('mobileCartCount');
@@ -2059,18 +2061,36 @@ document.addEventListener('DOMContentLoaded',function(){
     if(t)t.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
     if(sub)sub.textContent=n?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
   }
-  function add(btn){
+  function isAmba(btn){
     const card=btn.closest('#new-products .card');
+    if(!card)return null;
+    const name=(card.querySelector('h3')?.textContent||'').trim();
+    if(!/Amba Turmeric/i.test(name))return null;
+    if(!/Add to Cart/i.test(btn.textContent||''))return null;
+    return card;
+  }
+  function add(btn){
+    const card=isAmba(btn);
     if(!card)return;
-    const size=(btn.dataset.size||'50g').trim();
-    const price=Number(btn.dataset.price||0);
-    const name='Amba Turmeric';
+    const text=(btn.textContent||'').trim();
+    let size=(text.split('·').slice(1).join('·')||'').trim();
+    if(!PRICE[size]){
+      const row=Array.from(card.querySelectorAll('.prices .price-row')).find(r=>(r.querySelector('span')?.textContent||'').trim()===size);
+      if(!size && row)size=(row.querySelector('span')?.textContent||'').trim();
+    }
+    if(!PRICE[size])size='50g';
+    const rows=Array.from(card.querySelectorAll('.prices .price-row'));
+    const row=rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===size);
+    const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||PRICE[size];
+    const name=(card.querySelector('h3')?.textContent||'Amba Turmeric').trim();
     const img=card.querySelector('.product-visual img');
-    const c=cart(), found=c.find(x=>x.name===name&&x.size===size);
+    const c=read();
+    const found=c.find(x=>x.name===name&&x.size===size);
     if(found)found.qty=(Number(found.qty)||1)+1;
     else c.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});
     localStorage.setItem(KEY,JSON.stringify(c));
     sync();
+    window.dispatchEvent(new Event('shudh-cart-updated'));
     const toast=document.getElementById('cartToast');
     if(toast){
       toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';
@@ -2078,18 +2098,18 @@ document.addEventListener('DOMContentLoaded',function(){
       clearTimeout(window.__ssAmbaToastTimer);
       window.__ssAmbaToastTimer=setTimeout(()=>toast.classList.remove('show'),1800);
     }
-    window.dispatchEvent(new Event('shudh-cart-updated'));
   }
-  function wire(){
-    document.querySelectorAll('#new-products .amba-add-cart').forEach(btn=>{
-      if(btn.dataset.cart159d==='1')return;
-      btn.dataset.cart159d='1';
-      btn.addEventListener('click',function(e){e.preventDefault();e.stopImmediatePropagation();add(btn);},true);
-      btn.addEventListener('pointerup',function(e){e.preventDefault();e.stopImmediatePropagation();add(btn);},{capture:true});
-    });
-    sync();
+  function handle(e){
+    const btn=e.target?.closest?.('#new-products .actions a, #new-products .actions button');
+    if(!btn || !isAmba(btn))return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    add(btn);
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
+  document.addEventListener('click',handle,true);
+  document.addEventListener('pointerup',handle,true);
+  document.addEventListener('touchend',handle,{capture:true,passive:false});
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync);else sync();
   setInterval(sync,300);
   window.addEventListener('storage',sync);
   window.addEventListener('shudh-cart-updated',sync);
