@@ -2041,59 +2041,106 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <script>/* Stage 149 — product Add to Cart fix */(function(){function wire(){document.querySelectorAll('#products .actions a.wa').forEach(function(btn){if(btn.dataset.cartWired==='1'||!/Add to Cart/i.test(btn.textContent||''))return;btn.dataset.cartWired='1';btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const card=btn.closest('.card');if(!card)return;const name=(card.querySelector('h3')?.textContent||'Product').trim();const label=(btn.textContent||'').split('·').slice(1).join('·').trim();const rows=Array.from(card.querySelectorAll('.prices .price-row'));const row=(label&&rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label))||rows[0];const size=(row?.querySelector('span')?.textContent||label||'Pack').trim();const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;const img=card.querySelector('.product-visual img');let cart=[];try{cart=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]')}catch(_){cart=[]}const found=cart.find(x=>x.name===name&&x.size===size);if(found)found.qty=(Number(found.qty)||1)+1;else cart.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});localStorage.setItem('shudhSanjivaniCart',JSON.stringify(cart));const count=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);const ce=document.getElementById('cartCount'),mc=document.getElementById('mobileCartCount');if(ce)ce.textContent=count;if(mc)mc.textContent=count+' आइटम';const toast=document.getElementById('cartToast');if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();</script>
 
-<!-- Stage 159-C: direct Amba Turmeric cart capture + unified indicator sync. -->
+
+<!-- Stage 159-E: isolated Amba Turmeric cart repair + real visible cart-count bridge. -->
 <script>
 (function(){
-  const CART_KEY='shudhSanjivaniCart';
-  function readCart(){try{const c=JSON.parse(localStorage.getItem(CART_KEY)||'[]');return Array.isArray(c)?c:[];}catch(e){return [];}}
-  function sync(){
-    const cart=readCart();
-    const n=cart.reduce((sum,item)=>sum+(Number(item.qty)||1),0);
-    const total=cart.reduce((sum,item)=>sum+(Number(item.price)||0)*(Number(item.qty)||1),0);
-    const top=document.getElementById('cartCount'), mobile=document.getElementById('mobileCartCount');
-    if(top)top.textContent=String(n);
-    if(mobile)mobile.textContent=n+' आइटम';
-    const title=document.getElementById('mobileCartTitle'), sub=document.getElementById('mobileCartSub');
-    if(title&&sub){
-      title.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
-      sub.textContent=n?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
-    }
+  const KEY='shudhSanjivaniCart';
+  const AMBA_PRICES={'50g':45,'100g':75,'200g':140,'500g':330};
+  function cart(){
+    try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[];}
+    catch(e){return [];}
   }
-  function isAmba(btn){
-    const card=btn?.closest?.('#new-products .card');
-    return !!card && (card.querySelector('h3')?.textContent||'').trim()==='Amba Turmeric';
+  function count(){
+    return cart().reduce(function(s,x){return s+(Number(x.qty)||1);},0);
+  }
+  function sync(){
+    const items=cart(), n=items.reduce((s,x)=>s+(Number(x.qty)||1),0);
+    const total=items.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
+    ['cartCount','mobileCartCount'].forEach(function(id){
+      const el=document.getElementById(id);
+      if(el) el.textContent=id==='mobileCartCount'?n+' आइटम':String(n);
+    });
+    document.querySelectorAll('.cart-btn span,[data-cart-count]').forEach(function(el){el.textContent=String(n);});
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function(node){
+      if(!node.nodeValue || !/कार्ट\s*\d+\s*आइटम/.test(node.nodeValue)) return;
+      node.nodeValue=node.nodeValue.replace(/कार्ट\s*\d+\s*आइटम/g,'कार्ट '+n+' आइटम');
+    });
+    document.querySelectorAll('[data-cart-total]').forEach(function(el){el.textContent='₹'+total.toLocaleString('en-IN');});
+  }
+  function ambaCard(btn){
+    const c=btn && btn.closest ? btn.closest('#new-products .card') : null;
+    return c && (c.querySelector('h3')?.textContent||'').trim()==='Amba Turmeric' ? c : null;
+  }
+  function ensure(){
+    document.querySelectorAll('#new-products .card').forEach(function(c){
+      if((c.querySelector('h3')?.textContent||'').trim()!=='Amba Turmeric') return;
+      const box=c.querySelector('.actions');
+      if(!box) return;
+      const sizes=Object.keys(AMBA_PRICES);
+      let buttons=[...box.querySelectorAll('a.wa')];
+      if(buttons.length!==sizes.length){
+        box.innerHTML='';
+        buttons=[];
+        sizes.forEach(function(size){
+          const a=document.createElement('a');
+          a.className='wa';
+          box.appendChild(a);
+          buttons.push(a);
+        });
+      }
+      buttons.forEach(function(b,i){
+        const size=sizes[i];
+        b.textContent='पैक चुनें / Add to Cart · '+size;
+        b.setAttribute('href','#');
+        b.setAttribute('role','button');
+        b.dataset.ssAmbaSize=size;
+      });
+    });
   }
   function add(btn){
-    const card=btn.closest('#new-products .card');
-    const name='Amba Turmeric';
-    const size=((btn.textContent||'').split('·')[1]||'50g').trim();
-    const row=[...card.querySelectorAll('.prices .price-row')].find(r=>(r.querySelector('span')?.textContent||'').trim()===size);
-    const price=Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
-    const img=card.querySelector('.product-visual img');
-    const cart=readCart();
-    const found=cart.find(x=>x.name===name&&x.size===size);
-    if(found)found.qty=(Number(found.qty)||1)+1;
-    else cart.push({name,size,price,qty:1,image:img?.currentSrc||img?.src||''});
-    localStorage.setItem(CART_KEY,JSON.stringify(cart));
+    const c=ambaCard(btn); if(!c) return;
+    const size=btn.dataset.ssAmbaSize || '50g';
+    const img=c.querySelector('.product-visual img');
+    const list=cart();
+    const found=list.find(function(x){return x.name==='Amba Turmeric'&&x.size===size;});
+    if(found) found.qty=(Number(found.qty)||1)+1;
+    else list.push({name:'Amba Turmeric',size:size,price:AMBA_PRICES[size]||0,qty:1,image:img?.currentSrc||img?.src||''});
+    localStorage.setItem(KEY,JSON.stringify(list));
     sync();
-    const toast=document.getElementById('cartToast');
-    if(toast){toast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';toast.classList.add('show');clearTimeout(window.__ssAmbaToastTimer);window.__ssAmbaToastTimer=setTimeout(()=>toast.classList.remove('show'),1800);}
     window.dispatchEvent(new Event('shudh-cart-updated'));
+    const toast=document.getElementById('cartToast');
+    if(toast){
+      toast.textContent='Amba Turmeric · '+size+' कार्ट में जोड़ दिया गया ✓';
+      toast.classList.add('show');
+      clearTimeout(window.__ssAmbaToast);
+      window.__ssAmbaToast=setTimeout(function(){toast.classList.remove('show');},1800);
+    }
   }
-  document.addEventListener('click',function(e){
+  function handle(e){
     const btn=e.target?.closest?.('#new-products .card .actions a.wa');
-    if(!isAmba(btn))return;
+    if(!btn || !ambaCard(btn)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    e.stopPropagation();
+    const now=Date.now();
+    if(window.__ssAmbaLastAdd && now-window.__ssAmbaLastAdd<500) return;
+    window.__ssAmbaLastAdd=now;
     add(btn);
+  }
+  document.addEventListener('pointerdown',handle,true);
+  document.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('#new-products .card .actions a.wa');
+    if(!btn || !ambaCard(btn)) return;
+    e.preventDefault(); e.stopImmediatePropagation(); e.stopPropagation();
   },true);
-  sync();
-  setInterval(sync,300);
+  ensure(); sync();
+  setInterval(function(){ensure();sync();},500);
   window.addEventListener('storage',sync);
   window.addEventListener('shudh-cart-updated',sync);
 })();
 </script>
-
-<!-- Stage 159-D: final Amba Turmeric 50g visibility + cart indicator bridge. -->
-<script>(function(){const K='shudhSanjivaniCart';function c(){try{const x=JSON.parse(localStorage.getItem(K)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}function s(){const x=c(),n=x.reduce((a,i)=>a+(Number(i.qty)||1),0),t=x.reduce((a,i)=>a+(Number(i.price)||0)*(Number(i.qty)||1),0),a=document.getElementById('cartCount'),b=document.getElementById('mobileCartCount'),h=document.getElementById('mobileCartTitle'),u=document.getElementById('mobileCartSub');if(a)a.textContent=n;if(b)b.textContent=n+' आइटम';if(h)h.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';if(u)u.textContent=n?'कुल ₹'+t.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें'}function isA(b){const q=b&&b.closest&&b.closest('#new-products .card');return q&&(q.querySelector('h3')?.textContent||'').trim()==='Amba Turmeric'}function add(b){const q=b.closest('#new-products .card'),z=((b.textContent||'').split('·').pop()||'50g').trim(),r=[...q.querySelectorAll('.prices .price-row')].find(v=>(v.querySelector('span')?.textContent||'').trim()===z),p=Number((r?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0,m=q.querySelector('.product-visual img'),x=c(),o=x.find(v=>v.name==='Amba Turmeric'&&v.size===z);if(o)o.qty=(Number(o.qty)||1)+1;else x.push({name:'Amba Turmeric',size:z,price:p,qty:1,image:m?.currentSrc||m?.src||''});localStorage.setItem(K,JSON.stringify(x));s();window.dispatchEvent(new Event('shudh-cart-updated'));const w=document.getElementById('cartToast');if(w){w.textContent='Amba Turmeric · '+z+' कार्ट में जोड़ दिया गया ✓';w.classList.add('show');setTimeout(()=>w.classList.remove('show'),1800)}}function w(){document.querySelectorAll('#new-products .card').forEach(q=>{if((q.querySelector('h3')?.textContent||'').trim()!=='Amba Turmeric')return;q.querySelectorAll('.actions a.wa').forEach((b,i)=>{if(i===0)b.textContent='पैक चुनें / Add to Cart · 50g';b.setAttribute('href','#');b.setAttribute('role','button')})})}document.addEventListener('pointerup',e=>{const b=e.target?.closest?.('#new-products .card .actions a.wa');if(!isA(b))return;e.preventDefault();e.stopImmediatePropagation();add(b)},true);document.addEventListener('click',e=>{const b=e.target?.closest?.('#new-products .card .actions a.wa');if(!isA(b))return;e.preventDefault();e.stopImmediatePropagation()},true);w();s();setInterval(()=>{w();s()},500);window.addEventListener('storage',s);window.addEventListener('shudh-cart-updated',s)})()</script>
-</body></html>
+\n</body></html>
