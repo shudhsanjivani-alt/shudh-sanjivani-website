@@ -1213,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function makeOrderId(){const now=new Date(),dd=String(now.getDate()).padStart(2,'0'),mm=String(now.getMonth()+1).padStart(2,'0'),yy=String(now.getFullYear()).slice(-2),key=yy+mm+dd;let d={date:key,seq:0};try{d=JSON.parse(localStorage.getItem(ORDER_SEQ_KEY)||'null')||d}catch(e){}if(d.date!==key)d={date:key,seq:0};d.seq=Number(d.seq||0)+1;localStorage.setItem(ORDER_SEQ_KEY,JSON.stringify(d));return 'SS-'+dd+mm+yy+'-'+String(d.seq).padStart(3,'0');}
   function getPendingOrderId(){let id=localStorage.getItem(PENDING_ORDER_KEY);if(!id){id=makeOrderId();localStorage.setItem(PENDING_ORDER_KEY,id);}return id;}
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
-  function save(){localStorage.setItem(CART_KEY,JSON.stringify(cart)); renderCart();}
+  function save(){localStorage.setItem(CART_KEY,JSON.stringify(cart)); renderCart(); window.dispatchEvent(new CustomEvent('shudh-cart-updated'));}
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
   function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
@@ -1473,39 +1473,74 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   document.querySelectorAll('#products .card').forEach(function(card){
     const section=card.closest('section');
     const heading=section?.querySelector('h2')?.textContent.trim()||'Product';
-    const badge=document.createElement('span'); badge.className='product-badge'; badge.textContent=heading==='Ground Spices'?'GROUND SPICE':heading==='Whole Spices'?'WHOLE SPICE':heading==='Masala Blends'?'MASALA BLEND':heading.includes('New Products')?'NEW PRODUCT':'TRADITIONAL';
+    const badge=document.createElement('span');
+    badge.className='product-badge';
+    badge.textContent=heading==='Ground Spices'?'GROUND SPICE':heading==='Whole Spices'?'WHOLE SPICE':heading==='Masala Blends'?'MASALA BLEND':heading.includes('New Products')?'NEW PRODUCT':'TRADITIONAL';
     card.appendChild(badge);
+
     const productNameForTrust=card.querySelector('h3')?.textContent.trim()||'Product';
     const bestSellers=['Turmeric Powder','Red Chilli Powder','Cumin Powder','Garam Masala Powder'];
     if(bestSellers.includes(productNameForTrust)){badge.classList.add('best-seller');badge.textContent='⭐ POPULAR';}
-    const trustMini=document.createElement('div'); trustMini.className='trust-mini'; trustMini.innerHTML='<span>🌿 शुद्ध • प्राकृतिक</span><strong>✓ भरोसेमंद चयन</strong>';
+
+    const trustMini=document.createElement('div');
+    trustMini.className='trust-mini';
+    trustMini.innerHTML='<span>🌿 शुद्ध • प्राकृतिक</span><strong>✓ भरोसेमंद चयन</strong>';
     card.appendChild(trustMini);
-    const quickBtn=document.createElement('button'); quickBtn.className='quick-view-btn'; quickBtn.type='button'; quickBtn.textContent='👁️ पूरा विवरण देखें'; quickBtn.addEventListener('click',()=>openQuickView(card));
+
+    const quickBtn=document.createElement('button');
+    quickBtn.className='quick-view-btn';
+    quickBtn.type='button';
+    quickBtn.textContent='👁️ पूरा विवरण देखें';
+    quickBtn.addEventListener('click',()=>openQuickView(card));
     card.appendChild(quickBtn);
+
     const rows=Array.from(card.querySelectorAll('.prices .price-row'));
     if(!rows.length)return;
-    const box=document.createElement('div'); box.className='order-box';
-    const label=document.createElement('label'); label.className='order-label'; label.textContent='पैक चुनें / Choose pack';
-    const sizeButtons=document.createElement('div'); sizeButtons.className='size-buttons'; sizeButtons.setAttribute('role','group'); sizeButtons.setAttribute('aria-label','पैक चुनें');
-    let selectedSizeIndex=0;
-    const price=document.createElement('span'); price.className='selected-price';
-    const controls=document.createElement('div'); controls.className='order-controls';
-    const addBtn=document.createElement('button'); addBtn.className='add-cart'; addBtn.type='button'; addBtn.textContent='🛒 Add to Cart';
-    const buyNow=document.createElement('button'); buyNow.className='buy-now'; buyNow.type='button'; buyNow.textContent='⚡ अभी खरीदें';
-    const note=document.createElement('p'); note.className='order-note'; note.textContent='अभी खरीदें से चुना हुआ पैक सीधे ऑर्डर रिव्यू में जाएगा.'; const packHint=document.createElement('span'); packHint.className='pack-hint'; packHint.textContent='नीचे से पैक चुनें';
-    const packOptions=[];
-    rows.forEach(function(row,i){const size=row.querySelector('span')?.textContent.trim()||'';const raw=row.querySelector('strong')?.textContent.trim()||'';const amount=Number(raw.replace(/[^0-9.]/g,''))||0;packOptions.push({size,price:amount});const b=document.createElement('button');b.type='button';b.className='size-choice';b.textContent=size;b.setAttribute('aria-label',size);b.onclick=()=>{selectedSizeIndex=i;updateOrder();};sizeButtons.appendChild(b);});
-    function updateOrder(){const opt=packOptions[selectedSizeIndex]||packOptions[0];price.textContent=money(opt?.price||0);addBtn.textContent='🛒 Add to Cart · '+(opt?.size||'');buyNow.textContent='⚡ अभी खरीदें · '+(opt?.size||'');Array.from(sizeButtons.children).forEach((b,i)=>{b.classList.toggle('selected',i===selectedSizeIndex);b.setAttribute('aria-pressed',i===selectedSizeIndex?'true':'false');});rows.forEach((row,i)=>row.classList.toggle('selected',i===selectedSizeIndex));}
-    addBtn.onclick=()=>{const opt=packOptions[selectedSizeIndex];if(!opt)return;const img=card.querySelector('img')?.getAttribute('src')||'';add(card.querySelector('h3')?.textContent.trim()||'Product',opt.size,opt.price,img);};
-    buyNow.onclick=()=>{const opt=packOptions[selectedSizeIndex];if(!opt)return;const img=card.querySelector('img')?.getAttribute('src')||'';add(card.querySelector('h3')?.textContent.trim()||'Product',opt.size,opt.price,img);setTimeout(()=>{checkout.click();},60);};
-    controls.appendChild(sizeButtons);controls.appendChild(price);box.appendChild(label);box.appendChild(packHint);box.appendChild(controls);box.appendChild(addBtn);box.appendChild(buyNow);box.appendChild(note);
-    card.querySelector('.actions').replaceWith(box);
-    const favoriteBtn=document.createElement('button'); favoriteBtn.className='favorite-btn'; favoriteBtn.type='button'; favoriteBtn.textContent='♡'; favoriteBtn.setAttribute('aria-label','पसंदीदा में जोड़ें'); favoriteBtn.setAttribute('aria-pressed','false'); favoriteBtn.addEventListener('click',()=>toggleFavorite(card)); card.style.position='relative'; card.appendChild(favoriteBtn);
+
+    const actions=document.createElement('div');
+    actions.className='actions';
+
+    rows.forEach(function(row){
+      const size=(row.querySelector('span')?.textContent||'').trim();
+      const raw=(row.querySelector('strong')?.textContent||'').trim();
+      const price=Number(raw.replace(/[^0-9.]/g,''))||0;
+      if(!size || !price)return;
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='wa cart-pack-btn';
+      btn.textContent='पैक चुनें / Add to Cart · '+size;
+      btn.addEventListener('click',function(){
+        const img=card.querySelector('.product-visual img')?.getAttribute('src')||'';
+        add(card.querySelector('h3')?.textContent.trim()||'Product',size,price,img);
+        const old=btn.textContent;
+        btn.textContent='✓ कार्ट में जोड़ दिया · '+size;
+        setTimeout(()=>{btn.textContent=old;},900);
+      });
+      actions.appendChild(btn);
+    });
+
+    const oldActions=card.querySelector('.actions');
+    if(oldActions)oldActions.replaceWith(actions);
+    else card.appendChild(actions);
+
+    const favoriteBtn=document.createElement('button');
+    favoriteBtn.className='favorite-btn';
+    favoriteBtn.type='button';
+    favoriteBtn.textContent='♡';
+    favoriteBtn.setAttribute('aria-label','पसंदीदा में जोड़ें');
+    favoriteBtn.setAttribute('aria-pressed','false');
+    favoriteBtn.addEventListener('click',()=>toggleFavorite(card));
+    card.style.position='relative';
+    card.appendChild(favoriteBtn);
+
     const productName=card.querySelector('h3')?.textContent.trim()||'Product';
-    const reviewBox=document.createElement('div'); reviewBox.className='review-widget'; reviewBox.innerHTML='<div class="review-summary"><span class="review-stars">☆☆☆☆☆</span><span class="review-count">अभी कोई रेटिंग नहीं</span></div><button class="review-write" type="button">⭐ अपनी रेटिंग दें</button>';
+    const reviewBox=document.createElement('div');
+    reviewBox.className='review-widget';
+    reviewBox.innerHTML='<div class="review-summary"><span class="review-stars">☆☆☆☆☆</span><span class="review-count">अभी कोई रेटिंग नहीं</span></div><button class="review-write" type="button">⭐ अपनी रेटिंग दें</button>';
     reviewBox.querySelector('.review-write').addEventListener('click',()=>openReview(productName,card));
-    box.parentNode.appendChild(reviewBox); updateReviewWidget(card,productName);
-    select.addEventListener('change',updateOrder); updateOrder();
+    actions.parentNode.appendChild(reviewBox);
+    updateReviewWidget(card,productName);
   });
   loadServerReviews();
   // Stage 13 product search
@@ -1766,7 +1801,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   document.getElementById("mobileCartOpen")?.addEventListener("click",()=>cartBtn?.click());
   document.getElementById("mobileFavoritesOpen")?.addEventListener("click",()=>favBtn?.click());
   document.getElementById("mobileSearchFocus")?.addEventListener("click",()=>{search?.scrollIntoView({behavior:"smooth",block:"center"});setTimeout(()=>search?.focus(),350);});
-  syncMobile(); setInterval(syncMobile,800);
+  window.addEventListener('shudh-cart-updated',syncMobile); syncMobile(); setInterval(syncMobile,800);
 })();
 </script>
 <div aria-live="polite" class="mobile-cart-bar" id="mobileCartBar"><div class="mobile-cart-info"><strong id="mobileCartTitle">कार्ट खाली है</strong><small id="mobileCartSub">अपने पसंदीदा मसाले कार्ट में जोड़ें</small></div><button class="mobile-cart-open" id="mobileCartBarOpen" type="button">कार्ट देखें</button></div>
@@ -1786,7 +1821,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
     const btn=document.getElementById('cartOpen');
     if(btn)btn.click(); else window.location.hash='#products';
   });
-  sync(); setInterval(sync,800);
+  window.addEventListener('shudh-cart-updated',sync); sync(); setInterval(sync,800);
 })();
 </script>
 <script id="stage55-delivery-progress-js">
@@ -2040,14 +2075,4 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <!-- Stage 129: 13 user-supplied direct ImgBB image URLs applied with local fallbacks. Live deployment not performed. -->
-<!-- Stage 160-D: unified cart bridge. -->
-<script>
-(function(){
-  function data(card,btn){const sel=card.querySelector('.new-size-select');if(sel){const o=sel.options[sel.selectedIndex];return{size:sel.value,price:Number(o?.dataset.price||0)};}const label=(btn.textContent||'').split('·').slice(1).join('·').trim(),rows=[...card.querySelectorAll('.prices .price-row')],row=(label&&rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label))||rows[0];return{size:(row?.querySelector('span')?.textContent||label||'Pack').trim(),price:Number((row?.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0};}
-  function price(card){const s=card.querySelector('.new-size-select'),p=card.querySelector('.selected-price');if(s&&p){const o=s.options[s.selectedIndex];p.textContent='₹'+Number(o?.dataset.price||0).toLocaleString('en-IN');}}
-  document.querySelectorAll('#new-products .new-size-select').forEach(s=>{s.addEventListener('change',()=>price(s.closest('.card')));price(s.closest('.card'));});
-  let last=0;
-  document.addEventListener('click',function(e){const el=e.target?.closest?.('#products .card .actions a.wa,#new-products .card .new-add-cart');if(!el||typeof window.__shudhAddToCart!=='function')return;const now=Date.now();if(now-last<500){e.preventDefault();e.stopImmediatePropagation();return;}last=now;const card=el.closest('.card');if(!card)return;e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();const d=data(card,el);if(!d.price)return;window.__shudhAddToCart((card.querySelector('h3')?.textContent||'Product').trim(),d.size,d.price,card.querySelector('.product-visual img')?.getAttribute('src')||'');},true);
-})();
-</script>
 </body></html>
