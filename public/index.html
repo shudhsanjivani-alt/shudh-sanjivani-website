@@ -2040,40 +2040,30 @@ document.addEventListener('DOMContentLoaded',function(){
 </script>
 
 <!-- Stage 129: 13 user-supplied direct ImgBB image URLs applied with local fallbacks. Live deployment not performed. -->
-<!-- Stage 160-B: make new-product Add to Cart controls real buttons and use the existing core cart add() function. -->
+<!-- Stage 161-A: one capture-level handler for new-product Add to Cart; uses the existing core cart function and never opens the cart. -->
 <script>
 (function(){
-  function wire(){
-    document.querySelectorAll('#new-products .card .actions a.wa').forEach(function(link){
-      if(!/Add to Cart/i.test(link.textContent||'') || link.dataset.stage160b==='1') return;
-      const btn=document.createElement('button');
-      btn.type='button';
-      btn.className=link.className;
-      btn.textContent=link.textContent;
-      btn.dataset.stage160b='1';
-      btn.style.cursor='pointer';
-      const card=link.closest('.card');
-      btn.addEventListener('click',function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        const label=(btn.textContent||'').split('·').slice(1).join('·').trim();
-        const rows=Array.from(card.querySelectorAll('.prices .price-row'));
-        const row=rows.find(function(r){return (r.querySelector('span')?.textContent||'').trim()===label;})||rows[0];
-        if(!row) return;
-        const size=(row.querySelector('span')?.textContent||label||'Pack').trim();
-        const price=Number((row.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
-        const name=(card.querySelector('h3')?.textContent||'Product').trim();
-        const img=card.querySelector('.product-visual img')?.getAttribute('src')||'';
-        if(typeof window.__shudhAddToCart==='function'){
-          window.__shudhAddToCart(name,size,price,img);
-        }
-      });
-      link.replaceWith(btn);
-    });
+  function handle(e){
+    const el=e.target?.closest?.('#new-products .card .actions a.wa, #new-products .card .actions button.wa, #new-products .card .actions .add-cart');
+    if(!el || !/Add to Cart/i.test(el.textContent||'')) return;
+    if(typeof window.__shudhAddToCart!=='function') return;
+    const card=el.closest('#new-products .card'); if(!card) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+    const label=(el.textContent||'').split('·').slice(1).join('·').trim();
+    const rows=[...card.querySelectorAll('.prices .price-row')];
+    const row=rows.find(r=>(r.querySelector('span')?.textContent||'').trim()===label)||rows[0];
+    if(!row) return;
+    const size=(row.querySelector('span')?.textContent||label||'Pack').trim();
+    const price=Number((row.querySelector('strong')?.textContent||'').replace(/[^0-9.]/g,''))||0;
+    const name=(card.querySelector('h3')?.textContent||'Product').trim();
+    const img=card.querySelector('.product-visual img')?.getAttribute('src')||'';
+    window.__shudhAddToCart(name,size,price,img);
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire);
-  else wire();
-  new MutationObserver(wire).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('click',handle,true);
+  document.addEventListener('pointerup',handle,true);
+  document.addEventListener('touchend',handle,{capture:true,passive:false});
 })();
 </script>
 </body></html>
