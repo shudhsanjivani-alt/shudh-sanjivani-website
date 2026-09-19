@@ -1213,7 +1213,25 @@ document.addEventListener('DOMContentLoaded', function () {
   function makeOrderId(){const now=new Date(),dd=String(now.getDate()).padStart(2,'0'),mm=String(now.getMonth()+1).padStart(2,'0'),yy=String(now.getFullYear()).slice(-2),key=yy+mm+dd;let d={date:key,seq:0};try{d=JSON.parse(localStorage.getItem(ORDER_SEQ_KEY)||'null')||d}catch(e){}if(d.date!==key)d={date:key,seq:0};d.seq=Number(d.seq||0)+1;localStorage.setItem(ORDER_SEQ_KEY,JSON.stringify(d));return 'SS-'+dd+mm+yy+'-'+String(d.seq).padStart(3,'0');}
   function getPendingOrderId(){let id=localStorage.getItem(PENDING_ORDER_KEY);if(!id){id=makeOrderId();localStorage.setItem(PENDING_ORDER_KEY,id);}return id;}
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
-  function save(){localStorage.setItem(CART_KEY,JSON.stringify(cart)); renderCart(); window.dispatchEvent(new CustomEvent('shudh-cart-updated'));}
+  function save(){
+    localStorage.setItem(CART_KEY,JSON.stringify(cart));
+    renderCart();
+    window.dispatchEvent(new CustomEvent('shudh-cart-updated'));
+    try{
+      const n=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);
+      const totalNow=cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
+      const header=document.getElementById('cartCount');
+      const mobile=document.getElementById('mobileCartCount');
+      const title=document.getElementById('mobileCartTitle');
+      const sub=document.getElementById('mobileCartSub');
+      const open=document.getElementById('mobileCartBarOpen');
+      if(header) header.textContent=String(n);
+      if(mobile) mobile.textContent=n+' आइटम';
+      if(title) title.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
+      if(sub) sub.textContent=n?'कुल ₹'+totalNow.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
+      if(open) open.textContent=n?'कार्ट खोलें':'उत्पाद देखें';
+    }catch(e){}
+  }
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
   function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
