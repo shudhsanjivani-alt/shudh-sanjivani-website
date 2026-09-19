@@ -1213,6 +1213,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
   function save(){
     localStorage.setItem(CART_KEY,JSON.stringify(cart));
+    window.__shudhCartSnapshot=()=>cart;
     renderCart();
     window.dispatchEvent(new CustomEvent('shudh-cart-updated'));
     try{
@@ -1811,7 +1812,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   const mc=document.getElementById("mobileCartCount");
   const fc=document.getElementById("mobileFavoritesCount");
   function syncMobile(){
-    try{const c=JSON.parse(localStorage.getItem("shudhSanjivaniCart")||"[]"); const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0); if(mc) mc.textContent=n+" आइटम";}catch(e){}
+    try{const c=typeof window.__shudhCartSnapshot==="function"?window.__shudhCartSnapshot():JSON.parse(localStorage.getItem("shudhSanjivaniCart")||"[]"); const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0); if(mc) mc.textContent=n+" आइटम";}catch(e){}
     try{const f=JSON.parse(localStorage.getItem("shudhSanjivaniFavorites")||"[]"); if(fc) fc.textContent=f.length+" सेव";}catch(e){}
   }
   document.getElementById("mobileCartOpen")?.addEventListener("click",()=>cartBtn?.click());
@@ -1827,7 +1828,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   if(!bar||!title||!sub||!open)return;
   function sync(){
     try{
-      const c=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]');
+      const c=typeof window.__shudhCartSnapshot==="function"?window.__shudhCartSnapshot():JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]');
       const items=c.reduce((a,x)=>a+(Number(x.qty)||1),0), total=c.reduce((a,x)=>a+(Number(x.price)||0)*(Number(x.qty)||1),0);
       if(items>0){title.textContent='कार्ट में '+items+' आइटम';sub.textContent='कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें';open.textContent='कार्ट खोलें';}
       else{title.textContent='कार्ट खाली है';sub.textContent='अपने पसंदीदा मसाले कार्ट में जोड़ें';open.textContent='उत्पाद देखें';}
