@@ -2167,4 +2167,23 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('click',handle,true);
 })();
 </script>
+
+<!-- Stage 162: final mobile cart-count sync after language/UI scripts. -->
+<script>
+(function(){
+  function syncFinalCartCount(){
+    try{
+      const raw=localStorage.getItem('shudhSanjivaniCart')||'[]';
+      const cart=JSON.parse(raw);
+      const count=Array.isArray(cart)?cart.reduce((sum,item)=>sum+(Number(item.qty)||1),0):0;
+      document.querySelectorAll('#mobileCartCount').forEach(function(el){el.textContent=count+' आइटम';});
+    }catch(e){}
+  }
+  syncFinalCartCount();
+  window.addEventListener('shudh-cart-updated',syncFinalCartCount);
+  setTimeout(syncFinalCartCount,200);
+  setTimeout(syncFinalCartCount,500);
+  setInterval(syncFinalCartCount,1000);
+})();
+</script>
 </body></html>
