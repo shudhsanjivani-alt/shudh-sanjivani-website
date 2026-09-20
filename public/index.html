@@ -1219,12 +1219,12 @@ document.addEventListener('DOMContentLoaded', function () {
       const n=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);
       const totalNow=cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
       const header=document.getElementById('cartCount');
-      const mobile=document.getElementById('mobileCartCount');
+      const mobiles=document.querySelectorAll('#mobileCartCount');
       const title=document.getElementById('mobileCartTitle');
       const sub=document.getElementById('mobileCartSub');
       const open=document.getElementById('mobileCartBarOpen');
       if(header) header.textContent=String(n);
-      if(mobile) mobile.textContent=n+' आइटम';
+      mobiles.forEach(function(el){el.textContent=n+' आइटम';});
       if(title) title.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
       if(sub) sub.textContent=n?'कुल ₹'+totalNow.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
       if(open) open.textContent=n?'कार्ट खोलें':'उत्पाद देखें';
@@ -1808,10 +1808,10 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   const cartBtn=document.getElementById("cartOpen");
   const favBtn=document.getElementById("favoritesOpen");
   const search=document.querySelector(".product-search");
-  const mc=document.getElementById("mobileCartCount");
+  const mcs=document.querySelectorAll("#mobileCartCount");
   const fc=document.getElementById("mobileFavoritesCount");
   function syncMobile(){
-    try{const c=JSON.parse(localStorage.getItem("shudhSanjivaniCart")||"[]"); const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0); if(mc) mc.textContent=n+" आइटम";}catch(e){}
+    try{const c=JSON.parse(localStorage.getItem("shudhSanjivaniCart")||"[]"); const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0); mcs.forEach(function(el){el.textContent=n+" आइटम";});}catch(e){}
     try{const f=JSON.parse(localStorage.getItem("shudhSanjivaniFavorites")||"[]"); if(fc) fc.textContent=f.length+" सेव";}catch(e){}
   }
   document.getElementById("mobileCartOpen")?.addEventListener("click",()=>cartBtn?.click());
