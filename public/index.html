@@ -1125,6 +1125,7 @@ Lehragaga – 148031, Punjab, India<br/>
 document.addEventListener('DOMContentLoaded', function () {
   const CART_KEY='shudhSanjivaniCart', ORDER_SEQ_KEY='shudhSanjivaniOrderSeq', PENDING_ORDER_KEY='shudhSanjivaniPendingOrderId', ORDER_HISTORY_KEY='shudhSanjivaniOrderHistory', FINALIZED_CONFIRM_KEY='shudhSanjivaniFinalizedConfirmation';
   let cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+  window.__shudhCartState=cart;
   const cartToast=document.getElementById('cartToast');
   let toastTimer;
   const cartWhatsapp=document.getElementById('cartWhatsapp'), countEl=document.getElementById('cartCount'), subtotalEl=document.getElementById('cartSubtotal'), deliveryEl=document.getElementById('deliveryCharge'), deliveryNoteEl=document.getElementById('deliveryNote'), overlay=document.getElementById('cartOverlay'), itemsEl=document.getElementById('cartItems'), totalEl=document.getElementById('cartTotal'), checkout=document.getElementById('checkoutWa');
@@ -1213,18 +1214,19 @@ document.addEventListener('DOMContentLoaded', function () {
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
   function save(){
     localStorage.setItem(CART_KEY,JSON.stringify(cart));
+    window.__shudhCartState=cart;
     renderCart();
     window.dispatchEvent(new CustomEvent('shudh-cart-updated'));
     try{
       const n=cart.reduce((s,x)=>s+(Number(x.qty)||1),0);
       const totalNow=cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
       const header=document.getElementById('cartCount');
-      const mobile=document.getElementById('mobileCartCount');
+      const mobiles=document.querySelectorAll('#mobileCartCount');
       const title=document.getElementById('mobileCartTitle');
       const sub=document.getElementById('mobileCartSub');
       const open=document.getElementById('mobileCartBarOpen');
       if(header) header.textContent=String(n);
-      if(mobile) mobile.textContent=n+' आइटम';
+      mobiles.forEach(function(el){el.textContent=n+' आइटम';});
       if(title) title.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
       if(sub) sub.textContent=n?'कुल ₹'+totalNow.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
       if(open) open.textContent=n?'कार्ट खोलें':'उत्पाद देखें';
@@ -1799,7 +1801,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
 })();
 </script>
 <div aria-label="मोबाइल शॉपिंग मेनू" class="mobile-shopbar">
-<button id="mobileCartOpen" type="button">🛒 कार्ट <span id="mobileCartCount">0 आइटम</span></button>
+<button id="mobileCartOpen" type="button">🛒 कार्ट खोलें</button>
 <button id="mobileFavoritesOpen" type="button">❤️ पसंदीदा <span id="mobileFavoritesCount">0 सेव</span></button>
 <button id="mobileSearchFocus" type="button">🔍 खोजें <span>उत्पाद खोजें</span></button>
 </div>
@@ -1808,10 +1810,10 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   const cartBtn=document.getElementById("cartOpen");
   const favBtn=document.getElementById("favoritesOpen");
   const search=document.querySelector(".product-search");
-  const mc=document.getElementById("mobileCartCount");
+  const mcs=document.querySelectorAll("#mobileCartCount");
   const fc=document.getElementById("mobileFavoritesCount");
   function syncMobile(){
-    try{const c=JSON.parse(localStorage.getItem("shudhSanjivaniCart")||"[]"); const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0); if(mc) mc.textContent=n+" आइटम";}catch(e){}
+    try{const c=Array.isArray(window.__shudhCartState)?window.__shudhCartState:JSON.parse(localStorage.getItem("shudhSanjivaniCart")||"[]"); const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0); mcs.forEach(function(el){el.textContent=n+" आइटम";});}catch(e){}
     try{const f=JSON.parse(localStorage.getItem("shudhSanjivaniFavorites")||"[]"); if(fc) fc.textContent=f.length+" सेव";}catch(e){}
   }
   document.getElementById("mobileCartOpen")?.addEventListener("click",()=>cartBtn?.click());
@@ -1827,7 +1829,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
   if(!bar||!title||!sub||!open)return;
   function sync(){
     try{
-      const c=JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]');
+      const c=Array.isArray(window.__shudhCartState)?window.__shudhCartState:JSON.parse(localStorage.getItem('shudhSanjivaniCart')||'[]');
       const items=c.reduce((a,x)=>a+(Number(x.qty)||1),0), total=c.reduce((a,x)=>a+(Number(x.price)||0)*(Number(x.qty)||1),0);
       if(items>0){title.textContent='कार्ट में '+items+' आइटम';sub.textContent='कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें';open.textContent='कार्ट खोलें';}
       else{title.textContent='कार्ट खाली है';sub.textContent='अपने पसंदीदा मसाले कार्ट में जोड़ें';open.textContent='उत्पाद देखें';}
@@ -2163,6 +2165,25 @@ document.addEventListener('DOMContentLoaded',function(){
     window.__shudhAddToCart(name,size,price,img);
   }
   document.addEventListener('click',handle,true);
+})();
+</script>
+
+<!-- Stage 162: final mobile cart-count sync after language/UI scripts. -->
+<script>
+(function(){
+  function syncFinalCartCount(){
+    try{
+      const raw=localStorage.getItem('shudhSanjivaniCart')||'[]';
+      const cart=JSON.parse(raw);
+      const count=Array.isArray(cart)?cart.reduce((sum,item)=>sum+(Number(item.qty)||1),0):0;
+      document.querySelectorAll('#mobileCartCount').forEach(function(el){el.textContent=count+' आइटम';});
+    }catch(e){}
+  }
+  syncFinalCartCount();
+  window.addEventListener('shudh-cart-updated',syncFinalCartCount);
+  setTimeout(syncFinalCartCount,200);
+  setTimeout(syncFinalCartCount,500);
+  setInterval(syncFinalCartCount,1000);
 })();
 </script>
 </body></html>
