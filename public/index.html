@@ -1878,7 +1878,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
  };
  const reverse={}; Object.keys(T).forEach(k=>{reverse[T[k]]=k});
  const original=new Map();
- function apply(lang){document.querySelectorAll('h1,h2,h3,h4,p,span,button,label,a,option').forEach(el=>{if(el.closest('.language-switcher'))return;let k=original.get(el);if(k===undefined){k=el.textContent.trim();original.set(el,k)}let out=k;if(lang==='en' && T[k]!==undefined)out=T[k]; else if(lang==='hi' && reverse[k]!==undefined)out=reverse[k]; el.textContent=out});document.documentElement.lang=lang==='en'?'en':'hi';localStorage.setItem('shudhLanguage',lang)}
+ function apply(lang){document.querySelectorAll('h1,h2,h3,h4,p,span,button,label,a,option').forEach(el=>{if(el.closest('.language-switcher')||el.id==='cartOpen')return;let k=original.get(el);if(k===undefined){k=el.textContent.trim();original.set(el,k)}let out=k;if(lang==='en' && T[k]!==undefined)out=T[k]; else if(lang==='hi' && reverse[k]!==undefined)out=reverse[k]; el.textContent=out});document.documentElement.lang=lang==='en'?'en':'hi';localStorage.setItem('shudhLanguage',lang)}
  const saved=localStorage.getItem('shudhLanguage')||'hi'; select.value=saved; select.addEventListener('change',()=>{apply(select.value); setTimeout(()=>{try{if(typeof renderFavorites==='function')renderFavorites();}catch(e){}},20)}); setTimeout(()=>apply(saved),150);
 })();
 </script>
