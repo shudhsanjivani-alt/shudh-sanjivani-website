@@ -2209,28 +2209,3 @@ document.addEventListener('DOMContentLoaded',function(){
 })();
 </script>
 </body></html>
-
-<!-- Stage 160-B: mobile cart bar authoritative localStorage sync fix. -->
-<script>
-(function(){
-  function syncMobileCartBar(){
-    try{
-      const raw=localStorage.getItem('shudhSanjivaniCart');
-      const items=raw?JSON.parse(raw):[];
-      const n=Array.isArray(items)?items.reduce((s,x)=>s+(Number(x.qty)||1),0):0;
-      const total=Array.isArray(items)?items.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0):0;
-      const mc=document.getElementById('mobileCartCount');
-      const title=document.getElementById('mobileCartTitle');
-      const sub=document.getElementById('mobileCartSub');
-      const open=document.getElementById('mobileCartBarOpen');
-      if(mc) mc.textContent=n+' आइटम';
-      if(title) title.textContent=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';
-      if(sub) sub.textContent=n?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';
-      if(open) open.textContent=n?'कार्ट खोलें':'उत्पाद देखें';
-    }catch(e){}
-  }
-  window.addEventListener('shudh-cart-updated',syncMobileCartBar);
-  syncMobileCartBar();
-  setInterval(syncMobileCartBar,250);
-})();
-</script>
