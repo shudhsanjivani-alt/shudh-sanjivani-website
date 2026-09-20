@@ -1125,6 +1125,7 @@ Lehragaga – 148031, Punjab, India<br/>
 document.addEventListener('DOMContentLoaded', function () {
   const CART_KEY='shudhSanjivaniCart', ORDER_SEQ_KEY='shudhSanjivaniOrderSeq', PENDING_ORDER_KEY='shudhSanjivaniPendingOrderId', ORDER_HISTORY_KEY='shudhSanjivaniOrderHistory', FINALIZED_CONFIRM_KEY='shudhSanjivaniFinalizedConfirmation';
   let cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+  window.__shudhCartSnapshot=()=>cart;
   const cartToast=document.getElementById('cartToast');
   let toastTimer;
   const cartWhatsapp=document.getElementById('cartWhatsapp'), countEl=document.getElementById('cartCount'), subtotalEl=document.getElementById('cartSubtotal'), deliveryEl=document.getElementById('deliveryCharge'), deliveryNoteEl=document.getElementById('deliveryNote'), overlay=document.getElementById('cartOverlay'), itemsEl=document.getElementById('cartItems'), totalEl=document.getElementById('cartTotal'), checkout=document.getElementById('checkoutWa');
@@ -2187,10 +2188,12 @@ document.addEventListener('DOMContentLoaded',function(){
     const n=c.reduce((s,x)=>s+(Number(x.qty)||1),0);
     const total=c.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0);
     const count=document.getElementById('mobileCartCount');
+    const header=document.getElementById('cartCount');
     const title=document.getElementById('mobileCartTitle');
     const sub=document.getElementById('mobileCartSub');
     const open=document.getElementById('mobileCartBarOpen');
     if(count){const v=n+' आइटम';if(count.textContent!==v)count.textContent=v;}
+    if(header){const v=String(n);if(header.textContent!==v)header.textContent=v;}
     if(title){const v=n?'कार्ट में '+n+' आइटम':'कार्ट खाली है';if(title.textContent!==v)title.textContent=v;}
     if(sub){const v=n?'कुल ₹'+total.toLocaleString('en-IN')+' • टैप करके कार्ट खोलें':'अपने पसंदीदा मसाले कार्ट में जोड़ें';if(sub.textContent!==v)sub.textContent=v;}
     if(open){const v=n?'कार्ट खोलें':'उत्पाद देखें';if(open.textContent!==v)open.textContent=v;}
@@ -2199,7 +2202,10 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('DOMContentLoaded',sync);
   sync();
   const count=document.getElementById('mobileCartCount');
-  if(count)new MutationObserver(sync).observe(count,{childList:true,characterData:true,subtree:true});
+  const header=document.getElementById('cartCount');
+  const observer=new MutationObserver(sync);
+  if(count)observer.observe(count,{childList:true,characterData:true,subtree:true});
+  if(header)observer.observe(header,{childList:true,characterData:true,subtree:true});
 })();
 </script>
 </body></html>
