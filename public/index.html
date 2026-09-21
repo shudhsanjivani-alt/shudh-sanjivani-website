@@ -1232,6 +1232,20 @@ document.addEventListener('DOMContentLoaded', function () {
       if(open) open.textContent=n?'कार्ट खोलें':'उत्पाद देखें';
     }catch(e){}
   }
+  // Stage 163: keep the desktop header cart count synchronized without refresh.
+  (function(){
+    function syncDesktopCartCount(){
+      try{
+        const c=Array.isArray(window.__shudhCartState)?window.__shudhCartState:JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+        const n=c.reduce((a,x)=>a+(Number(x.qty)||1),0);
+        const el=document.getElementById('cartCount');
+        if(el) el.textContent=String(n);
+      }catch(e){}
+    }
+    window.addEventListener('shudh-cart-updated',syncDesktopCartCount);
+    syncDesktopCartCount();
+    setInterval(syncDesktopCartCount,800);
+  })();
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
   function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
