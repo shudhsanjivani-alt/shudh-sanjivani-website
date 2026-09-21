@@ -2186,4 +2186,30 @@ document.addEventListener('DOMContentLoaded',function(){
   setInterval(syncFinalCartCount,1000);
 })();
 </script>
+<!-- Stage 166 — Review screen confirmation wording follows the selected language. No order/payment logic changed. -->
+<script>
+(function(){
+  function applyReviewLanguage(){
+    const select=document.getElementById('languageSelect');
+    const button=document.getElementById('reviewPlaceOrder');
+    const sub=document.querySelector('#orderReview .order-review-sub');
+    if(!select||!button||!sub)return;
+    if(select.value==='en'){
+      button.textContent='✓ Confirm Order';
+      sub.innerHTML='Please review your items, total payment, payment method and delivery details below. <strong>Your order has not been placed yet. After checking the details, tap “Confirm Order” to place your order.</strong>';
+    }else{
+      button.textContent='✓ ऑर्डर की पुष्टि करें';
+      sub.innerHTML='नीचे सामान, कुल भुगतान, भुगतान का तरीका और डिलीवरी की जानकारी एक बार जाँच लें। <strong>आपका ऑर्डर अभी अंतिम रूप से भेजा नहीं गया है। जानकारी जाँचने के बाद “ऑर्डर की पुष्टि करें” दबाएँ।</strong>';
+    }
+  }
+  function init(){
+    const select=document.getElementById('languageSelect');
+    if(!select)return;
+    select.addEventListener('change',function(){setTimeout(applyReviewLanguage,60);});
+    setTimeout(applyReviewLanguage,80);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
 </body></html>
