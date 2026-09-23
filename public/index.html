@@ -2213,4 +2213,38 @@ document.addEventListener('DOMContentLoaded',function(){
   else init();
 })();
 </script>
+<!-- Stage 167 — bilingual display fix for Chaat Masala and Tea Masala only. -->
+<script>
+(function(){
+  function applyStage167ProductNames(){
+    const select=document.getElementById('languageSelect');
+    if(!select)return;
+    document.querySelectorAll('#products .card').forEach(function(card){
+      const h3=card.querySelector('h3');
+      const common=card.querySelector('.common');
+      if(!h3||!common)return;
+      const h=(h3.textContent||'').trim();
+      const c=(common.textContent||'').trim();
+      const isChaat=(h==='Chaat Masala'||h==='चाट मसाला'||c==='Chaat Masala'||c==='चाट मसाला');
+      const isTea=(h==='Tea Masala'||h==='चाय मसाला'||h==='Chai Masala'||c==='Tea Masala'||c==='Chai Masala'||c==='चाय मसाला');
+      if(!isChaat&&!isTea)return;
+      if(isChaat){
+        h3.textContent=select.value==='en'?'Chaat Masala':'चाट मसाला';
+        common.textContent=select.value==='en'?'चाट मसाला':'Chaat Masala';
+      }else{
+        h3.textContent=select.value==='en'?'Tea Masala':'चाय मसाला';
+        common.textContent=select.value==='en'?'चाय मसाला':'Chai Masala';
+      }
+    });
+  }
+  function init(){
+    const select=document.getElementById('languageSelect');
+    if(!select)return;
+    select.addEventListener('change',function(){setTimeout(applyStage167ProductNames,80);});
+    setTimeout(applyStage167ProductNames,120);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
 </body></html>
