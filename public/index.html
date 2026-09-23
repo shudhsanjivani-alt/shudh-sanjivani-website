@@ -515,6 +515,11 @@ linear-gradient(135deg,#eee7d7,#d8ddc8 50%,#cbb89d);}
 
 /* Stage 105: language selector */
 .language-switcher select{border:1px solid #cfc7b8;border-radius:999px;padding:7px 10px;background:#fff;font-weight:600;color:#3f4637;cursor:pointer}
+
+/* Stage 168 — homepage trust strip: small visual improvement only; no checkout/payment logic changed. */
+.hero-trust{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:22px auto 0;max-width:760px}
+.hero-trust span{display:inline-flex;align-items:center;min-height:32px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:rgba(255,253,248,.78);color:var(--sage2);font:700 11px/1.2 Arial,sans-serif}
+@media(max-width:650px){.hero-trust{justify-content:flex-start;gap:7px;margin-top:18px}.hero-trust span{font-size:10px;padding:7px 9px}}
 </style>
 <style>
 /* Stage 43 — mobile shopping experience */
@@ -711,6 +716,12 @@ linear-gradient(135deg,#eee7d7,#d8ddc8 50%,#cbb89d);}
 <div class="hero-actions">
 <a class="primary-cta" href="#products">उत्पाद देखें</a>
 <a class="secondary-cta" href="tel:9877864764" rel="noopener" target="_blank">संपर्क करें</a>
+</div>
+<div class="hero-trust" aria-label="खरीदारी की मुख्य जानकारी">
+<span>✓ साफ़-सुथरी पैकिंग</span>
+<span>✓ हर पैक का अलग Add to Cart</span>
+<span>✓ ₹999+ पर Free Delivery</span>
+<span>✓ ₹999 से कम पर Delivery ₹90</span>
 </div>
 </div>
 </header>
