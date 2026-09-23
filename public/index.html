@@ -971,11 +971,12 @@ linear-gradient(135deg,#eee7d7,#d8ddc8 50%,#cbb89d);}
 <div class="actions"><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 100g</a><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 200g</a><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 500g</a></div>
 </article><article class="card"><div aria-label="MASALA BLEND" class="product-visual"><img alt="Chaat Masala" src="assets/products/chaat-masala.jpg"/></div>
 <h3>Chaat Masala</h3>
+<div class="common dual-name">चाट मसाला</div>
 <div class="prices"><div class="price-head"><span>Pack size</span><span>Price</span></div><div class="price-row"><span>100g</span><strong>₹40</strong></div><div class="price-row"><span>200g</span><strong>₹75</strong></div></div>
 <div class="actions"><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 100g</a><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 200g</a></div>
 </article><article class="card"><div aria-label="MASALA BLEND" class="product-visual"><img alt="Tea Masala" src="assets/products/tea-masala.jpg?v=138"/></div>
 <h3>Tea Masala</h3>
-<div class="common">चाय मसाला</div>
+<div class="common dual-name">चाय मसाला</div>
 <p class="desc">लौंग, इलाइची, सोंठ, तुलसी, कालीमिर्च और सौंफ से तैयार।</p>
 <div class="prices"><div class="price-head"><span>Pack size</span><span>Price</span></div><div class="price-row"><span>50g</span><strong>₹100</strong></div><div class="price-row"><span>100g</span><strong>₹195</strong></div></div>
 <div class="actions"><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 50g</a><a class="wa" href="tel:9877864764" rel="noopener" target="_blank">पैक चुनें / Add to Cart · 100g</a></div>
@@ -1878,7 +1879,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
  };
  const reverse={}; Object.keys(T).forEach(k=>{reverse[T[k]]=k});
  const original=new Map();
- function apply(lang){document.querySelectorAll('h1,h2,h3,h4,p,span,button,label,a,option').forEach(el=>{if(el.closest('.language-switcher')||el.id==='cartOpen')return;let k=original.get(el);if(k===undefined){k=el.textContent.trim();original.set(el,k)}let out=k;if(lang==='en' && T[k]!==undefined)out=T[k]; else if(lang==='hi' && reverse[k]!==undefined)out=reverse[k]; el.textContent=out});document.documentElement.lang=lang==='en'?'en':'hi';localStorage.setItem('shudhLanguage',lang)}
+ function apply(lang){document.querySelectorAll('h1,h2,h3,h4,p,span,button,label,a,option').forEach(el=>{if(el.closest('.language-switcher')||el.id==='cartOpen'||el.classList.contains('dual-name'))return;let k=original.get(el);if(k===undefined){k=el.textContent.trim();original.set(el,k)}let out=k;if(lang==='en' && T[k]!==undefined)out=T[k]; else if(lang==='hi' && reverse[k]!==undefined)out=reverse[k]; el.textContent=out});document.documentElement.lang=lang==='en'?'en':'hi';localStorage.setItem('shudhLanguage',lang)}
  const saved=localStorage.getItem('shudhLanguage')||'hi'; select.value=saved; select.addEventListener('change',()=>{apply(select.value); setTimeout(()=>{try{if(typeof renderFavorites==='function')renderFavorites();}catch(e){}},20)}); setTimeout(()=>apply(saved),150);
 })();
 </script>
@@ -1897,7 +1898,7 @@ freshOrderChoice.addEventListener('change',()=>{renderCart();});
     'Safed Mirch Powder':'White Pepper Powder', 'Sonth Powder':'Dry Ginger Powder', 'Dalchini Powder':'Cinnamon Powder',
     'आमचूर पाउडर · Aamchur Powder':'Amchur Powder · Amchur Powder', 'Jeera':'Cumin', 'Hari Elaichi':'Green Cardamom',
     'Saunf · सौंफ':'Fennel Seeds · Fennel Seeds', 'Ajwain · अजवाइन':'Carom Seeds · Carom Seeds', 'Laung':'Cloves',
-    'Khada Masala':'Whole Spices', 'गरम मसाला · 100% खरा':'Garam Masala · 100% Pure', 'चाय मसाला':'Tea Masala',
+    'Khada Masala':'Whole Spices', 'गरम मसाला · 100% खरा':'Garam Masala · 100% Pure', 'चाट मसाला':'Chaat Masala', 'चाय मसाला':'Chai Masala',
     'Sendha Namak':'Rock Salt', 'Kala Namak · काला नमक':'Black Salt · Black Salt'
   };
   const info={
@@ -2207,6 +2208,40 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!select)return;
     select.addEventListener('change',function(){setTimeout(applyReviewLanguage,60);});
     setTimeout(applyReviewLanguage,80);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+</script>
+<!-- Stage 167 — bilingual display fix for Chaat Masala and Tea Masala only. -->
+<script>
+(function(){
+  function applyStage167ProductNames(){
+    const select=document.getElementById('languageSelect');
+    if(!select)return;
+    document.querySelectorAll('#products .card').forEach(function(card){
+      const h3=card.querySelector('h3');
+      const common=card.querySelector('.common');
+      if(!h3||!common)return;
+      const h=(h3.textContent||'').trim();
+      const c=(common.textContent||'').trim();
+      const isChaat=(h==='Chaat Masala'||h==='चाट मसाला'||c==='Chaat Masala'||c==='चाट मसाला');
+      const isTea=(h==='Tea Masala'||h==='चाय मसाला'||h==='Chai Masala'||c==='Tea Masala'||c==='Chai Masala'||c==='चाय मसाला');
+      if(!isChaat&&!isTea)return;
+      if(isChaat){
+        h3.textContent=select.value==='en'?'Chaat Masala':'चाट मसाला';
+        common.textContent=select.value==='en'?'चाट मसाला':'Chaat Masala';
+      }else{
+        h3.textContent=select.value==='en'?'Tea Masala':'चाय मसाला';
+        common.textContent=select.value==='en'?'चाय मसाला':'Chai Masala';
+      }
+    });
+  }
+  function init(){
+    const select=document.getElementById('languageSelect');
+    if(!select)return;
+    select.addEventListener('change',function(){setTimeout(applyStage167ProductNames,80);});
+    setTimeout(applyStage167ProductNames,120);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
   else init();
