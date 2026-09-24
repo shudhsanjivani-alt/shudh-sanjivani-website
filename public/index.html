@@ -518,6 +518,17 @@ linear-gradient(135deg,#eee7d7,#d8ddc8 50%,#cbb89d);}
 
 /* Stage 168 — homepage trust strip: small visual improvement only; no checkout/payment logic changed. */
 
+/* Stage 170 — "क्यों चुनें?" brand-trust section; informational only. */
+.stage170-why-choose{max-width:900px;margin:24px auto 0;padding:20px 16px;border:1px solid var(--line);border-radius:16px;background:rgba(255,253,248,.72)}
+.stage170-why-title{text-align:center;color:var(--sage2);font:800 22px/1.3 Arial,sans-serif;margin:0 0 16px}
+.stage170-why-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.stage170-why-item{padding:11px 8px;text-align:center;border:1px solid var(--line);border-radius:11px;background:rgba(255,253,248,.78)}
+.stage170-why-item strong{display:block;color:var(--sage2);font:800 12px/1.35 Arial,sans-serif}
+.stage170-why-item span{display:block;margin-top:4px;color:#747a70;font:10px/1.4 Arial,sans-serif}
+.stage170-why-message{margin:16px auto 0;max-width:760px;text-align:center;color:var(--sage2);font:700 13px/1.55 Georgia,"Times New Roman",serif}
+.stage170-why-closing{margin:10px auto 0;max-width:760px;text-align:center;color:var(--copper);font:700 14px/1.55 Georgia,"Times New Roman",serif}
+@media(max-width:650px){.stage170-why-choose{margin-top:20px;padding:17px 11px}.stage170-why-title{font-size:19px}.stage170-why-grid{grid-template-columns:1fr 1fr}.stage170-why-item{padding:10px 7px}.stage170-why-message{font-size:12px}.stage170-why-closing{font-size:13px}}
+
 /* Stage 169 — simple homepage order steps; visual/informational only. */
 .stage169-order-steps{max-width:900px;margin:24px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
 .stage169-order-step{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,253,248,.68)}
@@ -736,6 +747,18 @@ linear-gradient(135deg,#eee7d7,#d8ddc8 50%,#cbb89d);}
 <span>✓ हर पैक का अलग Add to Cart</span>
 <span>✓ ₹999+ पर Free Delivery</span>
 <span>✓ ₹999 से कम पर Delivery ₹90</span>
+</div>
+<div class="stage170-why-choose" aria-label="क्यों चुनें Shudh Sanjivani">
+  <div class="stage170-why-title">क्यों चुनें Shudh Sanjivani?</div>
+  <div class="stage170-why-grid">
+    <div class="stage170-why-item"><strong>शुद्धता की गारंटी</strong><span>असली साबुत मसालों को स्वयं पीसकर तैयार किया जाता है।</span></div>
+    <div class="stage170-why-item"><strong>सिंपल और ट्रांसपेरेंट पैकिंग</strong><span>मसाला जैसा है, वैसा ही साफ़-साफ़ आपके सामने।</span></div>
+    <div class="stage170-why-item"><strong>असली खुशबू, असली रंग का एहसास</strong><span>मसालों की अपनी खुशबू और रंग को महसूस कीजिए।</span></div>
+    <div class="stage170-why-item"><strong>ताज़ी पिसाई और पैकिंग</strong><span>साबुत मसालों की पिसाई के बाद ताज़गी के साथ पैकिंग।</span></div>
+    <div class="stage170-why-item"><strong>घर जैसे मसालों का स्वाद</strong><span>रोज़मर्रा की रसोई के लिए पारंपरिक, घर जैसा स्वाद।</span></div>
+  </div>
+  <div class="stage170-why-message">हमारे मसालों की पैकिंग खोलते ही आपकी रसोई शुद्ध मसालों की महक से महक उठेगी।</div>
+  <div class="stage170-why-closing">पहला ऑर्डर हमारे कहने पर कीजिए,<br/>अगला ऑर्डर हमारे मसालों की खुशबू और ताज़गी खुद आपसे कराएगी।</div>
 </div>
 </div>
 </header>
