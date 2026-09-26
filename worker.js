@@ -358,6 +358,12 @@ export default {
     if (url.pathname === '/api/reviews' && request.method === 'GET') return listReviews(request, env);
     if (url.pathname === '/api/reviews' && request.method === 'POST') return saveReview(request, env);
     if (url.pathname === '/api/admin/orders' && request.method === 'GET') return listOrders(request, env);
+    // Stage 171: explicitly serve the recipe HTML file for the clean recipe route.
+    if (url.pathname === '/garam-masala-recipe') {
+      const recipeUrl = new URL(request.url);
+      recipeUrl.pathname = '/garam-masala-recipe.html';
+      return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)));
+    }
     const assetResponse = await env.ASSETS.fetch(request);
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
     // This is important while deploying the checkout/order-flow fix.
