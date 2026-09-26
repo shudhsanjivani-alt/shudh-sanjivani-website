@@ -10,7 +10,7 @@
 :root{--cream:#f7f1e4;--sage:#65735a;--sage2:#43513d;--copper:#a9653f;--ink:#293027;--line:#ddd2bf;--white:#fffdf8}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.55}
 header{padding:30px 18px 28px;text-align:center;background:linear-gradient(180deg,#eef0df,var(--cream));border-bottom:1px solid var(--line)}
-.brand{font:800 15px/1.3 Arial,sans-serif;color:var(--copper);letter-spacing:.7px}
+.brand{display:flex;flex-direction:column;align-items:center;gap:8px;font:800 15px/1.3 Arial,sans-serif;color:var(--copper);letter-spacing:.7px}.brand-logo{width:min(220px,62vw);height:auto;max-height:72px;object-fit:contain}
 h1{margin:8px 0 6px;color:var(--sage2);font-size:clamp(30px,7vw,48px)}
 .lead{max-width:700px;margin:0 auto;color:#596055;font-size:16px}
 .back{display:inline-block;margin-top:16px;color:var(--sage2);font:800 13px Arial,sans-serif;text-decoration:none}
@@ -36,7 +36,7 @@ footer{text-align:center;color:#747a70;font:12px Arial,sans-serif;padding:0 16px
 </head>
 <body>
 <header>
-  <div class="brand">SHUDH SANJIVANI NATURAL PRODUCTS</div>
+  <div class="brand"><img class="brand-logo" src="/assets/shudh-sanjivani-logo.png" alt="Shudh Sanjivani" loading="eager"><span>SHUDH SANJIVANI NATURAL PRODUCTS</span></div>
   <h1>गरम मसाला रेसिपी</h1>
   <p class="lead">साबुत मसालों की खुशबू और ताज़गी के साथ अपना गरम मसाला तैयार करें — या पिसा हुआ सीधे इस्तेमाल करें।</p>
   <a class="back" href="/">← मुख्य वेबसाइट पर वापस जाएँ</a>
@@ -91,6 +91,14 @@ footer{text-align:center;color:#747a70;font:12px Arial,sans-serif;padding:0 16px
     <figure><img src="/assets/garam-masala-gallery/page-12.webp" alt="सौंफ" loading="lazy"><figcaption>सौंफ</figcaption></figure>
     <figure><img src="/assets/garam-masala-gallery/page-13.webp" alt="अजवाइन" loading="lazy"><figcaption>अजवाइन</figcaption></figure>
     <figure><img src="/assets/garam-masala-gallery/page-14.webp" alt="दालचीनी" loading="lazy"><figcaption>दालचीनी</figcaption></figure>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <h2>अतिरिक्त मसाले</h2>
+  <div class="gallery">
+    <figure><img src="/assets/garam-masala-gallery/sonth.png" alt="सोंठ" loading="lazy"><figcaption>सोंठ</figcaption></figure>
+    <figure><img src="/assets/garam-masala-gallery/chakr-phool.png" alt="चक्रफूल" loading="lazy"><figcaption>चक्रफूल</figcaption></figure>
   </div>
 </section>
 
