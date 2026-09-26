@@ -263,7 +263,7 @@ async function saveReview(request, env) {
   } catch (e) { return json({ saved: false, error: 'समीक्षा server पर सेव नहीं हो सकी।' }, 400, origin); }
 }
 
-function applySeo(response) {\n    // Stage 172: expose the verified Garam Masala Recipe from the homepage.\n    .on('.hero-actions', { element(el) {\n      el.onEndTag(end => {\n        end.before('<a class="secondary-cta" href="/garam-masala-recipe">गरम मसाला रेसिपी</a>', {html:true});\n      });\n    }})
+function applySeo(response) {
   const contentType = response.headers.get('Content-Type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
   let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
@@ -342,6 +342,11 @@ function applySeo(response) {\n    // Stage 172: expose the verified Garam Masal
           ]
         };
         end.before('<script type="application/ld+json">' + JSON.stringify(structuredData) + '</script>', {html:true});
+      });
+    }})
+    .on('.hero-actions', { element(el) {
+      el.onEndTag(end => {
+        end.before('<a class="secondary-cta" href="/garam-masala-recipe">गरम मसाला रेसिपी</a>', {html:true});
       });
     }})
     .transform(response);
