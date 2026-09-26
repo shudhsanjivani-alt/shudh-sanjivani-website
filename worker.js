@@ -344,6 +344,11 @@ function applySeo(response) {
         end.before('<script type="application/ld+json">' + JSON.stringify(structuredData) + '</script>', {html:true});
       });
     }})
+    .on('.hero-actions', { element(el) {
+      el.onEndTag(end => {
+        end.before('<a class="secondary-cta" href="/garam-masala-recipe">गरम मसाला रेसिपी</a>', {html:true});
+      });
+    }})
     .transform(response);
 }
 
