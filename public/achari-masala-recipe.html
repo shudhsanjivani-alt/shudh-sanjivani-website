@@ -20,8 +20,11 @@ main{max-width:980px;margin:auto;padding:28px 16px 60px}section{margin-bottom:34
 .uses{display:grid;grid-template-columns:1fr 1fr;gap:16px}.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px}.card h3{margin:0;color:var(--sage2);font-size:21px}
 .buy{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center}.price{font-size:28px;font-weight:800;color:var(--copper);margin:8px 0}.pack{font-weight:700;color:var(--sage2)}
 button{width:100%;min-height:44px;border:0;border-radius:9px;background:var(--copper);color:#fff;font:800 14px Arial,sans-serif;cursor:pointer;padding:11px}.status{margin-top:12px;color:var(--sage2);font:800 13px Arial,sans-serif}
+.order-note{margin:16px 0 12px;font-weight:700;color:var(--sage2)}
+.nav-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.nav-buttons a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px;border-radius:9px;background:var(--sage2);color:#fff;text-decoration:none;font:800 13px Arial,sans-serif}
+.nav-buttons a.home{background:var(--copper)}
 footer{text-align:center;color:#747a70;font:12px Arial,sans-serif;padding:0 16px 28px}
-@media(max-width:650px){.recipe,.uses,.recipe-images{grid-template-columns:1fr}}
+@media(max-width:650px){.recipe,.uses,.recipe-images,.nav-buttons{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -75,6 +78,11 @@ footer{text-align:center;color:#747a70;font:12px Arial,sans-serif;padding:0 16px
     <div class="price">₹100/-</div>
     <button id="add">Add to Cart</button>
     <div class="status" id="status"></div>
+    <div class="order-note">आप हमसे तैयार अचारी मसाला भी ऑर्डर कर सकते हैं।</div>
+    <div class="nav-buttons">
+      <a href="/garam-masala-recipe">गरम मसाला रेसिपी देखें</a>
+      <a class="home" href="/">मुख्य पेज पर वापस जाएँ</a>
+    </div>
   </div>
 </section>
 </main>
