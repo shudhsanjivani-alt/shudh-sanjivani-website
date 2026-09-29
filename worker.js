@@ -386,6 +386,7 @@ export default {
       headers.set('Expires', '0');
     }
     const response = new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
-    return applySeo(response);
+    const seoResponse = applySeo(response);
+    return (url.pathname === '/' || url.pathname === '/index.html') ? applyHomeHighlight(seoResponse) : seoResponse;
   }
 };
