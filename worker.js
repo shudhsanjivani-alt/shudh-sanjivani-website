@@ -263,7 +263,7 @@ async function saveReview(request, env) {
   } catch (e) { return json({ saved: false, error: 'समीक्षा server पर सेव नहीं हो सकी।' }, 400, origin); }
 }
 
-function applySeo(response) {
+function applySeo(response, isHomepage = false) {
   const contentType = response.headers.get('Content-Type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
   let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
@@ -285,6 +285,11 @@ function applySeo(response) {
     .on('link', { element(el) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
+    }})
+    .on('body', { element(el) {
+      if (isHomepage) {
+        el.append(`<section aria-label="गरम मसाला रेसिपी" style="max-width:980px;margin:18px auto;padding:0 16px 8px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 4px;color:#43513d;font-size:23px;">गरम मसाला रेसिपी देखें</h2><p style="margin:0;color:#596055;font-size:14px;">साबुत मसालों की पूरी विधि, तस्वीरें और 250g / 500g / 1kg विकल्प एक ही जगह।</p></div><a href="/garam-masala-recipe" style="display:inline-block;flex:0 0 auto;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 14px;font:800 13px Arial,sans-serif;">रेसिपी देखें →</a></div></section><style>@media(max-width:650px){section[aria-label="गरम मसाला रेसिपी"]>div{flex-direction:column;align-items:flex-start}section[aria-label="गरम मसाला रेसिपी"] a{width:100%;text-align:center}}</style>`, {html:true});
+      }
     }})
     .on('head', { element(el) {
       el.onEndTag(end => {
@@ -347,16 +352,6 @@ function applySeo(response) {
     .transform(response);
 }
 
-function applyHomeHighlight(response) {
-  const contentType = response.headers.get('Content-Type') || '';
-  if (!contentType.toLowerCase().includes('text/html')) return response;
-  const highlight = `<section aria-label="गरम मसाला रेसिपी" style="max-width:980px;margin:18px auto;padding:0 16px 8px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 4px;color:#43513d;font-size:23px;">गरम मसाला रेसिपी देखें</h2><p style="margin:0;color:#596055;font-size:14px;">साबुत मसालों की पूरी विधि, तस्वीरें और 250g / 500g / 1kg विकल्प एक ही जगह।</p></div><a href="/garam-masala-recipe" style="display:inline-block;flex:0 0 auto;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 14px;font:800 13px Arial,sans-serif;">रेसिपी देखें →</a></div></section><style>@media(max-width:650px){section[aria-label="गरम मसाला रेसिपी"]>div{flex-direction:column;align-items:flex-start}section[aria-label="गरम मसाला रेसिपी"] a{width:100%;text-align:center}}</style>`;
-  return new HTMLRewriter()
-    .on('body', { element(el) {
-      el.append(highlight, {html:true});
-    }})
-    .transform(response);
-}
 
 export default {
   async fetch(request, env) {
@@ -373,7 +368,7 @@ export default {
     if (url.pathname === '/garam-masala-recipe') {
       const recipeUrl = new URL(request.url);
       recipeUrl.pathname = '/garam-masala-recipe.html';
-      return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)));
+      return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)), false);
     }
     const assetResponse = await env.ASSETS.fetch(request);
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
@@ -385,7 +380,6 @@ export default {
       headers.set('Expires', '0');
     }
     const response = new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
-    const seoResponse = applySeo(response);
-    return (url.pathname === '/' || url.pathname === '/index.html') ? applyHomeHighlight(seoResponse) : seoResponse;
+    return applySeo(response, url.pathname === '/' || url.pathname === '/index.html');
   }
 };
