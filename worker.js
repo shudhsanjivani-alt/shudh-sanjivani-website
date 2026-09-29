@@ -350,11 +350,10 @@ function applySeo(response) {
 function applyHomeHighlight(response) {
   const contentType = response.headers.get('Content-Type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
+  const highlight = `<section aria-label="गरम मसाला रेसिपी" style="max-width:980px;margin:18px auto;padding:0 16px 8px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 4px;color:#43513d;font-size:23px;">गरम मसाला रेसिपी देखें</h2><p style="margin:0;color:#596055;font-size:14px;">साबुत मसालों की पूरी विधि, तस्वीरें और 250g / 500g / 1kg विकल्प एक ही जगह।</p></div><a href="/garam-masala-recipe" style="display:inline-block;flex:0 0 auto;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 14px;font:800 13px Arial,sans-serif;">रेसिपी देखें →</a></div></section><style>@media(max-width:650px){section[aria-label="गरम मसाला रेसिपी"]>div{flex-direction:column;align-items:flex-start}section[aria-label="गरम मसाला रेसिपी"] a{width:100%;text-align:center}}</style>`;
   return new HTMLRewriter()
     .on('body', { element(el) {
-      el.onEndTag(end => {
-        end.before(`<section aria-label="गरम मसाला रेसिपी" style="max-width:980px;margin:18px auto;padding:0 16px 8px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 4px;color:#43513d;font-size:23px;">गरम मसाला रेसिपी देखें</h2><p style="margin:0;color:#596055;font-size:14px;">साबुत मसालों की पूरी विधि, तस्वीरें और 250g / 500g / 1kg विकल्प एक ही जगह।</p></div><a href="/garam-masala-recipe" style="display:inline-block;flex:0 0 auto;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 14px;font:800 13px Arial,sans-serif;">रेसिपी देखें →</a></div></section><style>@media(max-width:650px){section[aria-label="गरम मसाला रेसिपी"] div{flex-direction:column;align-items:flex-start}section[aria-label="गरम मसाला रेसिपी"] a{width:100%;text-align:center}}</style>`, {html:true});
-      });
+      el.append(highlight, {html:true});
     }})
     .transform(response);
 }
