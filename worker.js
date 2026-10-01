@@ -370,6 +370,11 @@ export default {
       recipeUrl.pathname = '/achari-masala-recipe.html';
       return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)), false);
     }
+    if (url.pathname === '/haldi-bharat-ki-har-rasoi-ki-shaan') {
+      const blogUrl = new URL(request.url);
+      blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
+      return env.ASSETS.fetch(new Request(blogUrl, request));
+    }
     if (url.pathname === '/garam-masala-recipe') {
       const recipeUrl = new URL(request.url);
       recipeUrl.pathname = '/garam-masala-recipe.html';
