@@ -304,9 +304,9 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-.on('section.catalogue', { element(el) {
+.on('main', { element(el) {
       if (isHomepage) {
-        el.before(`<section id="homepage-combo-preview" aria-label="Quality Check Combo Pack" style="max-width:980px;margin:0 auto 28px;padding:0 16px;text-align:center;"><a href="/quality-check-pack" style="display:block;text-decoration:none;"><img src="/assets/quality-check-pack-gallery/quality-check-pack-01-01.png" alt="Shudh Sanjivani Quality Check Pack Combo" style="display:block;width:100%;max-width:520px;margin:0 auto;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 5px 18px rgba(54,45,30,.08);"><span style="display:inline-block;margin-top:10px;background:#a9653f;color:#fff;border-radius:10px;padding:12px 20px;font:800 14px Arial,sans-serif;">Quality Check Pack / Combo Pack देखें →</span></a></section>`, {html:true});
+        el.prepend(`<section id="homepage-combo-preview" aria-label="Quality Check Combo Pack" style="max-width:980px;margin:0 auto 28px;padding:0 16px;text-align:center;"><a href="/quality-check-pack" style="display:block;text-decoration:none;"><img src="/assets/quality-check-pack-gallery/quality-check-pack-01-01.png" alt="Shudh Sanjivani Quality Check Pack Combo" style="display:block;width:100%;max-width:520px;margin:0 auto;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 5px 18px rgba(54,45,30,.08);"><span style="display:inline-block;margin-top:10px;background:#a9653f;color:#fff;border-radius:10px;padding:12px 20px;font:800 14px Arial,sans-serif;">Quality Check Pack / Combo Pack देखें →</span></a></section>`, {html:true});
       }
     }})
     .on('footer', { element(el) {
