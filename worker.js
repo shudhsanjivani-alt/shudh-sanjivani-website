@@ -375,6 +375,11 @@ export default {
       blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
     }
+    if (url.pathname === '/quality-check-pack') {
+      const comboUrl = new URL(request.url);
+      comboUrl.pathname = '/quality-check-pack.html';
+      return applySeo(await env.ASSETS.fetch(new Request(comboUrl, request)), false);
+    }
     if (url.pathname === '/garam-masala-recipe') {
       const recipeUrl = new URL(request.url);
       recipeUrl.pathname = '/garam-masala-recipe.html';
