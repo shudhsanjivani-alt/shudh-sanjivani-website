@@ -169,6 +169,12 @@ async function createShiprocketOrder(order, env) {
   return {status:'created', shiprocketOrderId:data?.order_id || null, shipmentId:data?.shipment_id || null};
 }
 
+
+async function trackShipment(request, env) {
+  const origin=request.headers.get('Origin')||''; const url=new URL(request.url); const awb=String(url.searchParams.get('awb')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40);
+  if(!awb)return json({ok:false,error:'Tracking ID required.'},400,origin);
+  if(!env.SHIPROCKET_EMAIL||!env.SHIPROCKET_PASSWORD)return json({ok:false,error:'Shipping tracking is not configured yet.'},503,origin);
+  try{const token=await shiprocketToken(env);const resp=await fetch('https://apiv2.shiprocket.in/v1/external/courier/track/awb/'+encodeURIComponent(awb),{headers:{Authorization:'Bearer '+token}});const data=await resp.json().catch(()=>({}));if(!resp.ok)return json({ok:false,error:data?.message||'Tracking service could not be reached.'},502,origin);const td=data?.tracking_data||{},tr=Array.isArray(td.shipment_track)?td.shipment_track:[],acts=Array.isArray(td.shipment_track_activities)?td.shipment_track_activities:[];return json({ok:true,tracking_id:awb,courier:tr[0]?.courier_name||td.courier_name||'Courier',status:tr[0]?.current_status||td.shipment_status||'Tracking available',etd:tr[0]?.etd||td.etd||null,activities:acts.slice(0,30)},200,origin)}catch(e){return json({ok:false,error:'Tracking could not be loaded right now.'},502,origin)}}
 async function saveOrder(request, env) {
   const origin = request.headers.get('Origin') || '';
   if (!env.ORDERS_KV) return json({ saved: false, error: 'Order storage is not configured yet.' }, 503, origin);
@@ -361,6 +367,7 @@ export default {
     if (url.pathname === '/api/razorpay/create-order' && request.method === 'POST') return createOrder(request, env);
     if (url.pathname === '/api/razorpay/verify-payment' && request.method === 'POST') return verifyPayment(request, env);
     if (url.pathname === '/api/orders/save' && request.method === 'POST') return saveOrder(request, env);
+    if (url.pathname === '/api/shipping/track' && request.method === 'GET') return trackShipment(request, env);
     if (url.pathname === '/api/reviews' && request.method === 'GET') return listReviews(request, env);
     if (url.pathname === '/api/reviews' && request.method === 'POST') return saveReview(request, env);
     if (url.pathname === '/api/admin/orders' && request.method === 'GET') return listOrders(request, env);
@@ -380,6 +387,7 @@ export default {
       recipeUrl.pathname = '/garam-masala-recipe.html';
       return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)), false);
     }
+    if (url.pathname === '/track-order') { const trackUrl=new URL(request.url); trackUrl.pathname='/track-order.html'; return applySeo(await env.ASSETS.fetch(new Request(trackUrl,request)),false); }
     const assetResponse = await env.ASSETS.fetch(request);
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
     // This is important while deploying the checkout/order-flow fix.
