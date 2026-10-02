@@ -384,6 +384,7 @@ export default {
     if (url.pathname === '/api/reviews' && request.method === 'POST') return saveReview(request, env);
     if (url.pathname === '/api/admin/orders' && request.method === 'GET') return listOrders(request, env);
     // Stage 171: explicitly serve the recipe HTML file for the clean recipe route.
+    if (url.pathname === '/combo-pack') { const comboUrl = new URL(request.url); comboUrl.pathname = '/combo-pack.html'; return applySeo(await env.ASSETS.fetch(new Request(comboUrl, request)), false); }
     if (url.pathname === '/track-order') { const u=new URL(request.url); u.pathname='/track-order.html'; return env.ASSETS.fetch(new Request(u, request)); }
     if (url.pathname === '/achari-masala-recipe') {
       const recipeUrl = new URL(request.url);
