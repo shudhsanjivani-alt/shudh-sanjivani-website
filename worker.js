@@ -304,14 +304,13 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-.on('main', { element(el) {
-      if (isHomepage) {
-        el.prepend(`<section id="homepage-combo-preview" aria-label="Quality Check Combo Pack" style="max-width:980px;margin:0 auto 28px;padding:0 16px;text-align:center;"><a href="/quality-check-pack" style="display:block;text-decoration:none;"><img src="/assets/quality-check-pack-gallery/quality-check-pack-01-01.png" alt="Shudh Sanjivani Quality Check Pack Combo" style="display:block;width:100%;max-width:520px;margin:0 auto;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 5px 18px rgba(54,45,30,.08);"><span style="display:inline-block;margin-top:10px;background:#a9653f;color:#fff;border-radius:10px;padding:12px 20px;font:800 14px Arial,sans-serif;">Quality Check Pack / Combo Pack देखें →</span></a></section>`, {html:true});
-      }
-    }})
-    .on('footer', { element(el) {
-      if (isHomepage) {
-        el.before(`<section id="shipping-tracking-card" aria-label="पार्सल ट्रैक करें" style="max-width:720px;margin:0 auto 28px;padding:0 16px;text-align:center;"><div style="border:1px solid #e6d7b8;border-radius:18px;background:#fffaf0;box-shadow:0 4px 16px rgba(0,0,0,.06);padding:20px;"><h2 style="margin:0 0 8px;color:#43513d;">📦 पार्सल ट्रैक करें</h2><p style="margin:0 0 14px;color:#596055;">अपने Delhivery / Shiprocket Tracking ID से पार्सल की स्थिति देखें।</p><a href="/track-order" style="display:inline-block;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;background:#6b4f2a;color:#fff;">ट्रैक ऑर्डर →</a></div></section>`, {html:true});
+.on("*", { element(el) {
+      if (!isHomepage) return;
+      const tag = String(el.tagName || '').toLowerCase();
+      if (tag === 'main') {
+        el.prepend("<section id=\"homepage-combo-preview\" aria-label=\"Quality Check Combo Pack\" style=\"max-width:980px;margin:0 auto 28px;padding:0 16px;text-align:center;\"><a href=\"/quality-check-pack\" style=\"display:block;text-decoration:none;\"><img src=\"/assets/quality-check-pack-gallery/quality-check-pack-01-01.png\" alt=\"Shudh Sanjivani Quality Check Pack Combo\" style=\"display:block;width:100%;max-width:520px;margin:0 auto;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 5px 18px rgba(54,45,30,.08);\"><span style=\"display:inline-block;margin-top:10px;background:#a9653f;color:#fff;border-radius:10px;padding:12px 20px;font:800 14px Arial,sans-serif;\">Quality Check Pack / Combo Pack देखें →</span></a></section>", {html:true});
+      } else if (tag === 'footer') {
+        el.before("<section id=\"shipping-tracking-card\" aria-label=\"पार्सल ट्रैक करें\" style=\"max-width:720px;margin:0 auto 28px;padding:0 16px;text-align:center;\"><div style=\"border:1px solid #e6d7b8;border-radius:18px;background:#fffaf0;box-shadow:0 4px 16px rgba(0,0,0,.06);padding:20px;\"><h2 style=\"margin:0 0 8px;color:#43513d;\">📦 पार्सल ट्रैक करें</h2><p style=\"margin:0 0 14px;color:#596055;\">अपने Delhivery / Shiprocket Tracking ID से पार्सल की स्थिति देखें।</p><a href=\"/track-order\" style=\"display:inline-block;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;background:#6b4f2a;color:#fff;\">ट्रैक ऑर्डर →</a></div></section>", {html:true});
       }
     }})
     .on('body', { element(el) {
