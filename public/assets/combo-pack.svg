@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf8"/><stop offset="1" stop-color="#eee8dc"/></linearGradient>
+<linearGradient id="pack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f5efe3"/></linearGradient>
+<filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity=".18"/></filter>
+</defs>
+<rect width="1200" height="800" rx="42" fill="url(#bg)"/>
+<ellipse cx="600" cy="670" rx="390" ry="55" fill="#c9bba5" opacity=".35"/>
+<g filter="url(#shadow)">
+<rect x="150" y="185" width="900" height="430" rx="34" fill="#f7f2e8" stroke="#c9bba5" stroke-width="4"/>
+<text x="600" y="255" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="800" fill="#43513d" letter-spacing="3">SHUDH SANJIVANI</text>
+<text x="600" y="305" text-anchor="middle" font-family="Arial,sans-serif" font-size="46" font-weight="800" fill="#9b633f">सम्पूर्ण रसोई COMBO</text>
+<text x="600" y="345" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#596055">15 Products • Pure Spices for Everyday Cooking</text>
+</g>
+<g>
+<rect x="230" y="390" width="125" height="205" rx="16" fill="url(#pack)" stroke="#b9aa92" stroke-width="3"/><circle cx="292" cy="470" r="42" fill="#d6a441"/><text x="292" y="535" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#43513d">HALDI</text>
+<rect x="380" y="390" width="125" height="205" rx="16" fill="url(#pack)" stroke="#b9aa92" stroke-width="3"/><circle cx="442" cy="470" r="42" fill="#b86b3d"/><text x="442" y="535" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#43513d">MIRCH</text>
+<rect x="530" y="390" width="125" height="205" rx="16" fill="url(#pack)" stroke="#b9aa92" stroke-width="3"/><circle cx="592" cy="470" r="42" fill="#8b7650"/><text x="592" y="535" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#43513d">JEERA</text>
+<rect x="680" y="390" width="125" height="205" rx="16" fill="url(#pack)" stroke="#b9aa92" stroke-width="3"/><circle cx="742" cy="470" r="42" fill="#6b7650"/><text x="742" y="535" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#43513d">DHANIYA</text>
+<rect x="830" y="390" width="125" height="205" rx="16" fill="url(#pack)" stroke="#b9aa92" stroke-width="3"/><circle cx="892" cy="470" r="42" fill="#4f5743"/><text x="892" y="535" text-anchor="middle" font-family="Arial" font-size="17" font-weight="700" fill="#43513d">SPICES</text>
+</g>
+<text x="600" y="700" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="800" fill="#9b633f">₹799</text>
+<text x="600" y="738" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#43513d">🚚 इस Combo Pack पर Delivery FREE</text>
+</svg>
