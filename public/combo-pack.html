@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>सम्पूर्ण रसोई Combo Pack | Shudh Sanjivani</title>
+<meta name="description" content="Shudh Sanjivani का सम्पूर्ण रसोई Combo Pack — 15 Products, ₹799 और Delivery FREE.">
+<style>
+:root{--sage:#65735a;--sage2:#43513d;--copper:#a9653f;--cream:#fffdf8;--line:#ddd2bf}
+*{box-sizing:border-box}body{margin:0;background:#f7f3ea;color:#3f463c;font-family:Arial,sans-serif}
+.wrap{max-width:900px;margin:auto;padding:18px}
+.top{text-align:center}.logo{width:120px;height:120px;object-fit:contain;border-radius:18px}.brand{font-weight:800;color:var(--sage2);font-size:14px;letter-spacing:2px}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 8px 28px rgba(54,45,30,.08);margin-top:18px}
+.hero-img{display:block;width:100%;max-width:720px;margin:0 auto;border-radius:18px}
+h1{text-align:center;color:var(--sage2);font-size:30px;margin:20px 0 8px}
+.sub{text-align:center;color:#62695f;font-size:15px;margin:0 0 18px}
+.price{text-align:center;color:var(--copper);font-size:32px;font-weight:900;margin:8px}
+.free{text-align:center;font-weight:800;color:var(--sage2);margin:4px 0 20px}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.info div{background:#fbf8f0;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;font-weight:800}.info small{display:block;color:#777;font-weight:500;margin-top:4px}
+.actions{display:grid;gap:10px}.btn{display:flex;min-height:48px;align-items:center;justify-content:center;border-radius:10px;text-decoration:none;font-weight:800;font-size:15px;cursor:pointer}.primary{border:0;background:var(--copper);color:#fff}.secondary{border:1px solid var(--sage);background:#fff;color:var(--sage2)}
+.note{text-align:center;color:#70766d;font-size:12px;line-height:1.5;margin:14px 4px 4px}
+@media(max-width:560px){.info{grid-template-columns:1fr}.wrap{padding:12px}h1{font-size:25px}.logo{width:100px;height:100px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<img class="logo" src="/assets/shudh-sanjivani-logo.png" alt="Shudh Sanjivani Natural Products">
+<div class="brand">SHUDH SANJIVANI</div>
+</header>
+<main class="card">
+<img class="hero-img" src="/assets/combo-pack.svg" alt="Shudh Sanjivani सम्पूर्ण रसोई Combo Pack">
+<h1>सम्पूर्ण रसोई Combo Pack</h1>
+<p class="sub">शुद्ध खुशबू के साथ शुद्ध मसालों का Combo Pack</p>
+<div class="price">₹799</div>
+<div class="free">🚚 इस Combo Pack पर Delivery FREE</div>
+<div class="info">
+<div>15 Products<small>सम्पूर्ण रसोई के लिए</small></div>
+<div>₹799<small>पूरा Combo Pack</small></div>
+<div>Delivery FREE<small>इस Combo Pack पर</small></div>
+</div>
+<div class="actions">
+<button class="btn primary" id="addCombo" type="button">🛒 Combo Pack कार्ट में जोड़ें</button>
+<a class="btn secondary" href="/">🏠 मुख पेज पर वापस जाएँ</a>
+</div>
+<p class="note" id="note">Combo Pack कार्ट में जोड़ने के बाद मुख पेज से कार्ट खोलकर ऑर्डर पूरा किया जा सकता है।</p>
+</main>
+</div>
+<script>
+document.getElementById('addCombo').addEventListener('click',function(){
+  const key='shudhSanjivaniCart';
+  let cart=[];try{const x=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(x))cart=x}catch(e){}
+  const item={name:'सम्पूर्ण रसोई Combo Pack',size:'15 Products',qty:1,price:799,total:799,image:'/assets/combo-pack.svg'};
+  const existing=cart.find(x=>x.name===item.name&&x.size===item.size);
+  if(existing) existing.qty=(Number(existing.qty)||0)+1; else cart.push(item);
+  localStorage.setItem(key,JSON.stringify(cart));
+  window.dispatchEvent(new CustomEvent('shudh-cart-updated'));
+  this.textContent='✓ Combo Pack कार्ट में जुड़ गया';
+  document.getElementById('note').textContent='कार्ट में जोड़ दिया गया है। अब मुख पेज पर जाकर कार्ट खोलें और ऑर्डर पूरा करें।';
+});
+</script>
+</body>
+</html>
