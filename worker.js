@@ -405,7 +405,16 @@ export default {
       recipeUrl.pathname = '/garam-masala-recipe.html';
       return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)), false);
     }
-    const assetResponse = await env.ASSETS.fetch(request);
+    // Stage 190: serve the verified homepage source explicitly for / and /index.html.
+    // The repository's public/index.html is intentionally empty; the actual homepage is Stage118.
+    let assetResponse;
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      const homeUrl = new URL(request.url);
+      homeUrl.pathname = '/Shudh_Sanjivani_Stage118_index.html';
+      assetResponse = await env.ASSETS.fetch(new Request(homeUrl, request));
+    } else {
+      assetResponse = await env.ASSETS.fetch(request);
+    }
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
     // This is important while deploying the checkout/order-flow fix.
     const headers = new Headers(assetResponse.headers);
