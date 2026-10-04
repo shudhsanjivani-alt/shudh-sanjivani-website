@@ -1,0 +1,24 @@
+name: Festival Pack Preview
+
+on:
+  push:
+    branches:
+      - stage192-festival-pack-preview
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    name: Deploy Festival Pack Preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy isolated Festival Pack preview Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler.jsonc --name stage192-festival-pack-preview
