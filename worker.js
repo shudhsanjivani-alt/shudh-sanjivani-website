@@ -418,7 +418,6 @@ export default {
         "function deliveryCharge(){const sub=total();const festival=cart.some(x=>x&&x.name==='Shudh Sanjivani Festival Pack — 15 Spice');return sub===0?0:(festival||sub>=999?0:90)}"
       );
     }
-    }
     const response = new Response(responseBody, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
     return applySeo(response, isHomepage);
   }
