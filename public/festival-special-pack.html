@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Festival Special 15 Spice Pack | Shudh Sanjivani</title>
+<meta name="description" content="Shudh Sanjivani Festival Special Pack — 15 मसाले, कुल 915g, ₹799 और फ्री डिलीवरी।">
+<link rel="canonical" href="https://shudhsanjivani.in/festival-special-pack">
+<style>
+:root{--cream:#f7f1e4;--sage:#65735a;--sage2:#43513d;--copper:#a9653f;--ink:#293027;--line:#ddd2bf;--white:#fffdf8}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.55}
+header{padding:28px 18px;background:linear-gradient(180deg,#eef0df,var(--cream));text-align:center;border-bottom:1px solid var(--line)}
+.brand{display:flex;flex-direction:column;align-items:center;gap:7px;font:800 14px Arial,sans-serif;color:var(--copper);letter-spacing:.7px}.brand img{width:min(220px,62vw);max-height:72px;object-fit:contain}
+h1{margin:12px 0 5px;color:var(--sage2);font-size:clamp(29px,7vw,46px)}.lead{max-width:700px;margin:auto;color:#596055}
+a{color:var(--sage2)}.back{display:inline-block;margin-top:14px;font:800 13px Arial,sans-serif;text-decoration:none}
+main{max-width:920px;margin:auto;padding:25px 16px 48px}.panel{background:var(--white);border:1px solid var(--line);border-radius:20px;padding:clamp(16px,4vw,30px);text-align:center;box-shadow:0 7px 22px rgba(54,45,30,.06)}
+.kicker{font:800 11px Arial,sans-serif;letter-spacing:2px;color:var(--copper)}.product-image{display:block;width:min(100%,650px);height:auto;margin:16px auto;border-radius:13px}
+.price{font:900 36px Arial,sans-serif;color:var(--copper);margin:5px}.free{font:800 14px Arial,sans-serif;color:var(--sage2)}
+button{display:block;width:min(100%,390px);min-height:50px;margin:17px auto 8px;border:0;border-radius:11px;background:var(--copper);color:white;font:800 15px Arial,sans-serif;cursor:pointer}
+.note{max-width:650px;margin:18px auto 0;color:#596055;font-size:14px}.home{display:inline-block;margin-top:20px;padding:12px 20px;border-radius:10px;background:var(--sage2);color:white;text-decoration:none;font:800 13px Arial,sans-serif}
+#feedback{min-height:22px;color:var(--sage2);font-weight:700}
+footer{text-align:center;color:#747a70;font:12px Arial,sans-serif;padding:0 16px 28px}
+</style>
+</head>
+<body>
+<header><div class="brand"><img src="/assets/shudh-sanjivani-logo.png" alt="Shudh Sanjivani"><span>SHUDH SANJIVANI NATURAL PRODUCTS</span></div>
+<h1>Festival Special Pack</h1><p class="lead">एक खास पैक में 15 रोज़मर्रा के मसाले — पारंपरिक रसोई के लिए।</p>
+<a class="back" href="/">← मुख्य वेबसाइट पर वापस जाएँ</a></header>
+<main><section class="panel">
+<div class="kicker">SHUDH SANJIVANI • FESTIVAL SPECIAL</div>
+<h2 style="color:var(--sage2);margin:7px 0">15 मसाला Festival Pack</h2>
+<p>एक पैक में 15 मसाले • कुल 915g</p>
+<img class="product-image" src="/assets/festival-15-spice-pack.svg" alt="Festival Special Pack में 15 मसालों की सूची और मात्रा">
+<div class="price">₹799</div><div class="free">Delivery FREE</div>
+<p class="note">एक पैक • 15 मसाले • Festival Offer<br>मुख्य चित्र में पैक की सामग्री और मात्रा का विवरण देखें।</p>
+<button id="add">🛒 Add to Cart — ₹799</button><div id="feedback" role="status"></div>
+<a class="home" href="/">मुख्य वेबसाइट / Cart खोलें</a>
+</section></main>
+<footer>शुद्धता • स्वाद • भरोसा<br>Shudh Sanjivani Natural Products</footer>
+<script>
+(function(){
+const KEY='shudhSanjivaniCart';
+const item={name:'Shudh Sanjivani Festival Pack — 15 Spice',size:'1 Pack',price:799,qty:1,image:'/assets/festival-15-spice-pack.svg'};
+document.getElementById('add').addEventListener('click',function(){
+let cart=[];try{cart=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(cart))cart=[]}catch(e){}
+const found=cart.find(x=>x&&x.name===item.name&&x.size===item.size);
+if(found)found.qty=(Number(found.qty)||0)+1;else cart.push({...item});
+localStorage.setItem(KEY,JSON.stringify(cart));
+document.getElementById('feedback').textContent='✓ Festival Pack कार्ट में जुड़ गया। अब मुख्य वेबसाइट पर Cart खोलें।';
+});
+})();
+</script>
+</body></html>
