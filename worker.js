@@ -395,7 +395,7 @@ export default {
       blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
     }
-    if (url.pathname === '/lal-mirch-ki-kahani') {
+    if (url.pathname === '/lal-mirch-ki-kahani' || url.pathname === '/lal-mirch-ki-kahani-v2') {
       const blogUrl = new URL(request.url);
       blogUrl.pathname = '/lal-mirch-ki-kahani.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
