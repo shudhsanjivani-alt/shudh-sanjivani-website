@@ -1,0 +1,39 @@
+name: Deploy Red Chilli Blog Preview (PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-preview:
+    if: github.event.pull_request.head.ref == 'stage-red-chilli-blog'
+    runs-on: ubuntu-latest
+    name: Deploy Red Chilli Blog Preview
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Create preview Wrangler config
+        run: |
+          python3 - <<'PY'
+          import json
+          with open("wrangler.jsonc","r",encoding="utf-8") as f:
+              cfg=json.load(f)
+          cfg["name"]="stage-red-chilli-blog-preview"
+          cfg.pop("route",None)
+          cfg["workers_dev"]=True
+          with open("wrangler-preview.json","w",encoding="utf-8") as f:
+              json.dump(cfg,f,ensure_ascii=False,indent=2)
+          PY
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler-preview.json
