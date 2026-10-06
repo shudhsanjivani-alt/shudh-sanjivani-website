@@ -291,6 +291,12 @@ function applySeo(response, isHomepage = false) {
     description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए खालिस मसाले, पारंपरिक स्वाद और भरोसा।'
   };
   return new HTMLRewriter()
+    .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
+      if (isHomepage) {
+        redChilliCardCount += 1;
+        if (redChilliCardCount > 1) el.remove();
+      }
+    }})
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
     .on('meta', { element(el) {
       const name=String(el.getAttribute('name')||'').toLowerCase();
