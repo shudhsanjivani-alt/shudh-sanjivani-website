@@ -14,5 +14,12 @@
       "id": "d2927ef47ab84532ae4e3d46ceaa4cd0"
     }
   ],
-  "previews": {}
+  "previews": {
+    "kv_namespaces": [
+      {
+        "binding": "ORDERS_KV",
+        "id": "c593959f48b34b999fc2e333710ddec0"
+      }
+    ]
+  }
 }
