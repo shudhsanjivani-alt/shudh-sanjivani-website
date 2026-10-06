@@ -305,40 +305,6 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-    .on('body', { element(el) {
-      if (isHomepage) {
-        el.append(`<script>
-(function(){
-  function replaceDuplicateRedChilli(){
-    if(document.getElementById('festival-15-spice-pack')) return;
-    const title='लाल मिर्च — तीखी है, मगर सुकून देती है';
-    const candidates=[];
-    document.querySelectorAll('section,article').forEach(function(node){
-      const txt=(node.textContent||'').replace(/\\s+/g,' ').trim();
-      if(txt.includes(title) && node.querySelector('a[href*="lal-mirch-ki-kahani"]')) candidates.push(node);
-    });
-    const labelled=[...document.querySelectorAll('[aria-label="लाल मिर्च ब्लॉग"]')];
-    labelled.forEach(function(node){ if(!candidates.includes(node)) candidates.push(node); });
-    if(candidates.length<2) return;
-    const target=candidates[1];
-    target.outerHTML=\`<section id="festival-15-spice-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 28px;padding:0 16px;"><div style="background:linear-gradient(135deg,#fffdf8,#f7efe1);border:1px solid #d9c8ae;border-radius:20px;overflow:hidden;box-shadow:0 10px 28px rgba(54,45,30,.08);"><div style="padding:20px 18px 8px;text-align:center;"><div style="font:800 11px/1.2 Arial,sans-serif;letter-spacing:2px;color:#a9653f;">SHUDH SANJIVANI • FESTIVAL SPECIAL</div><h2 style="margin:6px 0 3px;border:0;padding:0;color:#43513d;font-size:clamp(24px,5vw,34px);">15 मसाला Festival Pack</h2><p style="margin:0;color:#62675e;font:600 14px/1.5 Arial,sans-serif;">एक पैक में 15 रोज़मर्रा के मसाले</p></div><div style="padding:8px 18px 0;text-align:center;"><img src="/assets/festival-15-spice-pack.svg" alt="Shudh Sanjivani 15 Spice Festival Pack" loading="lazy" style="display:block;width:min(100%,430px);height:auto;margin:0 auto;border-radius:14px;border:1px solid #eadfce;background:#fff;"></div><div style="padding:16px 18px 20px;text-align:center;"><div style="display:flex;justify-content:center;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:5px;"><span style="font:900 30px/1 Arial,sans-serif;color:#a9653f;">₹799</span><span style="font:800 13px Arial,sans-serif;color:#43513d;">Delivery FREE</span></div><p style="margin:0 0 13px;color:#687064;font:600 12px/1.5 Arial,sans-serif;">एक पैक • 15 मसाले • Festival Offer</p><button type="button" onclick="if(window.__shudhAddToCart){window.__shudhAddToCart('Shudh Sanjivani Festival Pack — 15 Spice','1 Pack',799,'/assets/festival-15-spice-pack.svg');}" style="width:min(100%,360px);min-height:48px;border:0;border-radius:11px;background:#a9653f;color:#fff;font:800 15px Arial,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(169,101,63,.22);">🛒 Add to Cart — ₹799</button></div></div></section>\`;
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',replaceDuplicateRedChilli);
-  else replaceDuplicateRedChilli();
-  setTimeout(replaceDuplicateRedChilli,300);
-  setTimeout(replaceDuplicateRedChilli,1000);
-})();
-</script>`, {html:true});
-      }
-    }})
-    .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
-      if (isHomepage) {
-        redChilliCardCount += 1;
-        if (redChilliCardCount > 1) {
-          el.replace(`<section id="festival-15-spice-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 28px;padding:0 16px;"><div style="background:linear-gradient(135deg,#fffdf8,#f7efe1);border:1px solid #d9c8ae;border-radius:20px;overflow:hidden;box-shadow:0 10px 28px rgba(54,45,30,.08);"><div style="padding:20px 18px 8px;text-align:center;"><div style="font:800 11px/1.2 Arial,sans-serif;letter-spacing:2px;color:#a9653f;">SHUDH SANJIVANI • FESTIVAL SPECIAL</div><h2 style="margin:6px 0 3px;border:0;padding:0;color:#43513d;font-size:clamp(24px,5vw,34px);">15 मसाला Festival Pack</h2><p style="margin:0;color:#62675e;font:600 14px/1.5 Arial,sans-serif;">एक पैक में 15 रोज़मर्रा के मसाले</p></div><div style="padding:8px 18px 0;text-align:center;"><img src="/assets/festival-15-spice-pack.svg" alt="Shudh Sanjivani 15 Spice Festival Pack — 15 मसालों की मात्रा, ₹799 और Delivery Free" loading="lazy" style="display:block;width:min(100%,430px);height:auto;margin:0 auto;border-radius:14px;border:1px solid #eadfce;background:#fff;"></div><div style="padding:16px 18px 20px;text-align:center;"><div style="display:flex;justify-content:center;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:5px;"><span style="font:900 30px/1 Arial,sans-serif;color:#a9653f;">₹799</span><span style="font:800 13px Arial,sans-serif;color:#43513d;">Delivery FREE</span></div><p style="margin:0 0 13px;color:#687064;font:600 12px/1.5 Arial,sans-serif;">एक पैक • 15 मसाले • Festival Offer</p><button type="button" onclick="if(window.__shudhAddToCart){window.__shudhAddToCart('Shudh Sanjivani Festival Pack — 15 Spice','1 Pack',799,'/assets/festival-15-spice-pack.svg');}" style="width:min(100%,360px);min-height:48px;border:0;border-radius:11px;background:#a9653f;color:#fff;font:800 15px Arial,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(169,101,63,.22);">🛒 Add to Cart — ₹799</button><div id="festival15Status" aria-live="polite" style="min-height:20px;margin-top:8px;color:#43513d;font:700 11px Arial,sans-serif;"></div></div></div></section>`, {html:true});
-        }
-      }
-    }})
     .on('head', { element(el) {
       el.onEndTag(end => {
         if(!hasDescription) end.before(`<meta name="description" content="${seo.description}">`, {html:true});
