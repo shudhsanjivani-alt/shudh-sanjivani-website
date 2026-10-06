@@ -15,21 +15,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Create preview Wrangler config
-        run: |
-          python3 - <<'PY'
-          import json
-          with open("wrangler.jsonc","r",encoding="utf-8") as f:
-              cfg=json.load(f)
-          cfg["name"]="stage-red-chilli-blog-preview"
-          cfg.pop("route",None)
-          cfg["workers_dev"]=True
-          with open("wrangler-preview.json","w",encoding="utf-8") as f:
-              json.dump(cfg,f,ensure_ascii=False,indent=2)
-          PY
-      - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --config wrangler-preview.json
+          node-version: 22
+
+      - name: Install Wrangler
+        run: npm install --no-save wrangler@latest
+
+      - name: Deploy Worker Preview
+        run: npx wrangler preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
