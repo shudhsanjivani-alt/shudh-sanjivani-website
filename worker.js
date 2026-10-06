@@ -305,7 +305,7 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-    .on('section[aria-label="Shudh Sanjivani Festival Pack"]', { element(el) {
+    .on('section[aria-label="Shudh Sanjivani Festival Pack"], section.festival-pack', { element(el) {
       if (isHomepage) el.remove();
     }})
     .on('head', { element(el) {
