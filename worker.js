@@ -306,8 +306,8 @@ function applySeo(response, isHomepage = false) {
     }})
     .on('body', { element(el) {
       if (isHomepage) {
-        // Keep the original red-chilli blog card; remove only the lower duplicate.
-        el.append(`<script>(function(){function removeDuplicate(){try{var nodes=Array.prototype.slice.call(document.querySelectorAll("*")).filter(function(x){var t=(x.textContent||"").trim();return t.includes("तेजा लाल मिर्च")&&t.includes("नया ब्लॉग")&&t.includes("लाल मिर्च का ब्लॉग पढ़ें");});if(nodes.length){nodes.sort(function(a,b){return (a.textContent||"").trim().length-(b.textContent||"").trim().length;});var node=nodes[0];if(node&&node!==document.body&&node!==document.documentElement)node.remove();}}catch(e){}}function start(){removeDuplicate();var o=new MutationObserver(removeDuplicate);o.observe(document.body,{childList:true,subtree:true});[100,500,1500,3000,5000,8000,12000].forEach(function(ms){setTimeout(removeDuplicate,ms);});}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start);}else{start();}})();</script>`,{html:true});
+        // Keep the first red-chilli blog link/card; remove only later duplicate blog links.
+        el.append('<script>(function(){function removeDuplicate(){try{var links=Array.prototype.slice.call(document.querySelectorAll("a")).filter(function(a){var t=(a.textContent||"").trim();return t.includes("ब्लॉग पढ़ें")&&t.includes("लाल मिर्च");});if(links.length>1){links.slice(1).forEach(function(a){var n=a.closest("article,section,div");if(n&&n!==document.body){n.remove();}else{a.remove();}});}}catch(e){}}function start(){removeDuplicate();var o=new MutationObserver(removeDuplicate);o.observe(document.body,{childList:true,subtree:true});[100,500,1500,3000,5000,8000,12000].forEach(function(ms){setTimeout(removeDuplicate,ms);});}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start);}else{start();}})();</script>',{html:true});
       }
     }})
     .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
