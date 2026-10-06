@@ -285,6 +285,7 @@ function applySeo(response, isHomepage = false) {
   const contentType = response.headers.get('Content-Type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
   let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
+  let redChilliCardCount = 0;
   const seo = {
     title: 'Shudh Sanjivani | Pure Spices & Natural Products',
     description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए खालिस मसाले, पारंपरिक स्वाद और भरोसा।'
@@ -306,13 +307,13 @@ function applySeo(response, isHomepage = false) {
     }})
     .on('body', { element(el) {
       if (isHomepage) {
-        // Keep the first red-chilli blog link/card; remove only later duplicate blog links.
-        el.append('<script>(function(){function removeDuplicate(){try{var links=Array.prototype.slice.call(document.querySelectorAll("a")).filter(function(a){var t=(a.textContent||"").trim();return t.includes("ब्लॉग पढ़ें")&&t.includes("लाल मिर्च");});if(links.length>1){links.slice(1).forEach(function(a){var n=a.closest("article,section,div");if(n&&n!==document.body){n.remove();}else{a.remove();}});}}catch(e){}}function start(){removeDuplicate();var o=new MutationObserver(removeDuplicate);o.observe(document.body,{childList:true,subtree:true});[100,500,1500,3000,5000,8000,12000].forEach(function(ms){setTimeout(removeDuplicate,ms);});}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start);}else{start();}})();</script>',{html:true});
+        // Duplicate-card removal is handled below at HTML response time; no client-side script.
       }
     }})
     .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
       if (isHomepage) {
-        el.prepend('<div style="width:100%;height:210px;overflow:hidden;border-radius:16px 16px 0 0;"><img src="/assets/red-chilli/guntur.webp?v=20261005-2" alt="गुंटूर लाल मिर्च" loading="eager" style="display:block;width:100%;height:100%;object-fit:cover;"></div>', {html:true});
+        redChilliCardCount += 1;
+        if (redChilliCardCount > 1) el.remove();
       }
     }})
     .on('head', { element(el) {
