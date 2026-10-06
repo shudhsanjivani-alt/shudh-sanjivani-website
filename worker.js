@@ -306,7 +306,8 @@ function applySeo(response, isHomepage = false) {
     }})
     .on('body', { element(el) {
       if (isHomepage) {
-        
+        // Keep only the existing red-chilli blog card; remove the duplicate card injected below it.
+        el.append('<script>(function(){try{var all=document.querySelectorAll("section,article,div");all.forEach(function(x){var t=(x.innerText||"").trim();if(t.includes("तेजा लाल मिर्च")&&t.includes("नया ब्लॉग")){x.remove();}})}catch(e){}})();</script>',{html:true});
       }
     }})
     .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
