@@ -1202,7 +1202,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
   function save(){localStorage.setItem(CART_KEY,JSON.stringify(cart)); renderCart();}
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
-  function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
+  function deliveryCharge(){const sub=total();const festival=cart.some(x=>x&&String(x.name||'').trim()==='Shudh Sanjivani Festival Pack');return sub===0?0:(festival||sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
   function getOrderHistory(){try{const h=JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY)||'[]');return Array.isArray(h)?h:[]}catch(e){return [];}}
   function saveOrderToHistory(){
@@ -1306,6 +1306,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cartToast.classList.add('show');
     clearTimeout(toastTimer); toastTimer=setTimeout(()=>cartToast.classList.remove('show'),1800);
   }
+  window.__shudhAddToCart=add;
   function openCartWhatsApp(){if(!cart.length)return;const lines=cart.map(x=>`• ${x.name} — ${x.size} × ${x.qty} = ₹${Number(x.price*x.qty).toLocaleString('en-IN')}`).join('\n');const customer=`नाम: ${(customerName.value||'').trim()||'नहीं दिया गया'}\nमोबाइल: ${(customerPhone.value||'').trim()||'नहीं दिया गया'}\nपता: ${[(customerAddress.value||'').trim(),(customerCity.value||'').trim(),(customerPincode.value||'').trim()].filter(Boolean).join(', ')||'नहीं दिया गया'}`;const msg=`नमस्कार Shudh Sanjivani, मुझे WhatsApp पर यह ऑर्डर करना है।\n\n${lines}\n\nकुल सामान: ₹${total().toLocaleString('en-IN')}\nडिलीवरी: ${deliveryCharge()===0?'फ्री':'₹'+deliveryCharge()}\nकुल: ₹${grandTotal().toLocaleString('en-IN')}\n\n${customer}\n\nFresh grinding: ${freshOrderChoice.checked?'हाँ':'नहीं'}\nकृपया ऑर्डर की पुष्टि करें।`;window.open('https://wa.me/919877864764?text='+encodeURIComponent(msg),'_blank','noopener');}
   cartWhatsapp.addEventListener('click',openCartWhatsApp);
   document.getElementById('cartOpen').onclick=()=>{renderCart();overlay.classList.add('open');};
