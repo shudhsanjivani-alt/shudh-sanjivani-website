@@ -355,7 +355,7 @@ function applySeo(response, isHomepage = false) {
     <div class="festival-pack-stage-head">
       <span class="festival-pack-stage-kicker">SPECIAL COMBO</span>
       <h2>Shudh Sanjivani Festival Pack</h2>
-      <p>15 Spice Combo Pack — एक पैक मसालों की असली खुशबू वाला</p>
+      <p>15 Spice Combo Pack — एक पैक मसालों की असली खुशबू वाला • ₹799 • Delivery FREE</p>
     </div>
     <div class="festival-pack-stage-body">
       <div class="festival-pack-stage-visual">
