@@ -343,6 +343,9 @@ function applySeo(response, isHomepage = false) {
         if(!hasOgDescription) end.before(`<meta property="og:description" content="${seo.description}">`, {html:true});
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
+        if (isHomepage) {
+          end.before('<script>(function(){try{if(new URLSearchParams(location.search).get("festival-pack")==="1"){window.addEventListener("load",function(){setTimeout(function(){var el=document.getElementById("festival-pack");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},120);});}}catch(e){}})();</script>', {html:true});
+        }
         end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
         const productNames = [
           "Amba Turmeric","Besan","Amla Powder","Whole Coriander Seeds","Whole Black Pepper","Multigrain Flour",
