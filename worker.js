@@ -300,7 +300,7 @@ function applySeo(response, isHomepage = false) {
     }})
     .on('section.catalogue', { element(el) {
       if (!isHomepage) return;
-      el.before(`<section aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
+      el.before(`<section id="festival-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
         <div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px rgba(54,45,30,.08);">
           <div style="padding:16px 16px 0;text-align:center;">
             <img src="/assets/PhotoGrid_Plus_1791052839297.jpg" alt="Shudh Sanjivani Festival Pack — 15 Spice Combo Pack, ₹799, Delivery Free" style="display:block;width:100%;max-width:760px;margin:0 auto;border-radius:12px;height:auto;">
