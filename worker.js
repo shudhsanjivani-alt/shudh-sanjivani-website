@@ -281,7 +281,7 @@ async function saveReview(request, env) {
   } catch (e) { return json({ saved: false, error: 'समीक्षा server पर सेव नहीं हो सकी।' }, 400, origin); }
 }
 
-// Stage: Festival Pack homepage image + details are intentionally kept in Preview only.
+// Stage: Festival Pack homepage card is rendered from the same index transformation used by the working blog buttons.
 function applySeo(response, isHomepage = false) {
   const contentType = response.headers.get('Content-Type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
