@@ -303,7 +303,7 @@ function applySeo(response, isHomepage = false) {
       el.before(`<section aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
         <div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px rgba(54,45,30,.08);">
           <div style="padding:16px 16px 0;text-align:center;">
-            <img src="/assets/festival-15-spice-pack.webp" alt="Shudh Sanjivani Festival Pack — 15 Spice Combo Pack, ₹799, Delivery Free" style="display:block;width:100%;max-width:760px;margin:0 auto;border-radius:12px;height:auto;">
+            <img src="/assets/festival-15-spice-pack.svg" alt="Shudh Sanjivani Festival Pack — 15 Spice Combo Pack, ₹799, Delivery Free" style="display:block;width:100%;max-width:760px;margin:0 auto;border-radius:12px;height:auto;">
           </div>
           <div style="padding:18px 20px 22px;">
             <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
@@ -314,7 +314,7 @@ function applySeo(response, isHomepage = false) {
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;">
               <div style="font:800 24px Arial,sans-serif;color:#a9653f;">₹799 <span style="font-size:13px;color:#596055;font-weight:700;">· Delivery FREE</span></div>
-              <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/festival-15-spice-pack.webp')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
+              <button type="button" onclick="window.__shudhFestivalAdd&&window.__shudhFestivalAdd()" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
             </div>
           </div>
         </div>
@@ -333,6 +333,26 @@ function applySeo(response, isHomepage = false) {
     .on('link', { element(el) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
+    }})
+    .on('body', { element(el) {
+      if (!isHomepage) return;
+      el.onEndTag(end => end.before('<script>
+        window.__shudhFestivalAdd=function(){
+          try{
+            if(typeof window.__shudhAddToCart==='function'){
+              window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/festival-15-spice-pack.svg');
+              return;
+            }
+            const key='shudhSanjivaniCart';
+            const cart=JSON.parse(localStorage.getItem(key)||'[]');
+            const found=cart.find(x=>x&&x.name==='Shudh Sanjivani Festival Pack'&&x.size==='15 Spice Combo Pack');
+            if(found) found.qty=(Number(found.qty)||0)+1;
+            else cart.push({name:'Shudh Sanjivani Festival Pack',size:'15 Spice Combo Pack',price:799,qty:1,image:'/assets/festival-15-spice-pack.svg'});
+            localStorage.setItem(key,JSON.stringify(cart));
+            location.reload();
+          }catch(e){ console.error(e); }
+        };
+      </script>', {html:true}));
     }})
     .on('head', { element(el) {
       el.onEndTag(end => {
@@ -434,11 +454,7 @@ export default {
       const source = await env.ASSETS.fetch(new Request(new URL('/assets/festival-15-spice-pack.svg', request.url), request));
       if (source.ok) {
         const svg = await source.text();
-        const m = svg.match(/data:image\/webp;base64,([^\"']+)/i);
-        if (m) {
-          const bytes = Uint8Array.from(atob(m[1]), ch => ch.charCodeAt(0));
-          return new Response(bytes, {headers:{'Content-Type':'image/webp','Cache-Control':'public, max-age=3600'}});
-        }
+        return new Response(svg, {headers:{'Content-Type':'image/svg+xml; charset=UTF-8','Cache-Control':'public, max-age=3600'}});
       }
       return new Response('Festival Pack image unavailable', {status:404});
     }
