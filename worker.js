@@ -420,7 +420,15 @@ export default {
       }
       return new Response('Festival Pack image unavailable', {status:404});
     }
-    const assetResponse = await env.ASSETS.fetch(request);
+    // Homepage source of truth: the current Stage118 index file.
+    // public/index.html is only a placeholder, so / must explicitly serve Stage118.
+    let assetRequest = request;
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      const homeUrl = new URL(request.url);
+      homeUrl.pathname = '/Shudh_Sanjivani_Stage118_index.html';
+      assetRequest = new Request(homeUrl, request);
+    }
+    const assetResponse = await env.ASSETS.fetch(assetRequest);
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
     // This is important while deploying the checkout/order-flow fix.
     const headers = new Headers(assetResponse.headers);
