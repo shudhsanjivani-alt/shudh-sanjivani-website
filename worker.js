@@ -426,7 +426,11 @@ export default {
     if (url.pathname === '/' || url.pathname === '/index.html') {
       const homeUrl = new URL(request.url);
       homeUrl.pathname = '/Shudh_Sanjivani_Stage118_index.html';
-      assetRequest = new Request(homeUrl, request);
+      // Force a clean GET for the explicit homepage asset.
+      assetRequest = new Request(homeUrl.toString(), {
+        method: 'GET',
+        headers: request.headers
+      });
     }
     const assetResponse = await env.ASSETS.fetch(assetRequest);
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
