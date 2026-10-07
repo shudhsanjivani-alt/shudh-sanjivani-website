@@ -298,6 +298,28 @@ function applySeo(response, isHomepage = false) {
         if (redChilliCardCount > 1) el.remove();
       }
     }})
+    .on('section.catalogue', { element(el) {
+      if (!isHomepage) return;
+      el.before(`<section aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
+        <div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px rgba(54,45,30,.08);">
+          <div style="padding:16px 16px 0;text-align:center;">
+            <img src="/assets/festival-15-spice-pack.webp" alt="Shudh Sanjivani Festival Pack — 15 Spice Combo Pack, ₹799, Delivery Free" style="display:block;width:100%;max-width:760px;margin:0 auto;border-radius:12px;height:auto;">
+          </div>
+          <div style="padding:18px 20px 22px;">
+            <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
+            <h2 style="margin:5px 0 6px;color:#43513d;font-size:25px;">Festival Pack — 15 Spice एक पैक</h2>
+            <p style="margin:0 0 12px;color:#596055;font-size:15px;line-height:1.6;">शुद्ध खुशबू के साथ शुद्ध मसालों का combo pack</p>
+            <div style="color:#43513d;font-size:14px;line-height:1.65;">
+              <strong>15 मसाले:</strong> हल्दी 100g · लाल मिर्च 100g · धनिया 100g · जीरा 100g · काली मिर्च 40g · गरम मसाला 80g · Tea Masala 40g · Chaat Masala 40g · कसूरी मेथी 50g · Green Cardamom 15g · सौंफ 100g · अजवाइन 50g · लौंग 20g · Dry Ginger 40g · Cinnamon 40g
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;">
+              <div style="font:800 24px Arial,sans-serif;color:#a9653f;">₹799 <span style="font-size:13px;color:#596055;font-weight:700;">· Delivery FREE</span></div>
+              <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/festival-15-spice-pack.webp')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </section>`, {html:true});
+    })
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
     .on('meta', { element(el) {
       const name=String(el.getAttribute('name')||'').toLowerCase();
@@ -444,7 +466,7 @@ export default {
     const response = new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
     // Preview safety: serve the homepage HTML directly. This keeps the restored homepage
     // independent of HTMLRewriter while we verify the original images/layout.
-    if (url.pathname === '/' || url.pathname === '/index.html') return response;
+    if (url.pathname === '/' || url.pathname === '/index.html') return applySeo(response, true);
     return applySeo(response, false);
   }
 };
