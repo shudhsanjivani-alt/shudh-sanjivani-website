@@ -1324,7 +1324,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }catch(e){}
   }
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
-  function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
+  function deliveryCharge(){const sub=total();const festival=cart.some(x=>x&&String(x.name||'').trim()==='Shudh Sanjivani Festival Pack');return sub===0?0:(festival||sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
   function getOrderHistory(){try{const h=JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY)||'[]');return Array.isArray(h)?h:[]}catch(e){return [];}}
   function saveOrderToHistory(){
@@ -1440,7 +1440,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   razorpayPayButton.addEventListener('click',startRazorpayPayment);
   function renderCart(){
-    const sub=total(), delivery=deliveryCharge(), grand=grandTotal(); const count=cart.reduce((s,x)=>s+x.qty,0); countEl.textContent=count; subtotalEl.textContent=money(sub); deliveryEl.textContent=delivery===0?money(0):money(delivery); deliveryEl.className=''+(delivery===0&&sub>0?' delivery-free':''); deliveryNoteEl.textContent=sub>=999?'✓ ₹999 या अधिक के ऑर्डर पर डिलीवरी फ्री':'डिलीवरी शुल्क ₹90 · ₹999 या अधिक पर फ्री'; totalEl.textContent=money(grand);
+    const sub=total(), delivery=deliveryCharge(), grand=grandTotal(); const count=cart.reduce((s,x)=>s+x.qty,0); countEl.textContent=count; subtotalEl.textContent=money(sub); deliveryEl.textContent=delivery===0?money(0):money(delivery); deliveryEl.className=''+(delivery===0&&sub>0?' delivery-free':''); deliveryNoteEl.textContent=(cart.some(x=>x&&String(x.name||'').trim()==='Shudh Sanjivani Festival Pack')||sub>=999)?'✓ इस Festival Pack ऑर्डर पर डिलीवरी फ्री':'डिलीवरी शुल्क ₹90 · ₹999 या अधिक पर फ्री'; totalEl.textContent=money(grand);
     if(!cart.length){itemsEl.innerHTML='<div class="empty-cart">आपका कार्ट अभी खाली है।<br>नीचे से अपना पैक चुनकर <b>Add to Cart</b> दबाएँ।</div>'; checkout.style.display='none'; cartWhatsapp.style.display='none'; continueShop.style.display='none'; orderHistoryOpen.style.display='none'; return;}
     cartWhatsapp.style.display='none';
     continueShop.style.display='none';
@@ -1456,6 +1456,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const found=cart.find(x=>x.name===name&&x.size===size);
     if(found) found.qty++; else cart.push({name,size,price:Number(price),qty:1,image:image||''});
     save();
+    window.__shudhAddToCart=add;
     cartToast.textContent=name+' · '+size+' कार्ट में जोड़ दिया गया ✓';
     cartToast.classList.add('show');
     clearTimeout(toastTimer); toastTimer=setTimeout(()=>cartToast.classList.remove('show'),1800);
