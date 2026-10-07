@@ -438,6 +438,9 @@ export default {
       headers.set('Expires', '0');
     }
     const response = new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
-    return applySeo(response, url.pathname === '/' || url.pathname === '/index.html');
+    // Preview safety: serve the homepage HTML directly. This keeps the restored homepage
+    // independent of HTMLRewriter while we verify the original images/layout.
+    if (url.pathname === '/' || url.pathname === '/index.html') return response;
+    return applySeo(response, false);
   }
 };
