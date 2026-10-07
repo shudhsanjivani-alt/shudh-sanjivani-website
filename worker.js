@@ -326,7 +326,7 @@ function applySeo(response, isHomepage = false) {
 .festival-pack-stage-head h2{margin:10px 0 5px;border:0;padding:0;color:#43513d;font-size:30px}
 .festival-pack-stage-head p{margin:0;color:#687064;font-size:15px}
 .festival-pack-stage-body{display:grid;grid-template-columns:1fr 1.35fr;gap:22px;padding:22px}
-.festival-pack-stage-visual{border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 35%,#fffdf8 0,#eee4cf 52%,#d9c7a8 100%);border:1px solid #e0d3be}
+.festival-pack-stage-visual{border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 35%,#fffdf8 0,#eee4cf 52%,#d9c7a8 100%);border:1px solid #e0d3be}.festival-pack-stage-visual img{display:block;width:100%;max-width:430px;height:auto;max-height:430px;object-fit:contain;border-radius:12px;margin:0 auto;box-shadow:0 5px 18px rgba(54,45,30,.08)}
 .festival-pack-stage-visual strong{display:block;font:900 54px/1 Arial,sans-serif;color:#8e2f1c}
 .festival-pack-stage-visual span{display:block;margin-top:10px;font:800 18px/1.35 Arial,sans-serif;color:#43513d}
 .festival-pack-stage-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin:0;padding:0;list-style:none}
