@@ -314,7 +314,7 @@ function applySeo(response, isHomepage = false) {
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;">
               <div style="font:800 24px Arial,sans-serif;color:#a9653f;">₹799 <span style="font-size:13px;color:#596055;font-weight:700;">· Delivery FREE</span></div>
-              <button type="button" onclick="window.__shudhFestivalAdd&&window.__shudhFestivalAdd()" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
+              <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/festival-15-spice-pack.svg')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
             </div>
           </div>
         </div>
