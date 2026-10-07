@@ -314,6 +314,105 @@ function applySeo(response, isHomepage = false) {
     .on('section[aria-label="Shudh Sanjivani Festival Pack"], section.festival-pack', { element(el) {
       if (isHomepage) el.remove();
     }})
+
+    .on('#products', { element(el) {
+      if (!isHomepage) return;
+      el.before(`
+<style>
+.festival-pack-stage-card{max-width:1120px;margin:0 auto 34px;padding:0 18px}
+.festival-pack-stage-inner{border:1px solid #d8c7a9;border-radius:20px;background:linear-gradient(135deg,#fffdf8,#f8f0df);box-shadow:0 10px 30px rgba(54,45,30,.09);overflow:hidden}
+.festival-pack-stage-head{padding:24px 22px 16px;text-align:center;background:linear-gradient(180deg,#fffaf0,#f7ead5)}
+.festival-pack-stage-kicker{display:inline-block;padding:6px 12px;border-radius:999px;background:#a9653f;color:#fff;font:800 11px Arial,sans-serif;letter-spacing:1.1px}
+.festival-pack-stage-head h2{margin:10px 0 5px;border:0;padding:0;color:#43513d;font-size:30px}
+.festival-pack-stage-head p{margin:0;color:#687064;font-size:15px}
+.festival-pack-stage-body{display:grid;grid-template-columns:1fr 1.35fr;gap:22px;padding:22px}
+.festival-pack-stage-visual{border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 35%,#fffdf8 0,#eee4cf 52%,#d9c7a8 100%);border:1px solid #e0d3be}
+.festival-pack-stage-visual strong{display:block;font:900 54px/1 Arial,sans-serif;color:#8e2f1c}
+.festival-pack-stage-visual span{display:block;margin-top:10px;font:800 18px/1.35 Arial,sans-serif;color:#43513d}
+.festival-pack-stage-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin:0;padding:0;list-style:none}
+.festival-pack-stage-list li{padding:8px 9px;border:1px solid #e5dac8;border-radius:9px;background:#fff;font:700 12px/1.35 Arial,sans-serif;color:#4f574d}
+.festival-pack-stage-list li b{color:#a9653f}
+.festival-pack-stage-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid #e2d6c3}
+.festival-pack-stage-price{font:900 27px Arial,sans-serif;color:#8e2f1c}
+.festival-pack-stage-free{font:800 12px Arial,sans-serif;color:#287a45;margin-top:3px}
+.festival-pack-stage-cart{border:0;border-radius:10px;min-height:48px;padding:0 20px;background:#a9653f;color:#fff;font:800 14px Arial,sans-serif;cursor:pointer;box-shadow:0 5px 14px rgba(169,101,63,.18)}
+.festival-pack-stage-cart:hover{filter:brightness(.94)}
+@media(max-width:700px){
+  .festival-pack-stage-card{padding:0 12px}
+  .festival-pack-stage-body{grid-template-columns:1fr;padding:16px}
+  .festival-pack-stage-visual{min-height:170px}
+  .festival-pack-stage-visual strong{font-size:44px}
+  .festival-pack-stage-head h2{font-size:25px}
+  .festival-pack-stage-list{grid-template-columns:1fr 1fr;gap:7px}
+  .festival-pack-stage-list li{font-size:11px}
+  .festival-pack-stage-bottom{display:block}
+  .festival-pack-stage-cart{width:100%;margin-top:12px}
+}
+</style>
+<section id="festival-pack" aria-label="Festival Pack" class="festival-pack-stage-card">
+  <div class="festival-pack-stage-inner">
+    <div class="festival-pack-stage-head">
+      <span class="festival-pack-stage-kicker">SPECIAL COMBO</span>
+      <h2>Shudh Sanjivani Festival Pack</h2>
+      <p>15 Spice Combo Pack — एक पैक मसालों की असली खुशबू वाला</p>
+    </div>
+    <div class="festival-pack-stage-body">
+      <div class="festival-pack-stage-visual">
+        <div><strong>15</strong><span>SPICES<br/>ONE COMBO PACK</span></div>
+      </div>
+      <div>
+        <ul class="festival-pack-stage-list">
+          <li>हल्दी पाउडर <b>100g</b></li>
+          <li>लाल मिर्च पाउडर <b>100g</b></li>
+          <li>धनिया पाउडर <b>100g</b></li>
+          <li>जीरा <b>100g</b></li>
+          <li>काली मिर्च <b>40g</b></li>
+          <li>गरम मसाला <b>80g</b></li>
+          <li>चाय मसाला <b>40g</b></li>
+          <li>चाट मसाला <b>40g</b></li>
+          <li>कसूरी मेथी <b>50g</b></li>
+          <li>हरी इलायची <b>15g</b></li>
+          <li>सौंफ <b>100g</b></li>
+          <li>अजवाइन <b>50g</b></li>
+          <li>लौंग <b>20g</b></li>
+          <li>सौंठ पाउडर <b>40g</b></li>
+          <li>दालचीनी पाउडर <b>40g</b></li>
+        </ul>
+        <div class="festival-pack-stage-bottom">
+          <div><div class="festival-pack-stage-price">₹799</div><div class="festival-pack-stage-free">✓ Delivery FREE</div></div>
+          <button type="button" class="festival-pack-stage-cart" id="festivalPackAddToCart">🛒 Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  function initFestivalPack(){
+    const btn=document.getElementById('festivalPackAddToCart');
+    if(btn && typeof window.__shudhAddToCart==='function'){
+      btn.addEventListener('click',function(){
+        window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'');
+        btn.textContent='✓ कार्ट में जोड़ दिया';
+        setTimeout(function(){btn.textContent='🛒 Add to Cart';},1200);
+      });
+    }
+    document.querySelectorAll('a,button').forEach(function(el){
+      const t=(el.textContent||'').trim();
+      if(/festival|फेस्टिवल|15 spice combo|15-spice combo/i.test(t) && el.id!=='festivalPackAddToCart'){
+        el.addEventListener('click',function(){
+          const target=document.getElementById('festival-pack');
+          if(target){setTimeout(function(){target.scrollIntoView({behavior:'smooth',block:'start'});},0);}
+        },false);
+      }
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initFestivalPack);
+  else initFestivalPack();
+})();
+</script>
+`);
+    }})
     .on('head', { element(el) {
       el.onEndTag(end => {
         if(!hasDescription) end.before(`<meta name="description" content="${seo.description}">`, {html:true});
