@@ -334,7 +334,6 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-    }})
     .on('head', { element(el) {
       el.onEndTag(end => {
         if(!hasDescription) end.before(`<meta name="description" content="${seo.description}">`, {html:true});
