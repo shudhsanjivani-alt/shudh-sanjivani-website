@@ -315,9 +315,9 @@ function applySeo(response, isHomepage = false) {
       if (isHomepage) el.remove();
     }})
 
-    .on('#products', { element(el) {
+    .on('body', { element(el) {
       if (!isHomepage) return;
-      el.before(`
+      el.prepend(`
 <style>
 .festival-pack-stage-card{max-width:1120px;margin:0 auto 34px;padding:0 18px}
 .festival-pack-stage-inner{border:1px solid #d8c7a9;border-radius:20px;background:linear-gradient(135deg,#fffdf8,#f8f0df);box-shadow:0 10px 30px rgba(54,45,30,.09);overflow:hidden}
