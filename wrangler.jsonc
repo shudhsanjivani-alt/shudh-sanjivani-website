@@ -6,12 +6,20 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*", "/", "/index.html", "/assets/festival-15-spice-pack.webp"]
   },
   "kv_namespaces": [
     {
       "binding": "ORDERS_KV",
       "id": "d2927ef47ab84532ae4e3d46ceaa4cd0"
     }
-  ]
+  ],
+  "previews": {
+    "kv_namespaces": [
+      {
+        "binding": "ORDERS_KV",
+        "id": "c593959f48b34b999fc2e333710ddec0"
+      }
+    ]
+  }
 }

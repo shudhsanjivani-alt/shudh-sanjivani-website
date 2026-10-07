@@ -281,15 +281,45 @@ async function saveReview(request, env) {
   } catch (e) { return json({ saved: false, error: 'समीक्षा server पर सेव नहीं हो सकी।' }, 400, origin); }
 }
 
+// Stage: Festival Pack homepage card is rendered from the same index transformation used by the working blog buttons.
 function applySeo(response, isHomepage = false) {
   const contentType = response.headers.get('Content-Type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
   let hasDescription=false, hasRobots=false, hasCanonical=false, hasOgTitle=false, hasOgDescription=false, hasOgUrl=false;
+  let redChilliCardCount = 0;
   const seo = {
     title: 'Shudh Sanjivani | Pure Spices & Natural Products',
     description: 'Pure masale, Pure Spices, Whole Spices & Premium Sets और Natural Products — रोज़मर्रा की रसोई के लिए खालिस मसाले, पारंपरिक स्वाद और भरोसा।'
   };
   return new HTMLRewriter()
+    .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
+      if (isHomepage) {
+        redChilliCardCount += 1;
+        if (redChilliCardCount > 1) el.remove();
+      }
+    }})
+    .on('section.catalogue', { element(el) {
+      if (!isHomepage) return;
+      el.before(`<section id="festival-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
+        <div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px rgba(54,45,30,.08);">
+          <div style="padding:16px 16px 0;text-align:center;">
+            <img src="/assets/PhotoGrid_Plus_1791052839297.jpg" alt="Shudh Sanjivani Festival Pack — 15 Spice Combo Pack, ₹799, Delivery Free" style="display:block;width:100%;max-width:760px;margin:0 auto;border-radius:12px;height:auto;">
+          </div>
+          <div style="padding:18px 20px 22px;">
+            <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
+            <h2 style="margin:5px 0 6px;color:#43513d;font-size:25px;">Festival Pack — 15 Spice एक पैक</h2>
+            <p style="margin:0 0 12px;color:#596055;font-size:15px;line-height:1.6;">शुद्ध खुशबू के साथ शुद्ध मसालों का combo pack</p>
+            <div style="color:#43513d;font-size:14px;line-height:1.65;">
+              <strong>15 मसाले:</strong> हल्दी 100g · लाल मिर्च 100g · धनिया 100g · जीरा 100g · काली मिर्च 40g · गरम मसाला 80g · Tea Masala 40g · Chaat Masala 40g · कसूरी मेथी 50g · Green Cardamom 15g · सौंफ 100g · अजवाइन 50g · लौंग 20g · Dry Ginger 40g · Cinnamon 40g
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;">
+              <div style="font:800 24px Arial,sans-serif;color:#a9653f;">₹799 <span style="font-size:13px;color:#596055;font-weight:700;">· Delivery FREE</span></div>
+              <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/PhotoGrid_Plus_1791052839297.jpg')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </section>`, {html:true});
+    }})
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
     .on('meta', { element(el) {
       const name=String(el.getAttribute('name')||'').toLowerCase();
@@ -304,11 +334,6 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-    .on('body', { element(el) {
-      if (isHomepage) {
-        el.append(`<section aria-label="गरम मसाला रेसिपी" style="max-width:980px;margin:18px auto;padding:0 16px 8px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 4px;color:#43513d;font-size:23px;">गरम मसाला रेसिपी देखें</h2><p style="margin:0;color:#596055;font-size:14px;">साबुत मसालों की पूरी विधि, तस्वीरें और 250g / 500g / 1kg विकल्प एक ही जगह।</p></div><a href="/garam-masala-recipe" style="display:inline-block;flex:0 0 auto;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 14px;font:800 13px Arial,sans-serif;">रेसिपी देखें →</a></div></section><section aria-label="अचारी मसाला रेसिपी" style="max-width:980px;margin:0 auto;padding:0 16px 18px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;overflow:hidden;display:flex;align-items:stretch;gap:0;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div style="flex:0 0 38%;min-height:210px;"><img src="/assets/achari-masala-mix.jpg" alt="अचारी मसाला" style="display:block;width:100%;height:100%;min-height:210px;object-fit:cover;"></div><div style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:center;"><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 6px;color:#43513d;font-size:23px;">अचारी मसाला रेसिपी</h2><p style="margin:0 0 15px;color:#596055;font-size:14px;line-height:1.6;">250 ग्राम अचारी मसाले की आसान रेसिपी, अचार और सूखी सब्जियों में उपयोग की जानकारी।</p><a href="/achari-masala-recipe" style="display:inline-block;width:max-content;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 16px;font:800 13px Arial,sans-serif;">अचारी रेसिपी देखें →</a></div></div></section><section aria-label="हल्दी ब्लॉग" style="max-width:980px;margin:0 auto;padding:0 16px 18px;"><div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;overflow:hidden;display:flex;align-items:stretch;gap:0;box-shadow:0 5px 18px rgba(54,45,30,.06);"><div style="flex:0 0 38%;min-height:210px;"><img src="/assets/page-1.webp" alt="हल्दी — भारत की हर रसोई की शान" style="display:block;width:100%;height:100%;min-height:210px;object-fit:cover;"></div><div style="flex:1;padding:20px;display:flex;flex-direction:column;justify-content:center;"><div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div><h2 style="margin:5px 0 6px;color:#43513d;font-size:23px;">हल्दी — भारत की हर रसोई की शान</h2><p style="margin:0 0 15px;color:#596055;font-size:14px;line-height:1.6;">हल्दी की पहचान, पारंपरिक अनुभव, रसोई में इसका महत्व और हमारी खास कविता पढ़ें।</p><a href="/haldi-bharat-ki-har-rasoi-ki-shaan" style="display:inline-block;width:max-content;background:#a9653f;color:#fff;text-decoration:none;border-radius:9px;padding:11px 16px;font:800 13px Arial,sans-serif;">पूरा ब्लॉग पढ़ें →</a></div></div></section>`, {html:true});
-      }
-    }})
     .on('head', { element(el) {
       el.onEndTag(end => {
         if(!hasDescription) end.before(`<meta name="description" content="${seo.description}">`, {html:true});
@@ -318,6 +343,9 @@ function applySeo(response, isHomepage = false) {
         if(!hasOgDescription) end.before(`<meta property="og:description" content="${seo.description}">`, {html:true});
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
+        if (isHomepage) {
+          end.before('<script>(function(){try{if(new URLSearchParams(location.search).get("festival-pack")==="1"){window.addEventListener("load",function(){setTimeout(function(){var el=document.getElementById("festival-pack");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},120);});}}catch(e){}})();</script>', {html:true});
+        }
         end.before('<meta property="og:site_name" content="Shudh Sanjivani">', {html:true});
         const productNames = [
           "Amba Turmeric","Besan","Amla Powder","Whole Coriander Seeds","Whole Black Pepper","Multigrain Flour",
@@ -395,12 +423,37 @@ export default {
       blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
     }
+    if (url.pathname === '/lal-mirch-ki-kahani' || url.pathname === '/lal-mirch-ki-kahani-v2') {
+      const blogUrl = new URL(request.url);
+      blogUrl.pathname = '/lal-mirch-ki-kahani.html';
+      return env.ASSETS.fetch(new Request(blogUrl, request));
+    }
     if (url.pathname === '/garam-masala-recipe') {
       const recipeUrl = new URL(request.url);
       recipeUrl.pathname = '/garam-masala-recipe.html';
       return applySeo(await env.ASSETS.fetch(new Request(recipeUrl, request)), false);
     }
-    const assetResponse = await env.ASSETS.fetch(request);
+    if (url.pathname === '/assets/festival-15-spice-pack.webp') {
+      const source = await env.ASSETS.fetch(new Request(new URL('/assets/festival-15-spice-pack.svg', request.url), request));
+      if (source.ok) {
+        const svg = await source.text();
+        return new Response(svg, {headers:{'Content-Type':'image/svg+xml; charset=UTF-8','Cache-Control':'public, max-age=3600'}});
+      }
+      return new Response('Festival Pack image unavailable', {status:404});
+    }
+    // Homepage source of truth: the current Stage118 index file.
+    // public/index.html is only a placeholder, so / must explicitly serve Stage118.
+    let assetRequest = request;
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+      const homeUrl = new URL(request.url);
+      homeUrl.pathname = '/Shudh_Sanjivani_Stage118_index.html';
+      // Force a clean GET for the explicit homepage asset.
+      assetRequest = new Request(homeUrl.toString(), {
+        method: 'GET',
+        headers: request.headers
+      });
+    }
+    const assetResponse = await env.ASSETS.fetch(assetRequest);
     // Stage 96: prevent the production HTML from being served from an older edge/browser cache.
     // This is important while deploying the checkout/order-flow fix.
     const headers = new Headers(assetResponse.headers);
@@ -410,6 +463,9 @@ export default {
       headers.set('Expires', '0');
     }
     const response = new Response(assetResponse.body, { status: assetResponse.status, statusText: assetResponse.statusText, headers });
-    return applySeo(response, url.pathname === '/' || url.pathname === '/index.html');
+    // Preview safety: serve the homepage HTML directly. This keeps the restored homepage
+    // independent of HTMLRewriter while we verify the original images/layout.
+    if (url.pathname === '/' || url.pathname === '/index.html') return applySeo(response, true);
+    return applySeo(response, false);
   }
 };
