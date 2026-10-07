@@ -320,100 +320,12 @@ function applySeo(response, isHomepage = false) {
       if (!isHomepage) return;
       el.prepend(`
 <style>
-.festival-pack-stage-card{max-width:1120px;margin:0 auto 34px;padding:0 18px}
-.festival-pack-stage-inner{border:1px solid #d8c7a9;border-radius:20px;background:linear-gradient(135deg,#fffdf8,#f8f0df);box-shadow:0 10px 30px rgba(54,45,30,.09);overflow:hidden}
-.festival-pack-stage-head{padding:24px 22px 16px;text-align:center;background:linear-gradient(180deg,#fffaf0,#f7ead5)}
-.festival-pack-stage-kicker{display:inline-block;padding:6px 12px;border-radius:999px;background:#a9653f;color:#fff;font:800 11px Arial,sans-serif;letter-spacing:1.1px}
-.festival-pack-stage-head h2{margin:10px 0 5px;border:0;padding:0;color:#43513d;font-size:30px}
-.festival-pack-stage-head p{margin:0;color:#687064;font-size:15px}
-.festival-pack-stage-body{display:grid;grid-template-columns:1fr 1.35fr;gap:22px;padding:22px}
-.festival-pack-stage-visual{border-radius:16px;min-height:260px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(circle at 50% 35%,#fffdf8 0,#eee4cf 52%,#d9c7a8 100%);border:1px solid #e0d3be}.festival-pack-stage-visual img{display:block;width:100%;max-width:430px;height:auto;max-height:430px;object-fit:contain;border-radius:12px;margin:0 auto;box-shadow:0 5px 18px rgba(54,45,30,.08)}
-.festival-pack-stage-visual strong{display:block;font:900 54px/1 Arial,sans-serif;color:#8e2f1c}
-.festival-pack-stage-visual span{display:block;margin-top:10px;font:800 18px/1.35 Arial,sans-serif;color:#43513d}
-.festival-pack-stage-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;margin:0;padding:0;list-style:none}
-.festival-pack-stage-list li{padding:8px 9px;border:1px solid #e5dac8;border-radius:9px;background:#fff;font:700 12px/1.35 Arial,sans-serif;color:#4f574d}
-.festival-pack-stage-list li b{color:#a9653f}
-.festival-pack-stage-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid #e2d6c3}
-.festival-pack-stage-price{font:900 27px Arial,sans-serif;color:#8e2f1c}
-.festival-pack-stage-free{font:800 12px Arial,sans-serif;color:#287a45;margin-top:3px}
-.festival-pack-stage-cart{border:0;border-radius:10px;min-height:48px;padding:0 20px;background:#a9653f;color:#fff;font:800 14px Arial,sans-serif;cursor:pointer;box-shadow:0 5px 14px rgba(169,101,63,.18)}
-.festival-pack-stage-cart:hover{filter:brightness(.94)}
-@media(max-width:700px){
-  .festival-pack-stage-card{padding:0 12px}
-  .festival-pack-stage-body{grid-template-columns:1fr;padding:16px}
-  .festival-pack-stage-visual{min-height:170px}
-  .festival-pack-stage-visual strong{font-size:44px}
-  .festival-pack-stage-head h2{font-size:25px}
-  .festival-pack-stage-list{grid-template-columns:1fr 1fr;gap:7px}
-  .festival-pack-stage-list li{font-size:11px}
-  .festival-pack-stage-bottom{display:block}
-  .festival-pack-stage-cart{width:100%;margin-top:12px}
-}
+.festival-pack-stage-card{max-width:1100px;margin:18px auto 32px;padding:0 14px}.festival-pack-stage-inner{border:1px solid #d8c7a9;border-radius:18px;background:#fffaf0;overflow:hidden;box-shadow:0 8px 24px rgba(54,45,30,.10)}.festival-pack-stage-head{text-align:center;padding:20px 16px 12px}.festival-pack-stage-kicker{display:inline-block;padding:5px 10px;border-radius:999px;background:#a9653f;color:#fff;font:800 11px Arial}.festival-pack-stage-head h2{margin:9px 0 5px;color:#43513d;font-size:27px}.festival-pack-stage-head p{margin:0;color:#687064;font-size:14px}.festival-pack-stage-body{display:grid;grid-template-columns:1fr 1.25fr;gap:18px;padding:16px}.festival-pack-stage-visual{display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #e2d6c3;border-radius:14px;padding:10px}.festival-pack-stage-visual img{width:100%;max-width:430px;height:auto;display:block;border-radius:10px}.festival-pack-stage-list{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0;padding:0;list-style:none}.festival-pack-stage-list li{padding:7px 8px;border:1px solid #e5dac8;border-radius:8px;background:#fff;font:700 11px/1.3 Arial;color:#4f574d}.festival-pack-stage-list b{color:#a9653f}.festival-pack-stage-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid #e2d6c3}.festival-pack-stage-price{font:900 25px Arial;color:#8e2f1c}.festival-pack-stage-free{font:800 12px Arial;color:#287a45}.festival-pack-stage-cart{border:0;border-radius:9px;min-height:46px;padding:0 18px;background:#a9653f;color:#fff;font:800 14px Arial}.festival-pack-stage-cart:active{transform:scale(.98)}@media(max-width:700px){.festival-pack-stage-body{grid-template-columns:1fr}.festival-pack-stage-head h2{font-size:24px}.festival-pack-stage-list{grid-template-columns:1fr 1fr}.festival-pack-stage-cart{width:100%;margin-top:10px}.festival-pack-stage-bottom{display:block}}
 </style>
-<section id="festival-pack" aria-label="Festival Pack" class="festival-pack-stage-card">
-  <div class="festival-pack-stage-inner">
-    <div class="festival-pack-stage-head">
-      <span class="festival-pack-stage-kicker">SPECIAL COMBO</span>
-      <h2>Shudh Sanjivani Festival Pack</h2>
-      <p>15 Spice Combo Pack — एक पैक मसालों की असली खुशबू वाला • ₹799 • Delivery FREE</p>
-    </div>
-    <div class="festival-pack-stage-body">
-      <div class="festival-pack-stage-visual">
-        <img src="data:image/webp;base64,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" alt="Shudh Sanjivani 15 Spice Combo Pack — सभी 15 मसाले, ₹799, Delivery Free" style="width:100%;height:auto;max-height:620px;object-fit:contain;border-radius:14px;display:block" loading="eager" decoding="async"/>
-      </div>
-      <div>
-        <ul class="festival-pack-stage-list">
-          <li>हल्दी पाउडर <b>100g</b></li>
-          <li>लाल मिर्च पाउडर <b>100g</b></li>
-          <li>धनिया पाउडर <b>100g</b></li>
-          <li>जीरा <b>100g</b></li>
-          <li>काली मिर्च <b>40g</b></li>
-          <li>गरम मसाला <b>80g</b></li>
-          <li>चाय मसाला <b>40g</b></li>
-          <li>चाट मसाला <b>40g</b></li>
-          <li>कसूरी मेथी <b>50g</b></li>
-          <li>हरी इलायची <b>15g</b></li>
-          <li>सौंफ <b>100g</b></li>
-          <li>अजवाइन <b>50g</b></li>
-          <li>लौंग <b>20g</b></li>
-          <li>सौंठ पाउडर <b>40g</b></li>
-          <li>दालचीनी पाउडर <b>40g</b></li>
-        </ul>
-        <div class="festival-pack-stage-bottom">
-          <div><div class="festival-pack-stage-price">₹799</div><div class="festival-pack-stage-free">✓ Delivery FREE</div></div>
-          <button type="button" class="festival-pack-stage-cart" id="festivalPackAddToCart">🛒 Add to Cart</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<script>
-(function(){
-  function initFestivalPack(){
-    const btn=document.getElementById('festivalPackAddToCart');
-    if(btn && typeof window.__shudhAddToCart==='function'){
-      btn.addEventListener('click',function(){
-        window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'');
-        btn.textContent='✓ कार्ट में जोड़ दिया';
-        setTimeout(function(){btn.textContent='🛒 Add to Cart';},1200);
-      });
-    }
-    document.querySelectorAll('a,button').forEach(function(el){
-      const t=(el.textContent||'').trim();
-      if(/festival|फेस्टिवल|15 spice combo|15-spice combo/i.test(t) && el.id!=='festivalPackAddToCart'){
-        el.addEventListener('click',function(){
-          const target=document.getElementById('festival-pack');
-          if(target){setTimeout(function(){target.scrollIntoView({behavior:'smooth',block:'start'});},0);}
-        },false);
-      }
-    });
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initFestivalPack);
-  else initFestivalPack();
-})();
-</script>
+<section id="festival-pack" aria-label="Shudh Sanjivani Festival Pack" class="festival-pack-stage-card"><div class="festival-pack-stage-inner"><div class="festival-pack-stage-head"><span class="festival-pack-stage-kicker">SPECIAL COMBO</span><h2>Shudh Sanjivani Festival Pack</h2><p>15 Spice Combo Pack • ₹799 • Delivery FREE</p></div><div class="festival-pack-stage-body"><div class="festival-pack-stage-visual"><img src="/assets/festival-15-spice-pack.svg" alt="Shudh Sanjivani 15 Spice Festival Pack — ₹799, Delivery Free" loading="eager"></div><div><ul class="festival-pack-stage-list"><li>हल्दी पाउडर <b>100g</b></li><li>लाल मिर्च पाउडर <b>100g</b></li><li>धनिया पाउडर <b>100g</b></li><li>जीरा <b>100g</b></li><li>काली मिर्च <b>40g</b></li><li>गरम मसाला <b>80g</b></li><li>चाय मसाला <b>40g</b></li><li>चाट मसाला <b>40g</b></li><li>कसूरी मेथी <b>50g</b></li><li>हरी इलायची <b>15g</b></li><li>सौंफ <b>100g</b></li><li>अजवाइन <b>50g</b></li><li>लौंग <b>20g</b></li><li>सौंठ पाउडर <b>40g</b></li><li>दालचीनी पाउडर <b>40g</b></li></ul><div class="festival-pack-stage-bottom"><div><div class="festival-pack-stage-price">₹799</div><div class="festival-pack-stage-free">✓ Delivery FREE</div></div><button type="button" class="festival-pack-stage-cart" id="festivalPackAddToCart">🛒 Add to Cart</button></div></div></div></div></section><script>(function(){var b=document.getElementById('festivalPackAddToCart');if(b){b.addEventListener('click',function(){if(typeof window.__shudhAddToCart==='function'){window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'');}else{alert('Festival Pack cart is loading. Please try again.');}});}})();</script>
 `);
     }})
+
     .on('head', { element(el) {
       el.onEndTag(end => {
         if(!hasDescription) end.before(`<meta name="description" content="${seo.description}">`, {html:true});
