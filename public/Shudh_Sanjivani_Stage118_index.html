@@ -783,6 +783,13 @@ linear-gradient(135deg,#eee7d7,#d8ddc8 50%,#cbb89d);}
   </div>
 </div>
 <main>
+<style id="festival-pack-index-style">
+.festival-pack-index-card{max-width:1100px;margin:0 auto 34px;padding:0 14px}.festival-pack-index-inner{border:1px solid #d8c7a9;border-radius:18px;background:#fffaf0;overflow:hidden;box-shadow:0 8px 24px rgba(54,45,30,.10)}.festival-pack-index-head{text-align:center;padding:20px 16px 12px}.festival-pack-index-kicker{display:inline-block;padding:5px 10px;border-radius:999px;background:#a9653f;color:#fff;font:800 11px Arial}.festival-pack-index-head h2{margin:9px 0 5px;color:#43513d;font-size:27px}.festival-pack-index-head p{margin:0;color:#687064;font-size:14px}.festival-pack-index-body{display:grid;grid-template-columns:1fr 1.25fr;gap:18px;padding:16px}.festival-pack-index-visual{display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #e2d6c3;border-radius:14px;padding:10px}.festival-pack-index-visual img{width:100%;max-width:430px;height:auto;display:block;border-radius:10px}.festival-pack-index-list{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0;padding:0;list-style:none}.festival-pack-index-list li{padding:7px 8px;border:1px solid #e5dac8;border-radius:8px;background:#fff;font:700 11px/1.3 Arial;color:#4f574d}.festival-pack-index-list b{color:#a9653f}.festival-pack-index-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid #e2d6c3}.festival-pack-index-price{font:900 25px Arial;color:#8e2f1c}.festival-pack-index-free{font:800 12px Arial;color:#287a45}.festival-pack-index-cart{border:0;border-radius:9px;min-height:46px;padding:0 18px;background:#a9653f;color:#fff;font:800 14px Arial;cursor:pointer}.festival-pack-index-cart:active{transform:scale(.98)}@media(max-width:700px){.festival-pack-index-body{grid-template-columns:1fr}.festival-pack-index-head h2{font-size:24px}.festival-pack-index-list{grid-template-columns:1fr 1fr}.festival-pack-index-bottom{display:block}.festival-pack-index-cart{width:100%;margin-top:10px}}
+</style>
+<section id="festival-pack-index-card" aria-label="Shudh Sanjivani Festival Pack" class="festival-pack-index-card"><div class="festival-pack-index-inner"><div class="festival-pack-index-head"><span class="festival-pack-index-kicker">SPECIAL COMBO</span><h2>Shudh Sanjivani Festival Pack</h2><p>15 Spice Combo Pack • ₹799 • Delivery FREE</p></div><div class="festival-pack-index-body"><div class="festival-pack-index-visual"><img src="/assets/festival-15-spice-pack.webp" alt="Shudh Sanjivani 15 Spice Festival Pack — ₹799, Delivery Free" loading="eager"></div><div><ul class="festival-pack-index-list"><li>हल्दी पाउडर <b>100g</b></li><li>लाल मिर्च पाउडर <b>100g</b></li><li>धनिया पाउडर <b>100g</b></li><li>जीरा <b>100g</b></li><li>काली मिर्च <b>40g</b></li><li>गरम मसाला <b>80g</b></li><li>चाय मसाला <b>40g</b></li><li>चाट मसाला <b>40g</b></li><li>कसूरी मेथी <b>50g</b></li><li>हरी इलायची <b>15g</b></li><li>सौंफ <b>100g</b></li><li>अजवाइन <b>50g</b></li><li>लौंग <b>20g</b></li><li>सौंठ पाउडर <b>40g</b></li><li>दालचीनी पाउडर <b>40g</b></li></ul><div class="festival-pack-index-bottom"><div><div class="festival-pack-index-price">₹799</div><div class="festival-pack-index-free">✓ Delivery FREE</div></div><button type="button" class="festival-pack-index-cart" id="festivalPackIndexAddToCart">🛒 Add to Cart</button></div></div></div></div></section>
+<script>
+(function(){var b=document.getElementById('festivalPackIndexAddToCart');if(b)b.addEventListener('click',function(){if(typeof window.__shudhAddToCart==='function'){window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'');}else{alert('Festival Pack cart is loading. Please try again.');}});})();
+</script>
 <section class="catalogue" id="products">
 <h2 class="section-title">Our Product Catalogue</h2>
 <p class="section-intro">Choose from everyday spices, whole spices, masala blends and traditional ingredients.</p>
@@ -1202,7 +1209,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function clearPendingOrderId(){localStorage.removeItem(PENDING_ORDER_KEY);}
   function save(){localStorage.setItem(CART_KEY,JSON.stringify(cart)); renderCart();}
   function total(){return cart.reduce((s,x)=>s+x.price*x.qty,0)}
-  function deliveryCharge(){const sub=total();return sub===0?0:(sub>=999?0:90)}
+  function deliveryCharge(){const sub=total();const festival=cart.some(x=>x&&String(x.name||'').trim()==='Shudh Sanjivani Festival Pack');return sub===0?0:(festival||sub>=999?0:90)}
   function grandTotal(){return total()+deliveryCharge()}
   function getOrderHistory(){try{const h=JSON.parse(localStorage.getItem(ORDER_HISTORY_KEY)||'[]');return Array.isArray(h)?h:[]}catch(e){return [];}}
   function saveOrderToHistory(){
@@ -1306,6 +1313,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cartToast.classList.add('show');
     clearTimeout(toastTimer); toastTimer=setTimeout(()=>cartToast.classList.remove('show'),1800);
   }
+  window.__shudhAddToCart=add;
   function openCartWhatsApp(){if(!cart.length)return;const lines=cart.map(x=>`• ${x.name} — ${x.size} × ${x.qty} = ₹${Number(x.price*x.qty).toLocaleString('en-IN')}`).join('\n');const customer=`नाम: ${(customerName.value||'').trim()||'नहीं दिया गया'}\nमोबाइल: ${(customerPhone.value||'').trim()||'नहीं दिया गया'}\nपता: ${[(customerAddress.value||'').trim(),(customerCity.value||'').trim(),(customerPincode.value||'').trim()].filter(Boolean).join(', ')||'नहीं दिया गया'}`;const msg=`नमस्कार Shudh Sanjivani, मुझे WhatsApp पर यह ऑर्डर करना है।\n\n${lines}\n\nकुल सामान: ₹${total().toLocaleString('en-IN')}\nडिलीवरी: ${deliveryCharge()===0?'फ्री':'₹'+deliveryCharge()}\nकुल: ₹${grandTotal().toLocaleString('en-IN')}\n\n${customer}\n\nFresh grinding: ${freshOrderChoice.checked?'हाँ':'नहीं'}\nकृपया ऑर्डर की पुष्टि करें।`;window.open('https://wa.me/919877864764?text='+encodeURIComponent(msg),'_blank','noopener');}
   cartWhatsapp.addEventListener('click',openCartWhatsApp);
   document.getElementById('cartOpen').onclick=()=>{renderCart();overlay.classList.add('open');};
