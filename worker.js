@@ -334,25 +334,6 @@ function applySeo(response, isHomepage = false) {
       const rel=String(el.getAttribute('rel')||'').toLowerCase().split(/\s+/);
       if(rel.includes('canonical')){hasCanonical=true;el.setAttribute('href','https://shudhsanjivani.in/');}
     }})
-    .on('body', { element(el) {
-      if (!isHomepage) return;
-      el.onEndTag(end => end.before('<script>
-        window.__shudhFestivalAdd=function(){
-          try{
-            if(typeof window.__shudhAddToCart==='function'){
-              window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/festival-15-spice-pack.svg');
-              return;
-            }
-            const key='shudhSanjivaniCart';
-            const cart=JSON.parse(localStorage.getItem(key)||'[]');
-            const found=cart.find(x=>x&&x.name==='Shudh Sanjivani Festival Pack'&&x.size==='15 Spice Combo Pack');
-            if(found) found.qty=(Number(found.qty)||0)+1;
-            else cart.push({name:'Shudh Sanjivani Festival Pack',size:'15 Spice Combo Pack',price:799,qty:1,image:'/assets/festival-15-spice-pack.svg'});
-            localStorage.setItem(key,JSON.stringify(cart));
-            location.reload();
-          }catch(e){ console.error(e); }
-        };
-      </script>', {html:true}));
     }})
     .on('head', { element(el) {
       el.onEndTag(end => {
