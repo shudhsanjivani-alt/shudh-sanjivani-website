@@ -6,7 +6,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/", "/index.html"]
+    "run_worker_first": ["/api/*", "/", "/index.html", "/assets/festival-15-spice-pack.webp"]
   },
   "kv_namespaces": [
     {
