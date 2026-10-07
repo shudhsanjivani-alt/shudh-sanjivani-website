@@ -319,7 +319,7 @@ function applySeo(response, isHomepage = false) {
           </div>
         </div>
       </section>`, {html:true});
-    })
+    }})
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
     .on('meta', { element(el) {
       const name=String(el.getAttribute('name')||'').toLowerCase();
