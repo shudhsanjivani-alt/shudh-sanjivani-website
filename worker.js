@@ -296,7 +296,13 @@ function applySeo(response, isHomepage = false) {
       if (!isHomepage) return;
       redChilliCardCount += 1;
       if (redChilliCardCount > 1) { el.remove(); return; }
-      el.after("<section id=\"black-pepper-blog-card\" aria-label=\"कालीमिर्च ब्लॉग\" style=\"max-width:980px;margin:12px auto 26px;padding:0 16px;\">\n            <a href=\"/kali-mirch-kahani.html\" style=\"display:block;max-width:760px;margin:0 auto;padding:12px;background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 4px 14px rgba(54,45,30,.08);color:#43513d;text-decoration:none;\">\n              <img src=\"/assets/02-whole-black-pepper.jpg?v=20261010-6\" alt=\"साबुत कालीमिर्च\" style=\"display:block;width:104px;height:104px;object-fit:cover;border-radius:12px;background:#eee8dc;margin:0 auto 12px;\">\n              <span style=\"display:block;min-width:0;text-align:center;\"><strong style=\"display:block;font-size:21px;font-weight:800;line-height:1.45;letter-spacing:.2px;margin:0 0 5px;color:#283b27;\">कालीमिर्च की कहानी</strong><span style=\"display:block;font-size:14px;font-weight:700;line-height:1.6;color:#4b5546;margin:0 0 12px;\">केरलम से हमारी रसोई तक का सफर</span><span style=\"display:inline-block;background:#43513d;color:#fff;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:800;line-height:1.4;letter-spacing:.15px;margin-top:2px;box-shadow:0 3px 8px rgba(35,55,30,.22);\">कालीमिर्च की कहानी पढ़ें →</span></span>\n            </a>\n          </section>", {html:true});
+      // Keep the injected card to one styled anchor: the current preview HTML parser
+      // strips nested tags from this insertion, so use a CSS background image and plain text.
+      el.after(`<section id="black-pepper-blog-card" aria-label="कालीमिर्च ब्लॉग" style="max-width:980px;margin:12px auto 26px;padding:0 16px;">
+        <a href="/kali-mirch-kahani.html" style="display:block;box-sizing:border-box;max-width:760px;min-height:190px;margin:0 auto;padding:124px 14px 16px;background-color:#fffdf8;background-image:url('/assets/02-whole-black-pepper.jpg?v=20261010-7');background-repeat:no-repeat;background-position:center 12px;background-size:104px 104px;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 4px 14px rgba(54,45,30,.08);color:#283b27;text-decoration:none;text-align:center;font-family:Arial,sans-serif;font-size:18px;font-weight:800;line-height:1.7;white-space:pre-line;">कालीमिर्च की कहानी
+केरलम से हमारी रसोई तक का सफर
+कालीमिर्च की कहानी पढ़ें →</a>
+      </section>`, {html:true});
     }})
     .on('section.catalogue', { element(el) {
       if (!isHomepage) return;
