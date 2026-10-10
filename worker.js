@@ -304,6 +304,15 @@ function applySeo(response, isHomepage = false) {
 कालीमिर्च की कहानी पढ़ें →</a>
       </section>`, {html:true});
     }})
+    .on('#black-pepper-blog-card', { element(el) {
+      if (!isHomepage) return;
+      // Keep the three other story links near the top, alongside the existing black-pepper story card.
+      el.after(`<nav id="top-spice-story-links" aria-label="मसालों की कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 22px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
+        <a href="/haldi-bharat-ki-har-rasoi-ki-shaan" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌿 हल्दी की कहानी पढ़ें</a>
+        <a href="/lal-mirch-ki-kahani" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌶️ लाल मिर्च की कहानी पढ़ें</a>
+        <a href="/achari-masala-recipe" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🥭 अचारी मसाला रेसिपी देखें</a>
+      </nav>`, {html:true});
+    }})
     .on('section.catalogue', { element(el) {
       if (!isHomepage) return;
       el.before(`<section id="festival-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
