@@ -453,6 +453,19 @@ export default {
       }
       return new Response('Festival Pack image unavailable', {status:404});
     }
+    // Preview fix: explicitly serve the black-pepper card image through the asset binding.
+    // The matching run_worker_first rule in wrangler.jsonc ensures this handler receives the request.
+    if (url.pathname === '/assets/02-whole-black-pepper.jpg') {
+      const imageUrl = new URL(request.url);
+      imageUrl.search = '';
+      const imageResponse = await env.ASSETS.fetch(new Request(imageUrl.toString(), { method: request.method, headers: request.headers }));
+      if (!imageResponse.ok) return imageResponse;
+      const imageHeaders = new Headers(imageResponse.headers);
+      imageHeaders.set('Content-Type', 'image/jpeg');
+      imageHeaders.set('Cache-Control', 'no-store, max-age=0');
+      return new Response(imageResponse.body, { status: imageResponse.status, headers: imageHeaders });
+    }
+
     // Homepage source of truth: the current Stage118 index file.
     // public/index.html is only a placeholder, so / must explicitly serve Stage118.
     let assetRequest = request;
