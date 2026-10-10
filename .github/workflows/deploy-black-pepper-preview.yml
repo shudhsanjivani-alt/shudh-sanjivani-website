@@ -55,6 +55,16 @@ jobs:
               console.log('CARD_COUNT:', await card.count());
               console.log('CARD_OUTER_HTML:', (await card.count()) ? (await card.first().evaluate(el => el.outerHTML)).slice(0, 2500) : 'NO_CARD');
               console.log('CARD_IMG_COUNT:', await card.locator('img').count());
+              const pepperVisual = card.locator('[role="img"][aria-label="साबुत कालीमिर्च"]');
+              console.log('PEPPER_VISUAL_COUNT:', await pepperVisual.count());
+              if (await pepperVisual.count()) {
+                console.log('PEPPER_BACKGROUND_RESULT:', JSON.stringify(await pepperVisual.first().evaluate(el => ({
+                  backgroundImage: getComputedStyle(el).backgroundImage,
+                  width: el.getBoundingClientRect().width,
+                  height: el.getBoundingClientRect().height,
+                  visible: !!(el.getBoundingClientRect().width && el.getBoundingClientRect().height)
+                }))));
+              }
               console.log('CARD_TEXT:', (await card.count()) ? await card.innerText() : 'NO_CARD_TEXT');
               console.log('PEPPER_IMAGES_IN_DOM:', JSON.stringify(await page.locator('img').evaluateAll(imgs => imgs.map(img => img.currentSrc || img.src).filter(src => src.includes('pepper')))));
             } else {
