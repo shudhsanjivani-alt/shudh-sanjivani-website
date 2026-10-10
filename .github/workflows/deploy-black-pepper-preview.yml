@@ -23,3 +23,16 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Diagnose black pepper image response
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMAGE_URL="https://raw.githubusercontent.com/shudhsanjivani-alt/shudh-sanjivani-website/stage-black-pepper-blog/public/assets/02-whole-black-pepper.jpg"
+          PAGE_URL="https://stage-black-pepper-blog-sandeep.shudhsanjivani.workers.dev/"
+          echo "IMAGE RESPONSE:"
+          curl -L -sS -o /tmp/pepper-image -w "HTTP=%{http_code} TYPE=%{content_type} BYTES=%{size_download}\n" "$IMAGE_URL"
+          file /tmp/pepper-image
+          echo "PREVIEW PAGE RESPONSE:"
+          curl -L -sS -o /tmp/pepper-page -w "HTTP=%{http_code} TYPE=%{content_type} BYTES=%{size_download}\n" "$PAGE_URL"
+          echo "CARD AND IMAGE SOURCE IN RESPONSE:"
+          grep -oE 'black-pepper-blog-card|raw.githubusercontent.com[^"]*02-whole-black-pepper.jpg|कालीमिर्च की कहानी' /tmp/pepper-page | sort | uniq -c || true
