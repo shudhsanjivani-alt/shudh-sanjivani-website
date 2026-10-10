@@ -295,7 +295,16 @@ function applySeo(response, isHomepage = false) {
     .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
       if (isHomepage) {
         redChilliCardCount += 1;
-        if (redChilliCardCount > 1) el.remove();
+        if (redChilliCardCount > 1) {
+          el.remove();
+        } else {
+          el.after(`<section id="black-pepper-blog-card" aria-label="कालीमिर्च ब्लॉग" style="max-width:980px;margin:12px auto 26px;padding:0 16px;">
+            <a href="/kali-mirch-kahani.html" style="display:flex;align-items:center;gap:14px;max-width:760px;margin:0 auto;padding:12px;background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 4px 14px rgba(54,45,30,.08);color:#43513d;text-decoration:none;">
+              <img src="/assets/02-whole-black-pepper.jpg" alt="साबुत कालीमिर्च" loading="lazy" style="width:104px;height:104px;flex:0 0 104px;object-fit:cover;border-radius:12px;">
+              <span style="display:block;min-width:0;"><strong style="display:block;font-size:17px;line-height:1.45;">कालीमिर्च की कहानी</strong><span style="display:block;font-size:13px;line-height:1.5;color:#596055;margin:4px 0 9px;">केरलम से हमारी रसोई तक का सफर</span><span style="display:inline-block;background:#43513d;color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;">कहानी पढ़ें →</span></span>
+            </a>
+          </section>`, {html:true});
+        }
       }
     }})
     .on('section.catalogue', { element(el) {
