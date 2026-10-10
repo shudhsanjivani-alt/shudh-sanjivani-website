@@ -306,7 +306,16 @@ function applySeo(response, isHomepage = false) {
     }})
     .on('section.catalogue', { element(el) {
       if (!isHomepage) return;
-      el.before(`<section id="festival-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
+      el.before(`<section id="top-spice-stories" aria-label="हमारी कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 20px;padding:0 16px;">
+        <h2 style="margin:0 0 12px;text-align:center;color:#43513d;font:800 22px/1.4 Arial,sans-serif;">हमारी कहानियाँ और रेसिपी</h2>
+        <nav id="top-spice-story-links" aria-label="मसालों की कहानियाँ और रेसिपी" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
+          <a href="/haldi-bharat-ki-har-rasoi-ki-shaan" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌿 हल्दी की कहानी पढ़ें</a>
+          <a href="/lal-mirch-ki-kahani" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌶️ लाल मिर्च की कहानी पढ़ें</a>
+          <a href="/achari-masala-recipe" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🥭 अचारी मसाला रेसिपी देखें</a>
+          <a href="/kali-mirch-kahani.html" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">⚫ कालीमिर्च की कहानी पढ़ें</a>
+        </nav>
+      </section>
+      <section id="festival-pack" aria-label="Shudh Sanjivani Festival Pack" style="max-width:980px;margin:18px auto 30px;padding:0 16px;">
         <div style="background:#fffdf8;border:1px solid #ddd2bf;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px rgba(54,45,30,.08);">
           <div style="padding:16px 16px 0;text-align:center;">
             <img src="/assets/PhotoGrid_Plus_1791052839297.jpg" alt="Shudh Sanjivani Festival Pack — 15 Spice Combo Pack, ₹799, Delivery Free" style="display:block;width:100%;max-width:760px;margin:0 auto;border-radius:12px;height:auto;">
