@@ -16,23 +16,51 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install Wrangler
-        run: npm install --no-save wrangler@latest
+      - name: Install Wrangler and browser diagnostics
+        run: |
+          npm install --no-save wrangler@latest playwright
+          npx playwright install --with-deps chromium
       - name: Deploy Worker Preview
         run: npx wrangler preview
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      - name: Diagnose black pepper image response
+      - name: Diagnose image headers and actual browser rendering
         shell: bash
         run: |
           set -euo pipefail
           IMAGE_URL="https://raw.githubusercontent.com/shudhsanjivani-alt/shudh-sanjivani-website/stage-black-pepper-blog/public/assets/02-whole-black-pepper.jpg"
           PAGE_URL="https://stage-black-pepper-blog-sandeep.shudhsanjivani.workers.dev/"
-          echo "IMAGE RESPONSE:"
-          curl -L -sS -o /tmp/pepper-image -w "HTTP=%{http_code} TYPE=%{content_type} BYTES=%{size_download}\n" "$IMAGE_URL"
-          file /tmp/pepper-image
-          echo "PREVIEW PAGE RESPONSE:"
-          curl -L -sS -o /tmp/pepper-page -w "HTTP=%{http_code} TYPE=%{content_type} BYTES=%{size_download}\n" "$PAGE_URL"
-          echo "CARD AND IMAGE SOURCE IN RESPONSE:"
-          grep -oE 'black-pepper-blog-card|raw.githubusercontent.com[^"]*02-whole-black-pepper.jpg|कालीमिर्च की कहानी' /tmp/pepper-page | sort | uniq -c || true
+          echo "=== IMAGE HEADERS ==="
+          curl -sSIL "$IMAGE_URL" | grep -iE '^(HTTP/|content-type:|content-length:|content-security-policy:|cross-origin-resource-policy:|x-content-type-options:|location:)' || true
+          echo "=== PREVIEW PAGE HEADERS ==="
+          curl -sSIL "$PAGE_URL" | grep -iE '^(HTTP/|content-type:|content-security-policy:|cross-origin-resource-policy:|x-content-type-options:|location:)' || true
+          echo "=== BROWSER RENDER TEST ==="
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage();
+          page.on('console', msg => { if (msg.type() === 'error') console.log('CONSOLE_ERROR:', msg.text()); });
+          page.on('requestfailed', req => console.log('REQUEST_FAILED:', req.url(), req.failure()?.errorText));
+          page.on('response', res => {
+            if (res.url().includes('02-whole-black-pepper.jpg')) console.log('IMAGE_HTTP:', res.status(), res.headers()['content-type'], res.url());
+          });
+          try {
+            const response = await page.goto('https://stage-black-pepper-blog-sandeep.shudhsanjivani.workers.dev/', { waitUntil: 'networkidle', timeout: 60000 });
+            console.log('PAGE_HTTP:', response?.status());
+            const result = await page.locator('#black-pepper-blog-card img').evaluate(img => ({
+              src: img.currentSrc || img.src,
+              complete: img.complete,
+              naturalWidth: img.naturalWidth,
+              naturalHeight: img.naturalHeight,
+              display: getComputedStyle(img).display,
+              visibility: getComputedStyle(img).visibility,
+              opacity: getComputedStyle(img).opacity,
+              rect: (() => { const r = img.getBoundingClientRect(); return {width:r.width,height:r.height,top:r.top,left:r.left}; })()
+            }));
+            console.log('IMAGE_RENDER_RESULT:', JSON.stringify(result));
+            console.log('CARD_VISIBLE:', await page.locator('#black-pepper-blog-card').isVisible());
+          } finally {
+            await browser.close();
+          }
+          NODE
