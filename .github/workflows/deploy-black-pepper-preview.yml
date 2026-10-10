@@ -48,7 +48,13 @@ jobs:
           try {
             const response = await page.goto('https://stage-black-pepper-blog-sandeep.shudhsanjivani.workers.dev/', { waitUntil: 'networkidle', timeout: 60000 });
             console.log('PAGE_HTTP:', response?.status());
-            const result = await page.locator('#black-pepper-blog-card img').evaluate(img => ({
+            const matches = page.locator('img[src*="02-whole-black-pepper.jpg"]');
+            console.log('PEPPER_IMAGE_COUNT:', await matches.count());
+            if (await matches.count() === 0) {
+              console.log('CARD_COUNT:', await page.locator('#black-pepper-blog-card').count());
+              console.log('PEPPER_IMAGES_IN_DOM:', JSON.stringify(await page.locator('img').evaluateAll(imgs => imgs.map(img => img.currentSrc || img.src).filter(src => src.includes('pepper')))));
+            } else {
+            const result = await matches.first().evaluate(img => ({
               src: img.currentSrc || img.src,
               complete: img.complete,
               naturalWidth: img.naturalWidth,
@@ -59,7 +65,8 @@ jobs:
               rect: (() => { const r = img.getBoundingClientRect(); return {width:r.width,height:r.height,top:r.top,left:r.left}; })()
             }));
             console.log('IMAGE_RENDER_RESULT:', JSON.stringify(result));
-            console.log('CARD_VISIBLE:', await page.locator('#black-pepper-blog-card').isVisible());
+            console.log('CARD_VISIBLE:', await page.locator('#black-pepper-blog-card').count() ? await page.locator('#black-pepper-blog-card').isVisible() : false);
+            }
           } finally {
             await browser.close();
           }
