@@ -51,7 +51,11 @@ jobs:
             const matches = page.locator('img[src*="02-whole-black-pepper.jpg"]');
             console.log('PEPPER_IMAGE_COUNT:', await matches.count());
             if (await matches.count() === 0) {
-              console.log('CARD_COUNT:', await page.locator('#black-pepper-blog-card').count());
+              const card = page.locator('#black-pepper-blog-card');
+              console.log('CARD_COUNT:', await card.count());
+              console.log('CARD_OUTER_HTML:', (await card.count()) ? (await card.first().evaluate(el => el.outerHTML)).slice(0, 2500) : 'NO_CARD');
+              console.log('CARD_IMG_COUNT:', await card.locator('img').count());
+              console.log('CARD_TEXT:', (await card.count()) ? await card.innerText() : 'NO_CARD_TEXT');
               console.log('PEPPER_IMAGES_IN_DOM:', JSON.stringify(await page.locator('img').evaluateAll(imgs => imgs.map(img => img.currentSrc || img.src).filter(src => src.includes('pepper')))));
             } else {
             const result = await matches.first().evaluate(img => ({
