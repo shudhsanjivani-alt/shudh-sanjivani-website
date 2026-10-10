@@ -318,6 +318,9 @@ function applySeo(response, isHomepage = false) {
             </div>
           </div>
         </div>
+        <div style="text-align:center;padding:14px 12px 0;">
+          <a href="/kali-mirch-kahani.html" style="display:inline-block;background:#43513d;color:#fff;text-decoration:none;border-radius:999px;padding:12px 22px;font:700 15px/1.3 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.12);">🌿 कालीमिर्च की कहानी पढ़ें</a>
+        </div>
       </section>`, {html:true});
     }})
     .on('title', { element(el) { el.setInnerContent(seo.title); } })
