@@ -1,0 +1,65 @@
+name: Deploy Blog Buttons Preview
+on:
+  push:
+    branches:
+      - stage-blog-buttons-top-v1
+permissions:
+  contents: read
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    name: Deploy Blog Buttons Preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Wrangler and browser tests
+        run: |
+          npm install --no-save wrangler@latest playwright
+          npx playwright install --with-deps chromium
+      - name: Deploy Worker Preview only
+        run: npx wrangler preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Check homepage story buttons in browser
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const url = 'https://stage-blog-buttons-top-v1-sandeep.shudhsanjivani.workers.dev/';
+          const expected = [
+            ['/haldi-bharat-ki-har-rasoi-ki-shaan', 'हल्दी की कहानी पढ़ें'],
+            ['/lal-mirch-ki-kahani', 'लाल मिर्च की कहानी पढ़ें'],
+            ['/achari-masala-recipe', 'अचारी मसाला रेसिपी देखें']
+          ];
+          const browser = await chromium.launch({ headless: true });
+          try {
+            const page = await browser.newPage();
+            page.on('pageerror', error => console.log('PAGE_ERROR:', error.message));
+            const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
+            console.log('PAGE_HTTP:', response?.status());
+            if (!response?.ok()) throw new Error('Preview homepage did not return a successful HTTP response');
+            const pepperCard = page.locator('#black-pepper-blog-card');
+            if (await pepperCard.count() !== 1) throw new Error('Existing black pepper story card is missing or duplicated');
+            const nav = page.locator('#top-spice-story-links');
+            if (await nav.count() !== 1) throw new Error('Top spice story links section is missing or duplicated');
+            for (const [href, label] of expected) {
+              const link = nav.locator('a').filter({ hasText: label });
+              const count = await link.count();
+              console.log('BUTTON:', label, 'COUNT:', count, 'HREF:', count ? await link.first().getAttribute('href') : 'MISSING');
+              if (count !== 1 || await link.first().getAttribute('href') !== href) {
+                throw new Error('Button missing, duplicated, or has incorrect destination: ' + label);
+              }
+            }
+            console.log('BLACK_PEPPER_CARD_COUNT:', await pepperCard.count());
+            console.log('TOP_STORY_BUTTON_COUNT:', await nav.locator('a').count());
+            console.log('PREVIEW_CHECK: PASS');
+          } finally {
+            await browser.close();
+          }
+          NODE
