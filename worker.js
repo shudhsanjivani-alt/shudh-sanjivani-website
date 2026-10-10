@@ -293,10 +293,16 @@ function applySeo(response, isHomepage = false) {
   };
   return new HTMLRewriter()
     .on('section[aria-label="लाल मिर्च ब्लॉग"]', { element(el) {
-      if (isHomepage) {
-        redChilliCardCount += 1;
-        if (redChilliCardCount > 1) el.remove();
-      }
+      if (!isHomepage) return;
+      redChilliCardCount += 1;
+      if (redChilliCardCount > 1) { el.remove(); return; }
+      // Keep the injected card to one styled anchor: the current preview HTML parser
+      // strips nested tags from this insertion, so use a CSS background image and plain text.
+      el.after(`<section id="black-pepper-blog-card" aria-label="कालीमिर्च ब्लॉग" style="max-width:980px;margin:12px auto 26px;padding:0 16px;">
+        <a href="/kali-mirch-kahani.html" style="display:block;box-sizing:border-box;max-width:760px;min-height:190px;margin:0 auto;padding:124px 14px 16px;background-color:#fffdf8;background-image:url('/assets/02-whole-black-pepper.jpg?v=20261010-7');background-repeat:no-repeat;background-position:center 12px;background-size:104px 104px;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 4px 14px rgba(54,45,30,.08);color:#283b27;text-decoration:none;text-align:center;font-family:Arial,sans-serif;font-size:18px;font-weight:800;line-height:1.7;white-space:pre-line;">कालीमिर्च की कहानी
+केरलम से हमारी रसोई तक का सफर
+कालीमिर्च की कहानी पढ़ें →</a>
+      </section>`, {html:true});
     }})
     .on('section.catalogue', { element(el) {
       if (!isHomepage) return;
@@ -317,6 +323,9 @@ function applySeo(response, isHomepage = false) {
               <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/PhotoGrid_Plus_1791052839297.jpg')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
             </div>
           </div>
+        </div>
+        <div style="text-align:center;padding:14px 12px 0;">
+          <a href="/kali-mirch-kahani.html" style="display:inline-block;background:#43513d;color:#fff;text-decoration:none;border-radius:999px;padding:12px 22px;font:700 15px/1.3 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.12);">🌿 कालीमिर्च की कहानी पढ़ें</a>
         </div>
       </section>`, {html:true});
     }})
@@ -441,6 +450,19 @@ export default {
       }
       return new Response('Festival Pack image unavailable', {status:404});
     }
+    // Preview fix: explicitly serve the black-pepper card image through the asset binding.
+    // The matching run_worker_first rule in wrangler.jsonc ensures this handler receives the request.
+    if (url.pathname === '/assets/02-whole-black-pepper.jpg') {
+      const imageUrl = new URL(request.url);
+      imageUrl.search = '';
+      const imageResponse = await env.ASSETS.fetch(new Request(imageUrl.toString(), { method: request.method, headers: request.headers }));
+      if (!imageResponse.ok) return imageResponse;
+      const imageHeaders = new Headers(imageResponse.headers);
+      imageHeaders.set('Content-Type', 'image/jpeg');
+      imageHeaders.set('Cache-Control', 'no-store, max-age=0');
+      return new Response(imageResponse.body, { status: imageResponse.status, headers: imageHeaders });
+    }
+
     // Homepage source of truth: the current Stage118 index file.
     // public/index.html is only a placeholder, so / must explicitly serve Stage118.
     let assetRequest = request;
