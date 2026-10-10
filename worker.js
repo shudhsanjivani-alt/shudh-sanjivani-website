@@ -302,12 +302,8 @@ function applySeo(response, isHomepage = false) {
         <a href="/kali-mirch-kahani.html" style="display:block;box-sizing:border-box;max-width:760px;min-height:190px;margin:0 auto;padding:124px 14px 16px;background-color:#fffdf8;background-image:url('/assets/02-whole-black-pepper.jpg?v=20261010-7');background-repeat:no-repeat;background-position:center 12px;background-size:104px 104px;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 4px 14px rgba(54,45,30,.08);color:#283b27;text-decoration:none;text-align:center;font-family:Arial,sans-serif;font-size:18px;font-weight:800;line-height:1.7;white-space:pre-line;">कालीमिर्च की कहानी
 केरलम से हमारी रसोई तक का सफर
 कालीमिर्च की कहानी पढ़ें →</a>
-      </section>`, {html:true});
-    }})
-    .on('#black-pepper-blog-card', { element(el) {
-      if (!isHomepage) return;
-      // Keep the three other story links near the top, alongside the existing black-pepper story card.
-      el.after(`<nav id="top-spice-story-links" aria-label="मसालों की कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 22px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
+      </section>
+      <nav id="top-spice-story-links" aria-label="मसालों की कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 22px;padding:0 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
         <a href="/haldi-bharat-ki-har-rasoi-ki-shaan" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌿 हल्दी की कहानी पढ़ें</a>
         <a href="/lal-mirch-ki-kahani" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌶️ लाल मिर्च की कहानी पढ़ें</a>
         <a href="/achari-masala-recipe" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🥭 अचारी मसाला रेसिपी देखें</a>
