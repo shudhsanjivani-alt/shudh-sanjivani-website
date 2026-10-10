@@ -300,7 +300,7 @@ function applySeo(response, isHomepage = false) {
         } else {
           el.after(`<section id="black-pepper-blog-card" aria-label="कालीमिर्च ब्लॉग" style="max-width:980px;margin:12px auto 26px;padding:0 16px;">
             <a href="/kali-mirch-kahani.html" style="display:block;max-width:760px;margin:0 auto;padding:12px;background:#fffdf8;border:1px solid #ddd2bf;border-radius:16px;box-shadow:0 4px 14px rgba(54,45,30,.08);color:#43513d;text-decoration:none;">
-              <img src="/assets/02-whole-black-pepper.jpg?v=85e9025" alt="साबुत कालीमिर्च" loading="eager" width="104" height="104" style="display:block!important;visibility:visible!important;opacity:1!important;width:104px;height:104px;min-width:104px;max-width:104px;object-fit:cover;border-radius:12px;background:#eee8dc;margin:0 0 12px;">
+              <div role="img" aria-label="साबुत कालीमिर्च" style="display:block!important;width:104px;height:104px;min-width:104px;max-width:104px;background-image:url('/assets/02-whole-black-pepper.jpg?v=e16b563');background-size:cover;background-position:center;border-radius:12px;background-color:#eee8dc;margin:0 0 12px;"></div>
               <span style="display:block;min-width:0;"><strong style="display:block;font-size:17px;line-height:1.5;margin:0 0 2px;">कालीमिर्च की कहानी</strong><span style="display:block;font-size:13px;line-height:1.6;color:#596055;margin:0 0 4px;">केरलम से हमारी रसोई तक का सफर</span><span style="display:inline-block;background:#43513d;color:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;line-height:1.4;margin-top:2px;">कहानी पढ़ें →</span></span>
             </a>
           </section>`, {html:true});
