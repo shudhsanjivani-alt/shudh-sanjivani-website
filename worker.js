@@ -324,6 +324,7 @@ function applySeo(response, isHomepage = false) {
             <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
             <h2 style="margin:5px 0 6px;color:#43513d;font-size:25px;">Festival Pack — 15 Spice एक पैक</h2>
             <p style="margin:0 0 12px;color:#596055;font-size:15px;line-height:1.6;">शुद्ध खुशबू के साथ शुद्ध मसालों का combo pack</p>
+            <p style="margin:0 0 12px;text-align:center;"><a href="/festival-pack" style="display:inline-block;padding:9px 14px;border:1px solid #d9c8ae;border-radius:999px;color:#43513d;text-decoration:none;font-weight:800;font-size:14px;">🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें</a></p>
             <div style="color:#43513d;font-size:14px;line-height:1.65;">
               <strong>15 मसाले:</strong> हल्दी 100g · लाल मिर्च 100g · धनिया 100g · जीरा 100g · काली मिर्च 40g · गरम मसाला 80g · Tea Masala 40g · Chaat Masala 40g · कसूरी मेथी 50g · Green Cardamom 15g · सौंफ 100g · अजवाइन 50g · लौंग 20g · Dry Ginger 40g · Cinnamon 40g
             </div>
@@ -429,6 +430,12 @@ export default {
     if (url.pathname === '/api/reviews' && request.method === 'GET') return listReviews(request, env);
     if (url.pathname === '/api/reviews' && request.method === 'POST') return saveReview(request, env);
     if (url.pathname === '/api/admin/orders' && request.method === 'GET') return listOrders(request, env);
+    // Festival Pack story page: clean, indexable product-information URL.
+    if (url.pathname === '/festival-pack') {
+      const packUrl = new URL(request.url);
+      packUrl.pathname = '/festival-pack.html';
+      return env.ASSETS.fetch(new Request(packUrl, request));
+    }
     // Stage 171: explicitly serve the recipe HTML file for the clean recipe route.
     if (url.pathname === '/track-order') { const u=new URL(request.url); u.pathname='/track-order.html'; return env.ASSETS.fetch(new Request(u, request)); }
     if (url.pathname === '/achari-masala-recipe') {
