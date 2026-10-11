@@ -304,7 +304,7 @@ function applySeo(response, isHomepage = false) {
 कालीमिर्च की कहानी पढ़ें →</a>
       </section>`, {html:true});
     }})
-    .on('section.catalogue', { element(el) {
+    .on('.catalogue', { element(el) {
       if (!isHomepage) return;
       el.before(`<section id="top-spice-stories" aria-label="हमारी कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 20px;padding:0 16px;">
         <h2 style="margin:0 0 12px;text-align:center;color:#43513d;font:800 22px/1.4 Arial,sans-serif;">हमारी कहानियाँ और रेसिपी</h2>
@@ -324,13 +324,15 @@ function applySeo(response, isHomepage = false) {
             <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
             <h2 style="margin:5px 0 6px;color:#43513d;font-size:25px;">Festival Pack — 15 Spice एक पैक</h2>
             <p style="margin:0 0 12px;color:#596055;font-size:15px;line-height:1.6;">शुद्ध खुशबू के साथ शुद्ध मसालों का combo pack</p>
-            <p style="margin:0 0 12px;text-align:center;"><a href="/festival-pack" style="display:inline-block;padding:9px 14px;border:1px solid #d9c8ae;border-radius:999px;color:#43513d;text-decoration:none;font-weight:800;font-size:14px;">🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें</a></p>
             <div style="color:#43513d;font-size:14px;line-height:1.65;">
               <strong>15 मसाले:</strong> हल्दी 100g · लाल मिर्च 100g · धनिया 100g · जीरा 100g · काली मिर्च 40g · गरम मसाला 80g · Tea Masala 40g · Chaat Masala 40g · कसूरी मेथी 50g · Green Cardamom 15g · सौंफ 100g · अजवाइन 50g · लौंग 20g · Dry Ginger 40g · Cinnamon 40g
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;">
               <div style="font:800 24px Arial,sans-serif;color:#a9653f;">₹799 <span style="font-size:13px;color:#596055;font-weight:700;">· Delivery FREE</span></div>
-              <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/PhotoGrid_Plus_1791052839297.jpg')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <button type="button" onclick="window.__shudhAddToCart&&window.__shudhAddToCart('Shudh Sanjivani Festival Pack','15 Spice Combo Pack',799,'/assets/PhotoGrid_Plus_1791052839297.jpg')" style="border:0;border-radius:10px;background:#65735a;color:#fff;padding:12px 20px;min-height:48px;font:800 14px Arial,sans-serif;cursor:pointer;">Add to Cart</button>
+                <a id="festival-pack-info-link" href="/festival-pack" aria-label="Festival Pack की पूरी जानकारी पढ़ें" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:48px;padding:12px 16px;border:1px solid #b8c7a8;border-radius:10px;background:#f5f8ef;color:#35452f;text-decoration:none;text-align:center;font:800 14px/1.4 Arial,sans-serif;cursor:pointer;">🌿 पूरी जानकारी पढ़ें →</a>
+              </div>
             </div>
           </div>
         </div>
@@ -361,6 +363,7 @@ function applySeo(response, isHomepage = false) {
         if(!hasOgTitle) end.before(`<meta property="og:title" content="${seo.title}">`, {html:true});
         if(!hasOgDescription) end.before(`<meta property="og:description" content="${seo.description}">`, {html:true});
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
+        end.before('<script>(function(){function addFestivalDetailsButton(){var existing=document.getElementById("festival-pack-info-link");if(existing&&existing.tagName==="BUTTON")return;var b=document.createElement("button");b.id="festival-pack-info-link";b.type="button";b.textContent="🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें →";b.setAttribute("aria-label","Festival Pack की पूरी जानकारी पढ़ें");b.style.cssText="display:block;position:relative;z-index:99999;min-height:48px;margin:14px auto;padding:12px 20px;border:1px solid #b8c7a8;border-radius:999px;background:#f5f8ef;color:#35452f;font:800 15px/1.4 Arial,sans-serif;cursor:pointer;pointer-events:auto;touch-action:manipulation;-webkit-appearance:none;appearance:none";b.addEventListener("click",function(){window.location.href="/festival-pack";});var card=document.getElementById("festival-pack");if(card){var p=card.querySelector("p");if(p&&p.parentNode)p.parentNode.insertBefore(b,p.nextSibling);else card.insertBefore(b,card.firstChild);return;}var cat=document.querySelector(".catalogue");if(cat&&cat.parentNode){var wrap=document.createElement("div");wrap.id="festival-pack-details-cta";wrap.style.cssText="max-width:980px;margin:12px auto;padding:0 16px;text-align:center";wrap.appendChild(b);cat.parentNode.insertBefore(wrap,cat);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",addFestivalDetailsButton);else addFestivalDetailsButton();})();</script>', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
         if (isHomepage) {
           end.before('<script>(function(){try{if(new URLSearchParams(location.search).get("festival-pack")==="1"){window.addEventListener("load",function(){setTimeout(function(){var el=document.getElementById("festival-pack");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},120);});}}catch(e){}})();</script>', {html:true});
