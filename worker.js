@@ -324,7 +324,7 @@ function applySeo(response, isHomepage = false) {
             <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
             <h2 style="margin:5px 0 6px;color:#43513d;font-size:25px;">Festival Pack — 15 Spice एक पैक</h2>
             <p style="margin:0 0 12px;color:#596055;font-size:15px;line-height:1.6;">शुद्ध खुशबू के साथ शुद्ध मसालों का combo pack</p>
-            <p style="margin:0 0 12px;text-align:center;"><a href="https://shudhsanjivani.in/festival-pack" role="button" aria-label="Festival Pack की पूरी जानकारी पढ़ें" style="position:relative;z-index:20;display:inline-flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box;margin:8px 0;padding:11px 16px;border:1px solid #b8c7a8;border-radius:999px;background:#f5f8ef;color:#35452f;text-decoration:none;font-weight:800;font-size:14px;line-height:1.4;cursor:pointer;pointer-events:auto;touch-action:manipulation;">🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें</a></p>
+            <p style="margin:0 0 12px;text-align:center;"><a id="festival-pack-info-link" href="/festival-pack" role="button" aria-label="Festival Pack की पूरी जानकारी पढ़ें" style="position:relative;z-index:9999;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box;margin:8px 0;padding:11px 16px;border:1px solid #b8c7a8;border-radius:999px;background:#f5f8ef;color:#35452f;text-decoration:none;font-weight:800;font-size:14px;line-height:1.4;cursor:pointer;pointer-events:auto;touch-action:manipulation;">🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें</a></p>
             <div style="color:#43513d;font-size:14px;line-height:1.65;">
               <strong>15 मसाले:</strong> हल्दी 100g · लाल मिर्च 100g · धनिया 100g · जीरा 100g · काली मिर्च 40g · गरम मसाला 80g · Tea Masala 40g · Chaat Masala 40g · कसूरी मेथी 50g · Green Cardamom 15g · सौंफ 100g · अजवाइन 50g · लौंग 20g · Dry Ginger 40g · Cinnamon 40g
             </div>
@@ -361,6 +361,7 @@ function applySeo(response, isHomepage = false) {
         if(!hasOgTitle) end.before(`<meta property="og:title" content="${seo.title}">`, {html:true});
         if(!hasOgDescription) end.before(`<meta property="og:description" content="${seo.description}">`, {html:true});
         if(!hasOgUrl) end.before('<meta property="og:url" content="https://shudhsanjivani.in/">', {html:true});
+        end.before('<script>(function(){document.addEventListener("click",function(e){var a=document.getElementById("festival-pack-info-link");if(!a)return;var r=a.getBoundingClientRect();var x=e.clientX,y=e.clientY;if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom&&e.target!==a&&!a.contains(e.target)){e.preventDefault();window.location.assign(a.href);}},true);})();</script>', {html:true});
         end.before('<meta property="og:type" content="website">', {html:true});
         if (isHomepage) {
           end.before('<script>(function(){try{if(new URLSearchParams(location.search).get("festival-pack")==="1"){window.addEventListener("load",function(){setTimeout(function(){var el=document.getElementById("festival-pack");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},120);});}}catch(e){}})();</script>', {html:true});
