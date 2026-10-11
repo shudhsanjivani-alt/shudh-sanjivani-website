@@ -33,3 +33,27 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  deploy-festival-pack-preview:
+    if: github.event.pull_request.head.ref == 'stage-festival-pack-page-v1'
+    runs-on: ubuntu-latest
+    name: Deploy Festival Pack Page Preview
+    steps:
+      - name: Checkout Festival Pack Page branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Wrangler
+        run: npm install --no-save wrangler@latest
+
+      - name: Deploy isolated staging Worker
+        run: npx wrangler deploy --name stage197-festival-pack-page-preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
