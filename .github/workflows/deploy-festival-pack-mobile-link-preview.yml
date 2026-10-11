@@ -33,13 +33,7 @@ jobs:
               "directory": "./public",
               "binding": "ASSETS",
               "run_worker_first": ["/api/*", "/", "/index.html", "/assets/festival-15-spice-pack.webp", "/assets/02-whole-black-pepper.jpg"]
-            },
-            "kv_namespaces": [
-              {
-                "binding": "ORDERS_KV",
-                "id": "c593959f48b34b999fc2e333710ddec0"
-              }
-            ]
+            }
           }
           CONFIG
       - name: Deploy isolated staging Worker only
