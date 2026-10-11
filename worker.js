@@ -324,7 +324,7 @@ function applySeo(response, isHomepage = false) {
             <div style="font:800 13px Arial,sans-serif;color:#a9653f;letter-spacing:.3px;">SHUDH SANJIVANI</div>
             <h2 style="margin:5px 0 6px;color:#43513d;font-size:25px;">Festival Pack — 15 Spice एक पैक</h2>
             <p style="margin:0 0 12px;color:#596055;font-size:15px;line-height:1.6;">शुद्ध खुशबू के साथ शुद्ध मसालों का combo pack</p>
-            <p style="margin:0 0 12px;text-align:center;"><a href="/festival-pack" style="display:inline-block;padding:9px 14px;border:1px solid #d9c8ae;border-radius:999px;color:#43513d;text-decoration:none;font-weight:800;font-size:14px;">🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें</a></p>
+            <p style="margin:0 0 12px;text-align:center;"><a href="https://shudhsanjivani.in/festival-pack" role="button" aria-label="Festival Pack की पूरी जानकारी पढ़ें" style="position:relative;z-index:20;display:inline-flex;align-items:center;justify-content:center;min-height:44px;box-sizing:border-box;margin:8px 0;padding:11px 16px;border:1px solid #b8c7a8;border-radius:999px;background:#f5f8ef;color:#35452f;text-decoration:none;font-weight:800;font-size:14px;line-height:1.4;cursor:pointer;pointer-events:auto;touch-action:manipulation;">🌿 शुद्धता और पैक की पूरी जानकारी पढ़ें</a></p>
             <div style="color:#43513d;font-size:14px;line-height:1.65;">
               <strong>15 मसाले:</strong> हल्दी 100g · लाल मिर्च 100g · धनिया 100g · जीरा 100g · काली मिर्च 40g · गरम मसाला 80g · Tea Masala 40g · Chaat Masala 40g · कसूरी मेथी 50g · Green Cardamom 15g · सौंफ 100g · अजवाइन 50g · लौंग 20g · Dry Ginger 40g · Cinnamon 40g
             </div>
