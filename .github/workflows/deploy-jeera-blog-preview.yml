@@ -49,7 +49,7 @@ jobs:
           echo "=== REDIRECT CHAIN ==="
           curl -sS -L --max-redirs 6 -D - -o /tmp/jeera-follow.html -w 'FINAL_STATUS=%{http_code}\nFINAL_URL=%{url_effective}\n' "$PAGE_URL" || true
           test -s /tmp/jeera.html
-          grep -q 'खेत से तड़के तक' /tmp/jeera.html
+          grep -q 'खेत से तड़के तक' /tmp/jeera.html
           grep -q 'application/ld+json' /tmp/jeera.html
           echo "=== MOBILE BROWSER CHECK ==="
           node --input-type=module <<'NODE'
