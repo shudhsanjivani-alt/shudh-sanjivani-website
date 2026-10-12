@@ -441,10 +441,10 @@ export default {
       blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
     }
-    // Cumin blog: serve the .html asset for both the clean URL and .html URL.
+    // Cumin blog: request the clean asset path so Cloudflare Assets does not redirect .html back to the clean URL.
     if (url.pathname === '/jeera-khet-se-tadke-tak' || url.pathname === '/jeera-khet-se-tadke-tak.html') {
       const blogUrl = new URL(request.url);
-      blogUrl.pathname = '/jeera-khet-se-tadke-tak.html';
+      blogUrl.pathname = '/jeera-khet-se-tadke-tak';
       return applySeo(await env.ASSETS.fetch(new Request(blogUrl, request)), false);
     }
     // Black-pepper blog: serve the .html asset directly for both URL forms.
