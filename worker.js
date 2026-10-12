@@ -306,10 +306,7 @@ function applySeo(response, isHomepage = false) {
     }})
     .on('section.catalogue', { element(el) {
       if (!isHomepage) return;
-      el.before(`<section id="festival-pack-quick-button" aria-label="Festival Pack का सीधा बटन" style="max-width:980px;margin:14px auto 18px;padding:0 16px;text-align:center;">
-        <a href="/?festival-pack=1#festival-pack" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:48px;width:min(100%,420px);padding:13px 20px;border-radius:12px;background:#a9653f;color:#fff;text-decoration:none;font:800 16px/1.4 Arial,sans-serif;box-shadow:0 4px 12px rgba(54,45,30,.14);">🎁 Festival Pack देखें</a>
-      </section>
-      <section id="top-spice-stories" aria-label="हमारी कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 20px;padding:0 16px;">
+      el.before(`<section id="top-spice-stories" aria-label="हमारी कहानियाँ और रेसिपी" style="max-width:980px;margin:0 auto 20px;padding:0 16px;">
         <h2 style="margin:0 0 12px;text-align:center;color:#43513d;font:800 22px/1.4 Arial,sans-serif;">हमारी कहानियाँ और रेसिपी</h2>
         <nav id="top-spice-story-links" aria-label="मसालों की कहानियाँ और रेसिपी" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;">
           <a href="/haldi-bharat-ki-har-rasoi-ki-shaan" style="display:block;box-sizing:border-box;padding:13px 12px;border:1px solid #d9c8ae;border-radius:12px;background:#fffdf8;color:#43513d;text-decoration:none;text-align:center;font:800 15px/1.5 Arial,sans-serif;box-shadow:0 3px 10px rgba(54,45,30,.06);">🌿 हल्दी की कहानी पढ़ें</a>
