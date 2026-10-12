@@ -1,0 +1,97 @@
+name: Deploy Main Homepage Cumin Story Preview
+on:
+  push:
+    branches:
+      - stage-main-jeera-home-preview
+permissions:
+  contents: read
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    name: Deploy and verify homepage and cumin blog preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Wrangler and browser diagnostics
+        run: |
+          npm install --no-save wrangler@latest playwright
+          npx playwright install --with-deps chromium
+      - name: Deploy isolated Worker Preview (retry transient Cloudflare 5xx)
+        run: |
+          set -uo pipefail
+          for attempt in 1 2 3; do
+            echo "Cloudflare preview deployment attempt ${attempt}/3"
+            if npx wrangler preview; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              delay=$((attempt * 20))
+              echo "Preview API failed; waiting ${delay}s before retry"
+              sleep "$delay"
+            fi
+          done
+          echo "Cloudflare preview deployment failed after 3 attempts"
+          exit 1
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Check homepage cumin links and existing Festival Pack buttons
+        run: |
+          set -euo pipefail
+          HOME_URL="https://stage-main-jeera-home-preview-sandeep.shudhsanjivani.workers.dev/"
+          curl -fsS "$HOME_URL" -o /tmp/home.html
+          grep -q '🌾 जीरे का सफर पढ़ें' /tmp/home.html
+          grep -q 'cumin-whole.svg' /tmp/home.html
+          grep -q 'festival-pack-info-link' /tmp/home.html
+          grep -q 'Shudh Sanjivani Festival Pack' /tmp/home.html
+          echo "Homepage contains the top cumin story button, lower cumin image card, and existing Festival Pack details button."
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+          try {
+            const response = await page.goto('https://stage-main-jeera-home-preview-sandeep.shudhsanjivani.workers.dev/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            const top = await page.locator('#top-spice-story-links a[href="/jeera-khet-se-tadke-tak"]').count();
+            const bottom = await page.locator('#black-pepper-blog-card a[href="/jeera-khet-se-tadke-tak"]').count();
+            const packInfo = await page.locator('#festival-pack-info-link[href="/festival-pack"]').count();
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+            console.log(JSON.stringify({status: response?.status(), topCuminButton: top, lowerCuminImageCard: bottom, festivalPackInfoButton: packInfo, mobileOverflow: overflow}));
+            if (!response?.ok() || top !== 1 || bottom !== 1 || packInfo !== 1 || overflow) process.exitCode = 1;
+          } finally { await browser.close(); }
+          NODE
+      - name: Check clean blog URL and mobile rendering
+        run: |
+          set -euo pipefail
+          PAGE_URL="https://stage-main-jeera-home-preview-sandeep.shudhsanjivani.workers.dev/jeera-khet-se-tadke-tak"
+          echo "=== PREVIEW REDIRECT DIAGNOSTICS ==="
+          curl -sS -D /tmp/jeera-headers.txt -o /tmp/jeera.html -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nREDIRECT_URL=%{redirect_url}\n' "$PAGE_URL" || true
+          sed -n '1,20p' /tmp/jeera-headers.txt
+          echo "=== REDIRECT CHAIN ==="
+          curl -sS -L --max-redirs 6 -D - -o /tmp/jeera-follow.html -w 'FINAL_STATUS=%{http_code}\nFINAL_URL=%{url_effective}\n' "$PAGE_URL" || true
+          test -s /tmp/jeera.html
+          grep -q 'खेत से तड़के तक' /tmp/jeera.html
+          grep -q 'application/ld+json' /tmp/jeera.html
+          echo "=== MOBILE BROWSER CHECK ==="
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+          page.on('console', msg => { if (msg.type() === 'error') console.log('CONSOLE_ERROR:', msg.text()); });
+          try {
+            const response = await page.goto('https://stage-main-jeera-home-preview-sandeep.shudhsanjivani.workers.dev/jeera-khet-se-tadke-tak', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            console.log('PAGE_HTTP:', response?.status());
+            const images = await page.locator('img[src^="data:image/"]').evaluateAll(nodes => nodes.map(img => ({alt: img.alt, complete: img.complete, width: img.naturalWidth, height: img.naturalHeight})));
+            console.log('EMBEDDED_IMAGES:', JSON.stringify(images));
+            console.log('HOME_BUTTONS:', await page.locator('a[href="https://shudhsanjivani.in/"]').count());
+            console.log('FESTIVAL_BUTTONS:', await page.locator('a[href="https://shudhsanjivani.in/festival-pack"]').count());
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+            console.log('MOBILE_HORIZONTAL_OVERFLOW:', overflow);
+            if (!response?.ok() || images.length < 7 || images.some(img => !img.complete || img.width === 0) || overflow) process.exitCode = 1;
+          } finally {
+            await browser.close();
+          }
+          NODE
