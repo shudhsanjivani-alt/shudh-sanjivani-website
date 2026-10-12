@@ -441,6 +441,13 @@ export default {
       blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
     }
+    // Black-pepper blog: serve the .html asset directly for both URL forms.
+    // This avoids relying on implicit static-asset redirects during Googlebot crawling.
+    if (url.pathname === '/kali-mirch-kahani' || url.pathname === '/kali-mirch-kahani.html') {
+      const blogUrl = new URL(request.url);
+      blogUrl.pathname = '/kali-mirch-kahani.html';
+      return applySeo(await env.ASSETS.fetch(new Request(blogUrl, request)), false);
+    }
     if (url.pathname === '/lal-mirch-ki-kahani' || url.pathname === '/lal-mirch-ki-kahani-v2') {
       const blogUrl = new URL(request.url);
       blogUrl.pathname = '/lal-mirch-ki-kahani.html';
