@@ -20,8 +20,22 @@ jobs:
         run: |
           npm install --no-save wrangler@latest playwright
           npx playwright install --with-deps chromium
-      - name: Deploy isolated Worker Preview
-        run: npx wrangler preview
+      - name: Deploy isolated Worker Preview (retry transient Cloudflare 5xx)
+        run: |
+          set -uo pipefail
+          for attempt in 1 2 3; do
+            echo "Cloudflare preview deployment attempt ${attempt}/3"
+            if npx wrangler preview; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              delay=$((attempt * 20))
+              echo "Preview API failed; waiting ${delay}s before retry"
+              sleep "$delay"
+            fi
+          done
+          echo "Cloudflare preview deployment failed after 3 attempts"
+          exit 1
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
