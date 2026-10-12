@@ -1,0 +1,55 @@
+name: Deploy Cumin Blog Preview
+on:
+  push:
+    branches:
+      - stage-jeera-blog-seo-v1
+permissions:
+  contents: read
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    name: Deploy and verify cumin blog preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Wrangler and browser diagnostics
+        run: |
+          npm install --no-save wrangler@latest playwright
+          npx playwright install --with-deps chromium
+      - name: Deploy isolated Worker Preview
+        run: npx wrangler preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Check clean blog URL and mobile rendering
+        run: |
+          set -euo pipefail
+          PAGE_URL="https://stage-jeera-blog-seo-v1-sandeep.shudhsanjivani.workers.dev/jeera-khet-se-tadke-tak"
+          echo "=== PREVIEW RESPONSE ==="
+          curl -fsS -o /tmp/jeera.html -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\n' "$PAGE_URL"
+          grep -q 'खेत से तड़के तक' /tmp/jeera.html
+          grep -q 'application/ld+json' /tmp/jeera.html
+          echo "=== MOBILE BROWSER CHECK ==="
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+          page.on('console', msg => { if (msg.type() === 'error') console.log('CONSOLE_ERROR:', msg.text()); });
+          try {
+            const response = await page.goto('https://stage-jeera-blog-seo-v1-sandeep.shudhsanjivani.workers.dev/jeera-khet-se-tadke-tak', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            console.log('PAGE_HTTP:', response?.status());
+            const images = await page.locator('img[src^="data:image/"]').evaluateAll(nodes => nodes.map(img => ({alt: img.alt, complete: img.complete, width: img.naturalWidth, height: img.naturalHeight})));
+            console.log('EMBEDDED_IMAGES:', JSON.stringify(images));
+            console.log('HOME_BUTTONS:', await page.locator('a[href="https://shudhsanjivani.in/"]').count());
+            console.log('FESTIVAL_BUTTONS:', await page.locator('a[href="https://shudhsanjivani.in/festival-pack"]').count());
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+            console.log('MOBILE_HORIZONTAL_OVERFLOW:', overflow);
+            if (!response?.ok() || images.length < 7 || images.some(img => !img.complete || img.width === 0) || overflow) process.exitCode = 1;
+          } finally {
+            await browser.close();
+          }
+          NODE
