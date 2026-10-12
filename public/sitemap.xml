@@ -10,4 +10,4 @@
     <loc>https://shudhsanjivani.in/achari-masala-recipe</loc>
   </url>
   <url><loc>https://shudhsanjivani.in/haldi-bharat-ki-har-rasoi-ki-shaan</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-</urlset>
+  <url>\n    <loc>https://shudhsanjivani.in/kali-mirch-kahani.html</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>
