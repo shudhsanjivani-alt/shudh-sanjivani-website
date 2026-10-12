@@ -43,8 +43,12 @@ jobs:
         run: |
           set -euo pipefail
           PAGE_URL="https://stage-jeera-blog-seo-v1-sandeep.shudhsanjivani.workers.dev/jeera-khet-se-tadke-tak"
-          echo "=== PREVIEW RESPONSE ==="
-          curl -fsS -o /tmp/jeera.html -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\n' "$PAGE_URL"
+          echo "=== PREVIEW REDIRECT DIAGNOSTICS ==="
+          curl -sS -D /tmp/jeera-headers.txt -o /tmp/jeera.html -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nREDIRECT_URL=%{redirect_url}\n' "$PAGE_URL" || true
+          sed -n '1,20p' /tmp/jeera-headers.txt
+          echo "=== REDIRECT CHAIN ==="
+          curl -sS -L --max-redirs 6 -D - -o /tmp/jeera-follow.html -w 'FINAL_STATUS=%{http_code}\nFINAL_URL=%{url_effective}\n' "$PAGE_URL" || true
+          test -s /tmp/jeera.html
           grep -q 'खेत से तड़के तक' /tmp/jeera.html
           grep -q 'application/ld+json' /tmp/jeera.html
           echo "=== MOBILE BROWSER CHECK ==="
