@@ -45,7 +45,8 @@ jobs:
           HOME_URL="https://stage-main-jeera-home-preview-sandeep.shudhsanjivani.workers.dev/"
           curl -fsS "$HOME_URL" -o /tmp/home.html
           grep -q '🌾 जीरे का सफर पढ़ें' /tmp/home.html
-          grep -q 'alt="साबुत जीरा"' /tmp/home.html
+          grep -q 'aria-label="जीरे का सफर पढ़ें"' /tmp/home.html
+          grep -q "background-image:url('data:image/jpeg;base64," /tmp/home.html
           grep -q 'festival-pack-info-link' /tmp/home.html
           grep -q 'Shudh Sanjivani Festival Pack' /tmp/home.html
           echo "Homepage contains the top cumin story button, lower cumin image card, and existing Festival Pack details button."
