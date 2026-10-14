@@ -6,7 +6,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/", "/index.html", "/assets/festival-15-spice-pack.webp", "/assets/02-whole-black-pepper.jpg", "/jeera-khet-se-tadke-tak", "/jeera-khet-se-tadke-tak.html"]
+    "run_worker_first": ["/api/*", "/", "/index.html", "/assets/festival-15-spice-pack.webp", "/assets/02-whole-black-pepper.jpg", "/jeera-khet-se-tadke-tak", "/jeera-khet-se-tadke-tak.html", "/kali-mirch-kahani", "/kali-mirch-kahani.html"]
   },
   "kv_namespaces": [
     {
