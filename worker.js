@@ -455,6 +455,19 @@ export default {
       blogUrl.pathname = '/haldi-bharat-ki-har-rasoi-ki-shaan.html';
       return env.ASSETS.fetch(new Request(blogUrl, request));
     }
+    // Jeera blog: keep both clean and .html URLs working when Cloudflare HTML handling is disabled.
+    if (url.pathname === '/jeera-khet-se-tadke-tak' || url.pathname === '/jeera-khet-se-tadke-tak.html') {
+      const jeeraUrl = new URL(request.url);
+      jeeraUrl.pathname = '/jeera-khet-se-tadke-tak.html';
+      return env.ASSETS.fetch(new Request(jeeraUrl, request));
+    }
+    // Black-pepper blog: route both public URL forms through the Worker to the HTML asset.
+    // Return the original page as-is so its page-specific metadata is preserved.
+    if (url.pathname === '/kali-mirch-kahani' || url.pathname === '/kali-mirch-kahani.html') {
+      const blogUrl = new URL(request.url);
+      blogUrl.pathname = '/kali-mirch-kahani.html';
+      return env.ASSETS.fetch(new Request(blogUrl, request));
+    }
     if (url.pathname === '/lal-mirch-ki-kahani' || url.pathname === '/lal-mirch-ki-kahani-v2') {
       const blogUrl = new URL(request.url);
       blogUrl.pathname = '/lal-mirch-ki-kahani.html';

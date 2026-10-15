@@ -10,5 +10,20 @@
     <loc>https://shudhsanjivani.in/achari-masala-recipe</loc>
   </url>
   <url><loc>https://shudhsanjivani.in/haldi-bharat-ki-har-rasoi-ki-shaan</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url>
+    <loc>https://shudhsanjivani.in/kali-mirch-kahani.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://shudhsanjivani.in/lal-mirch-ki-kahani</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://shudhsanjivani.in/jeera-khet-se-tadke-tak</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
   <url><loc>https://shudhsanjivani.in/festival-pack</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>
